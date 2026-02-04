@@ -7,6 +7,7 @@
 - [@reduxjs/toolkit](https://redux-toolkit.js.org/introduction/getting-started) 傳統 Redux 需要自己寫 createStore、middleware、reducers 合併等樣板程式碼，Toolkit 幫你包好，它是「建立和管理 Redux store」的工具，讓 Redux 更好上手。
 - [lucide-react](https://lucide.dev/guide/packages/lucide-react) 可定制的 SVG 庫，組件化使用，Tree-shaking，只打包實際導入的，减少bundle體積
 - [prebuiltui](https://prebuiltui.com/) 別人已經寫好的組件，複製即用
+- [clerk](https://clerk.com/) 第三方登入系統、付費第三方訂閱功能
 
 
 ## 預計功能規劃
