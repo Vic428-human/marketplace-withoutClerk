@@ -1,6 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap");
 @import "tailwindcss";
 
 * {
-  font-family: 'Rethink Sans', sans-serif;
+  font-family: "Rethink Sans", sans-serif;
+}
+
+/* 用 @apply 就能抽成一個語意清楚的 class */
+/* <button>送出</button> => 所有 button tag 都 apply cursor-pointer 這個效果，也可以應用在classname*/
+button {
+  /* @apply 是 Tailwind CSS 提供的一個「妥協工具」，讓你可以在 傳統的 CSS 寫法 裡面偷吃 Tailwind 的 utility classes */
+  @apply cursor-pointer;
+}
+
+/* ::-webkit-scrollbar 這是 WebKit 專有的偽元素，用來選取滾動條本身 */
+/* Chrome、Safari、Edge、新 Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
