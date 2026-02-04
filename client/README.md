@@ -9,7 +9,7 @@
 - [prebuiltui](https://prebuiltui.com/) 別人已經寫好的組件，複製即用
 - [clerk](https://clerk.com/) 第三方登入系統、付費第三方訂閱功能
 - [clerk component customization](https://clerk.com/docs/react/guides/customizing-clerk/appearance-prop/variables) 客製化Clerk組件的顏色
-
+- [clerk React SDK](https://clerk.com/docs/react/reference/hooks/use-user) 通用的 clerk React SDK 的基本用法
 
 ## 預計功能規劃
 

@@ -2,8 +2,15 @@ import React, { useState } from "react";
 import { assets } from "../assets/assets";
 import { useNavigate, Link } from "react-router-dom";
 import { MenuIcon, XIcon } from "lucide-react";
+// useClerk() => allowing you to build alternatives to any Clerk Component. https://clerk.com/docs/react/reference/hooks/use-user
+// useUser() => This hook provides access to the current user's User object, https://clerk.com/docs/react/reference/hooks/use-clerk
+// UserButton => Shows the signed-in user's avatar. Selecting it opens a dropdown menu with account management options. https://clerk.com/docs/react/getting-started/quickstart#create-a-header-with-clerk-components
+import { useUser, useClerk, UserButton } from "@clerk/clerk-react";
 
 const Navabr = () => {
+  const { isSignedIn, user, isLoaded } = useUser();
+  const clerk = useClerk()
+
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   return (
@@ -28,10 +35,10 @@ const Navabr = () => {
             <Link to="/marketplace" onClick={() => scrollTo(0, 0)}>
               Marketplace
             </Link>
-            <Link to="/messages" onClick={() => scrollTo(0, 0)}>
+            <Link to={user ? "/messages" : '#'} onClick={() => user ? scrollTo(0, 0) : clerk.openSignIn() }>
               Messages
             </Link>
-            <Link to="/my-listings" onClick={() => scrollTo(0, 0)}>
+            <Link to={user ? "/my-listings" : '#'}  onClick={() => user ?  scrollTo(0, 0) : clerk.openSignIn()}>
               MyListings
             </Link>
           </div>
