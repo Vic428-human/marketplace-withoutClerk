@@ -18,7 +18,7 @@ const Navabr = () => {
       <nav className="h-20">
         <div className="fixed left-0 top-0 right-0 z-100 flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white transition-all">
           {/* scroll to the top of the page           */}
-          <img
+          {/* <img
             onClick={() => {
               navigate("/");
               scrollTo(0, 0);
@@ -26,7 +26,7 @@ const Navabr = () => {
             src={assets.logo}
             alt="logo"
             className="h-15 cursor-pointer"
-          />
+          /> */}
           {/* Desktop Menu */}
           <div className="hidden sm:flex items-center gap-4 md:gap-8 max-md:text-sm text-gray-800">
             <Link to="/" onClick={() => scrollTo(0, 0)}>

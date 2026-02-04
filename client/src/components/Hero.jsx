@@ -15,7 +15,7 @@ const Hero = () => {
       <div className="relative flex flex-col items-center justify-center text-sm px-4 md:px-16 lg:px-24 xl:px-40 text-gray-800">
         {/* Avatars + Stars */}
         <div className="flex items-center mt-24 md:mt-36">
-          <div className="flex -space-x-0 pr-3">
+          <div className="flex space-x-0 pr-3">
             {user && (
               <img
                 onClick={() => {
