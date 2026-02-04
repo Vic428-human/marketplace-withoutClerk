@@ -8,6 +8,7 @@
 - [lucide-react](https://lucide.dev/guide/packages/lucide-react) 可定制的 SVG 庫，組件化使用，Tree-shaking，只打包實際導入的，减少bundle體積
 - [prebuiltui](https://prebuiltui.com/) 別人已經寫好的組件，複製即用
 - [clerk](https://clerk.com/) 第三方登入系統、付費第三方訂閱功能
+- [clerk component customization](https://clerk.com/docs/react/guides/customizing-clerk/appearance-prop/variables) 客製化Clerk組件的顏色
 
 
 ## 預計功能規劃
