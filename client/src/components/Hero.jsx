@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
+import { useUser, } from "@clerk/clerk-react";
 const Hero = () => {
+  const { user } = useUser();
   const [input, setInput] = useState("");
   const navigate = useNavigate();
-
   const onSubmitHandler = (e) => {
     e.preventDefault();
     navigate(`/marketplace?search=${input}`);
@@ -20,8 +21,8 @@ const Hero = () => {
                 navigate("/");
                 scrollTo(0, 0);
               }}
-              src={assets.avatar01}
-              alt="logo"
+              src={user.imageUrl}
+              alt="自己的頭像"
               className="h-10 cursor-pointer"
             />
             <img

@@ -10,6 +10,7 @@ import { useUser, useClerk, UserButton } from "@clerk/clerk-react";
 const Navabr = () => {
   const { isSignedIn, user, isLoaded } = useUser();
   const clerk = useClerk();
+  console.log('user==>',user)
 
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -48,16 +49,22 @@ const Navabr = () => {
               我的賣場
             </Link>
           </div>
-
-          <div>
-            <button className="max-sm:hidden cursor-pointer px-8 py-2 bg-blue-600 hover:bg-blue-700 transition text-white rounded-full font-medium shadow-md">
-              Login
-            </button>
-            <MenuIcon
-              onClick={() => setMenuOpen(true)}
-              className="sm:hidden cursor-pointer"
-            />
-          </div>
+          {!user ? (
+            <div>
+              <button
+                onClick={clerk.openSignIn}
+                className="max-sm:hidden cursor-pointer px-8 py-2 bg-blue-600 hover:bg-blue-700 transition text-white rounded-full font-medium shadow-md"
+              >
+                Login
+              </button>
+              <MenuIcon
+                onClick={() => setMenuOpen(true)}
+                className="sm:hidden cursor-pointer"
+              />
+            </div>
+          ) : (
+            <UserButton/>
+          )}
         </div>
         {/* Mobile Menu */}
         <div
@@ -75,13 +82,13 @@ const Navabr = () => {
             </Link>
             <Link
               to="/messages"
-              onClick={() => setMenuOpen(false) && scrollTo(0, 0)}
+              onClick={clerk.openSignIn}
             >
               聊天室
             </Link>
             <Link
               to="/my-listings"
-              onClick={() => setMenuOpen(false) && scrollTo(0, 0)}
+              onClick={clerk.openSignIn}
             >
               我的賣場
             </Link>
