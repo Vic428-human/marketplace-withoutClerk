@@ -4,9 +4,9 @@ import LatestListing from "../components/LatestListing";
 import Plans from "../components/Plans";
 import InfiniteScrollAnimationPage from "../components/InfiniteScrollAnimationPage";
 import { assets } from "../assets/assets";
-import {motion} from "framer-motion";
+import { motion } from "framer-motion";
 import CTA from "../components/CTA";
-
+import { bannerItems } from "../app/config/bannerConfig";
 const MotionDiv = motion.div;
 
 const stocksData = [
@@ -24,7 +24,9 @@ const stocksData = [
   { id: 12, territory: "竹林唄", guild: "?" },
 ];
 
-// Example list of items
+const leftBanners = bannerItems.filter((item) => item.side === "left");
+const rightBanners = bannerItems.filter((item) => item.side === "right");
+
 
 const Home = () => {
   const [stocks] = useState(stocksData);
@@ -34,79 +36,35 @@ const Home = () => {
       <div className="">
         <InfiniteScrollAnimationPage stocks={stocks} />
         <div className="flex">
-          {/* 左邊 */}
+          {/* 左半邊 */}
           <div className="flex-1 flex flex-col items-center mt-5">
             <div className="overflow-hidden text-white flex items-center">
-              {/* 公會廣告刊登預期放五個 */}
               <MotionDiv
                 className="flex flex-col gap-2.5"
-                animate={{ y: ["0%", "-50%"] }} // 往上移動一半高度
+                animate={{ y: ["0%", "-50%"] }}
                 transition={{
                   repeat: Infinity,
                   repeatType: "loop",
-                  duration:45,
+                  duration: 45,
                   ease: "linear",
                 }}
               >
-                <div className="relative w-[220px] h-[220px]">
-                  <img
-                    src={assets.bannerFrame}
-                    alt="banner frame"
-                    className="absolute inset-0 w-full h-full object-contain select-none"
-                    draggable="false"
-                  />
-                  <img
-                    src={assets.emblem}
-                    alt="瞬殺"
-                    className="absolute top-21 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[34%] aspect-square object-contain"
-                    draggable="false"
-                  />
-                </div>
-
-                <div className="relative w-[220px]  h-[220px]">
-                  <img
-                    src={assets.bannerFrame}
-                    alt="banner frame"
-                    className="absolute inset-0 w-full h-full object-contain select-none"
-                    draggable="false"
-                  />
-                  <img
-                    src={assets.emblem02}
-                    alt="不想說"
-                    className="absolute top-21 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[34%] aspect-square object-contain"
-                    draggable="false"
-                  />
-                </div>
-
-                <div className="relative w-[220px] h-[220px]">
-                  <img
-                    src={assets.bannerFrame}
-                    alt="banner frame"
-                    className="absolute inset-0 w-full h-full object-contain select-none"
-                    draggable="false"
-                  />
-                  <img
-                    src={assets.emblem03}
-                    alt="凌雲閣"
-                    className="absolute top-21 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[34%] aspect-square object-contain"
-                    draggable="false"
-                  />
-                </div>
-
-                <div className="relative w-[220px] h-[220px]">
-                  <img
-                    src={assets.bannerFrame}
-                    alt="banner frame"
-                    className="absolute inset-0 w-full h-full object-contain select-none"
-                    draggable="false"
-                  />
-                  <img
-                    src={assets.emblem05}
-                    alt="嶽夜森林"
-                    className="absolute top-21 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[34%] aspect-square object-contain"
-                    draggable="false"
-                  />
-                </div>
+                {leftBanners.map((item) => (
+                  <div key={item.id} className="relative w-[220px] h-[220px]">
+                    <img
+                      src={assets.bannerFrame}
+                      alt="banner frame"
+                      className="absolute inset-0 w-full h-full object-contain select-none pointer-events-none"
+                      draggable="false"
+                    />
+                    <img
+                      src={item.img}
+                      alt={item.alt}
+                      className="absolute top-21 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[34%] aspect-square object-contain pointer-events-none"
+                      draggable="false"
+                    />
+                  </div>
+                ))}
               </MotionDiv>
             </div>
           </div>
@@ -114,87 +72,42 @@ const Home = () => {
           <div className="flex-1.5 flex flex-col items-center">
             <Hero />
             <LatestListing />
-            
           </div>
-          {/* div 3 */}
+          {/* 右半邊 */}
           <div className="flex-1 flex flex-col items-center">
             <div className="overflow-hidden text-white flex items-center">
-              <motion.div
+              <MotionDiv
                 className="flex flex-col gap-2.5"
-                animate={{ y: ["0%", "-50%"] }} // 往上移動一半高度
+                animate={{ y: ["0%", "-50%"] }}
                 transition={{
                   repeat: Infinity,
                   repeatType: "loop",
-                  duration:45,
+                  duration: 45,
                   ease: "linear",
                 }}
               >
-                <div className="relative w-[220px] h-[220px]">
-                  <img
-                    src={assets.bannerFrame}
-                    alt="banner frame"
-                    className="absolute inset-0 w-full h-full object-contain select-none"
-                    draggable="false"
-                  />
-                  <img
-                    src={assets.emblem06}
-                    alt="今夜不准睡"
-                    className="absolute top-21 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[34%] aspect-square object-contain"
-                    draggable="false"
-                  />
-                </div>
-
-         
-                <div className="relative w-[220px]  h-[220px]">
-                  <img
-                    src={assets.bannerFrame}
-                    alt="banner frame"
-                    className="absolute inset-0 w-full h-full object-contain select-none"
-                    draggable="false"
-                  />
-                  <img
-                    src={assets.emblem07}
-                    alt="鯊鯊"
-                    className="absolute top-21 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[34%] aspect-square object-contain"
-                    draggable="false"
-                  />
-                </div>
-               
-                <div className="relative w-[220px] h-[220px]">
-                  <img
-                    src={assets.bannerFrame}
-                    alt="banner frame"
-                    className="absolute inset-0 w-full h-full object-contain select-none"
-                    draggable="false"
-                  />
-                  <img
-                    src={assets.emblem08}
-                    alt="白鴿"
-                    className="absolute top-21 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[34%] aspect-square object-contain"
-                    draggable="false"
-                  />
-                </div>
-
-                <div className="relative w-[220px]  h-[220px]">
-                  <img
-                    src={assets.bannerFrame}
-                    alt="banner frame"
-                    className="absolute inset-0 w-full h-full object-contain select-none"
-                    draggable="false"
-                  />
-                  <img
-                    src={assets.emblem04}
-                    alt="土匪"
-                    className="absolute top-21 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[34%] aspect-square object-contain"
-                    draggable="false"
-                  />
-                </div>
-              </motion.div>
+                {rightBanners.map((item) => (
+                  <div key={item.id} className="relative w-[220px] h-[220px]">
+                    <img
+                      src={assets.bannerFrame}
+                      alt="banner frame"
+                      className="absolute inset-0 w-full h-full object-contain select-none pointer-events-none"
+                      draggable="false"
+                    />
+                    <img
+                      src={item.img}
+                      alt={item.alt}
+                      className="absolute top-20 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[34%] aspect-square object-contain pointer-events-none"
+                      draggable="false"
+                    />
+                  </div>
+                ))}
+              </MotionDiv>
             </div>
           </div>
         </div>
         <Plans />
-        <CTA/>
+        <CTA />
       </div>
     </>
   );
