@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 const ListingCard = ({ listing }) => {
   const navigator = useNavigate();
   const currency = import.meta.env.VITE_CURRENCY || "$";
+  
   return (
     <div className="flex relative bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transaction">
       {/* 推薦tag  */}
@@ -79,7 +80,7 @@ const ListingCard = ({ listing }) => {
             <p className="text-sm text-blue-600 font-bold">更新時間</p>
             <span> {listing.updatedAt}</span>
           </div>
-          <button className="px-7 py-3 bg-indigo-600 text-white text-sm rounded-lg hoverLbg-indigo-700 transition" onClick={()=>{navigator(`/listing/${listing.id}`)}}>詳情</button>
+          <button className="px-7 py-3 bg-indigo-600 text-white text-sm rounded-lg hoverLbg-indigo-700 transition" onClick={()=>{navigator(`/listing/${listing.id}`); scrollTo(0, 0);}}>詳情</button>
         </div>
       </div>
     </div>

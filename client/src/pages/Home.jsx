@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Hero from "../components/Hero";
 import LatestListing from "../components/LatestListing";
-import Slider from "../components/Slider";
+import Plans from "../components/Plans";
 import InfiniteScrollAnimationPage from "../components/InfiniteScrollAnimationPage";
 import { assets } from "../assets/assets";
-import { motion } from "framer-motion";
+import {motion} from "framer-motion";
 
 const stocksData = [
   { id: 1, territory: "維爾茨堡", guild: "土匪" },
@@ -22,13 +22,6 @@ const stocksData = [
 ];
 
 // Example list of items
-const items = [
-  "🚀 Fast animations",
-  "🎨 TailwindCSS styling",
-  "⚡ Framer Motion smoothness",
-  "♾ Infinite loop",
-  "📱 Responsive design",
-];
 
 const Home = () => {
   const [stocks] = useState(stocksData);
@@ -38,7 +31,7 @@ const Home = () => {
       <div className="">
         <InfiniteScrollAnimationPage stocks={stocks} />
         <div className="flex">
-          {/* div 1 */}
+          {/* 左邊 */}
           <div className="flex-1 flex flex-col items-center mt-5">
             <div className="overflow-hidden text-white flex items-center">
               {/* 公會廣告刊登預期放五個 */}
@@ -114,10 +107,11 @@ const Home = () => {
               </motion.div>
             </div>
           </div>
-          {/* div 2 */}
+          {/*正中間*/}
           <div className="flex-1.5 flex flex-col items-center">
             <Hero />
             <LatestListing />
+            
           </div>
           {/* div 3 */}
           <div className="flex-1 flex flex-col items-center">
@@ -196,6 +190,7 @@ const Home = () => {
             </div>
           </div>
         </div>
+        <Plans />
       </div>
     </>
   );
