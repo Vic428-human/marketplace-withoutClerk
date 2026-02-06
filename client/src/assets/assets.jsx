@@ -106,6 +106,23 @@ export const dummyUsers = [
 ];
 
 export const dummyListings = [
+     {
+        id: 4,
+        ownerId: 'user_4',
+        title: '+9殲滅隊鎧甲',
+        game: '仙境傳說-樂園',
+        platform: 'discord',
+        username: 'lettuce06881',
+        views: 24,
+        monthly_views: 850000,
+        price: 66666,
+        description: '有3個，要買要快~',
+        verified: false,
+        country: 'Taiwan',
+        featured: false,
+        createdAt: '2026-01-08',
+        updatedAt: '2026-01-16',
+    },
     {
         id: 1,
         ownerId: 'user_1',
@@ -113,19 +130,19 @@ export const dummyListings = [
         game: '仙境傳說-樂園',
         platform: 'discord',
         username: 'lettuce06881',
-        views: 5148,
+        views: 9999,
         monthly_views: 850000,
         price: 45000,
         description: '直購價如題，可議價，可以在遊戲內私我，ID:琴橋緊招，通常平日晚上8點過後會在。',
         verified: true,
         country: 'Taiwan',
-        featured: true,
+        featured: false,
         createdAt: '2026-01-12',
         updatedAt: '2026-01-16',
     },
     {
         id: 2,
-        ownerId: 'user_1',
+        ownerId: 'user_2',
         title: '(服飾)狐狸耳朵',
         game: '仙境傳說-樂園',
         platform: 'discord',
@@ -142,7 +159,7 @@ export const dummyListings = [
     },
     {
         id: 3,
-        ownerId: 'user_1',
+        ownerId: 'user_3',
         title: '(服飾)露西法翅膀',
         game: '仙境傳說-樂園',
         platform: 'discord',
@@ -151,12 +168,13 @@ export const dummyListings = [
         monthly_views: 850000,
         price: 1000,
         description: '有3個，要買要快~',
-        verified: true,
+        verified: false,
         country: 'Taiwan',
         featured: false,
         createdAt: '2026-01-08',
         updatedAt: '2026-01-16',
     },
+   
 ];
 
 export const dummyMessages = [
