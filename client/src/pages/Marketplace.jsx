@@ -16,7 +16,7 @@ const Marketplace = () => {
     verified: false,
     featured: false,
   });
-
+  console.log('filters===>', filters)
   const quantity = 10;
 
   const items = [

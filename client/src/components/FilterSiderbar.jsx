@@ -29,9 +29,15 @@ const FilterSiderbar = ({ showFilter, setShowFilter, filters, setFilters }) => {
     setExpandSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
 
+
+  const onFiltersChange = (newFilters) => {
+    // 拿更新後的內容覆蓋當前state的狀態
+    setFilters({ ...filters, ...newFilters });
+  };
+
   const platforms = [
     { value: "Discord", label: "Discord" },
-    { value: "Goodle", label: "Goodle" },
+    { value: "Google", label: "Google" },
     { value: "Line", label: "Line" },
     { value: "MetaMask", label: "MetaMask" },
   ];
@@ -79,6 +85,34 @@ const FilterSiderbar = ({ showFilter, setShowFilter, filters, setFilters }) => {
             className={`size-4 transition-transform ${expandSections.platform ? "rotate-180" : ""}`}
           />
         </button>
+
+        {/* platform checkboxs list*/}
+        {expandSections.platform && (
+          <div className="grid grid-cols-2 gap-2">
+            {platforms.map((platform) => (
+              <label
+                key={platform.value}
+                className="flex items-center gap-2 text-gray-700 text-sm"
+              >
+                <input
+                  type="checkbox"
+                  // id={platform.value}
+                  checked={filters.platform?.includes(platform.value) || false}
+                  onChange={(e)=>{
+                    const checked = e.target.checked;
+                    const current = filters.platform || [];
+                    // 當下打勾 => 加進陣列裡 , 當下取消打勾 => 從陣列裡刪掉
+                    const updated = checked ? [...current, platform.value] : current.filter((p)=> p !== platform.value);
+
+                    // 先前內容 + 修改特定屬性 (ex: platform) => 所以傳進去的 newFilters 就是更新後的內容，再透過 setState hook 更新畫面
+                    onFiltersChange({ ...filters,  platform: updated.length > 0 ? updated : null });
+                  }}
+                />
+                <span> {platform.label} </span>
+              </label>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
