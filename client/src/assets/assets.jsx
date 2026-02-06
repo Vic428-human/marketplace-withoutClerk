@@ -130,7 +130,7 @@ export const dummyListings = [
         game: '仙境傳說-樂園',
         platform: 'discord',
         username: 'lettuce06881',
-        views: 9999,
+        views: 1,
         monthly_views: 850000,
         price: 45000,
         description: '直購價如題，可議價，可以在遊戲內私我，ID:琴橋緊招，通常平日晚上8點過後會在。',

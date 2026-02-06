@@ -8,6 +8,7 @@ const Marketplace = () => {
   const navigator = useNavigate();
   const { listings } = useSelector((state) => state.listing);
   const [showFilter, setShowFilter] = React.useState(false);
+  // 認證過的優先顯示
   const sortedListings = [...listings].sort((a, b) => b.verified - a.verified);
   return (
     <div className="px-6 md:px-16 lg:px-24 xl:px-32">
