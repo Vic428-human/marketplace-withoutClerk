@@ -11,3 +11,5 @@ react-only-origin       git@github.com:Vic428-human/social-media-marketplace-rea
 ```
 git push react-only-origin main
 ```
+
+> 等知道怎麼基本規劃 GOLANG+PostgreSQL規劃後端後，才用這個專案製作規劃。
