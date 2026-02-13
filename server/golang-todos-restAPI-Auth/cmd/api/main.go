@@ -3,10 +3,12 @@ package main
 
 import (
 	"log"
+	"time"
 	"todo_api/internal/config"
 	"todo_api/internal/database"
 	"todo_api/internal/handlers"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool" // PostgreSQL驅動程式的connection pool版本，提供高效連線管理
 )
@@ -34,6 +36,23 @@ func main() {
 	// * is a pointer, reference something in the memory
 	// pointer refers to the address or instance in memory, and not copy entire thing
 	var router *gin.Engine = gin.Default() // gin => do client request and response
+
+	/*
+		AllowOrigins: 允許的domain
+		AllowMethods: 允許的HTTP Method
+		AllowHeaders: 允許的Header 信息
+		AllowCredentials: 是否允許請求包含驗證憑證
+		ExposeHeaders: 允許暴露的Header信息
+		MaxAge: 可被存取的時間
+	*/
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowOrigins = []string{"http://localhost:5173"}
+	corsConfig.AllowMethods = []string{"GET", "POST", "PUT"}
+	corsConfig.AllowHeaders = []string{"Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With"}
+	corsConfig.AllowCredentials = true
+	corsConfig.ExposeHeaders = []string{"Content-Length"}
+	corsConfig.MaxAge = 12 * time.Hour
+	router.Use(cors.New(corsConfig))
 
 	// 2️⃣ 將「同一個」pool 實例傳給所有 handler
 	router.GET("/", func(c *gin.Context) {
