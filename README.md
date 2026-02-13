@@ -5,6 +5,10 @@
 > [已經確認過可以串接](https://github.com/Vic428-human/todoapp-jwt/tree/connect-react-and-golang-postgres)
 
 
+0214 小目標
+- 先串接 post 方法
+- 然後在前端頁面開一個分頁，用來擺放玩家 刊登賣場的
+
 ```
 
 ```
