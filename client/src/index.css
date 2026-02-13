@@ -1,0 +1,78 @@
+@import url("https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap");
+@import "tailwindcss";
+
+* {
+  font-family: "Rethink Sans", sans-serif;
+}
+
+/* Define the keyframes for infinite horizontal scroll */
+@theme {
+  --animate-infinite-scroll: infinite-scroll 40s linear infinite;
+}
+
+@keyframes infinite-scroll {
+  from {
+    transform: translateX(40%);
+  }
+  to {
+    transform: translateX(-66%);
+  }
+}
+
+@keyframes marqueeScrollX {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-inner-horizontal {
+  animation: marqueeScrollX 25s linear infinite;
+}
+
+@keyframes marqueeScrollY {
+  0% {
+    transform: translateY(0%);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+.marquee-inner-vertical {
+  animation: marqueeScrollY 25s linear infinite;
+}
+
+/* ------------------- */
+.banner-slider:hover { animation-play-state: paused; }
+
+.banner-slider {
+  animation: autoRun 20s linear infinite;
+}
+
+@keyframes autoRun {
+  from {
+    transform: perspective(1000px) rotateY(0deg);
+  }
+  to {
+    transform: perspective(1000px) rotateY(360deg);
+  }
+}
+/* 用 @apply 就能抽成一個語意清楚的 class */
+/* <button>送出</button> => 所有 button tag 都 apply cursor-pointer 這個效果，也可以應用在classname*/
+button {
+  /* @apply 是 Tailwind CSS 提供的一個「妥協工具」，讓你可以在 傳統的 CSS 寫法 裡面偷吃 Tailwind 的 utility classes */
+  @apply cursor-pointer;
+}
+
+/* ::-webkit-scrollbar 這是 WebKit 專有的偽元素，用來選取滾動條本身 */
+/* Chrome、Safari、Edge、新 Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* .cl-drawerRoot {
+  z-index: 100;
+} */
