@@ -1,14 +1,13 @@
-### 備份
-> [React交易所版型](https://github.com/Vic428-human/social-media-marketplace-react-only-template?tab=readme-ov-file) 
->當前這個版型，是從上面這個移植過來的，該專案想要更深入了解後端，所以會把clerk拔掉，讓註冊登入這些方法都是自己寫API去實踐，
-> 所以這個專案會先把先前在 [todoapp-jwt](https://github.com/Vic428-human/todoapp-jwt) 預先寫好的API，整個檔案移過來。
-> [已經確認過可以串接](https://github.com/Vic428-human/todoapp-jwt/tree/connect-react-and-golang-postgres)
+### 前言
+> 本專案已經具備React+Postgres+golang
 
+### 待辦
+-  [] 交易市集API串接
+-  [] 移植之前做好的 [聊天室](https://github.com/Vic428-human/websocket-golang-chat-room) 跟 旋轉木馬卡片功能 在刊登賣場
+-  [進行中] 點選拍賣場的卡片，進入當前卡片競拍頁面 [Autoin App](https://github.com/Vic428-human/Austion-app) 
 
-0214 小目標
--  [待辦]接下來先繼續切版[在此](https://github.com/Vic428-human/social-media-marketplace)，先把篩選器完成，直接要寫 搜尋，才回頭完善 查詢API的功能。
--  [完成] 先串接 post 方法
--  [完成]然後在前端頁面開一個分頁，用來擺放玩家 刊登賣場的，所以post方法可以先在 刊登賣場 這裡測試，確定前後端接起來後，這邊就先暫時告一個段落。
+0214 進度
+-  [完成] 刊登賣場 串接 post 方法
 
 ```
 
