@@ -9,9 +9,6 @@
 0214 進度
 -  [完成] 刊登賣場 串接 post 方法
 
-```
-
-```
-
-```
-```
+### 備忘
+- [Gin+Postgres]TODO request & [交易所]Product request 的postman資料夾 是這個專案會用到的
+- 本機位置: C:\Users\z0983\Documents\sideProject\marketplace-withoutClerk
