@@ -1,35 +1,16 @@
-import React from "react";
-import Home from "./pages/Home";
-import Marketplace from "./pages/Marketplace";
-import MyListings from "./pages/MyListings";
-import ListingDetails from "./pages/ListingDetails";
-import ManageListing from "./pages/ManageListing";
-import Messages from "./pages/Messages";
-import MyOrders from "./pages/MyOrders";
-import Loading from "./pages/Loading";
-import { Routes, Route, useLocation } from "react-router-dom";
-import Navabr from "./components/Navabr";
-import Aution from "./pages/Aution";
+import React from 'react';
+import { RouterProvider, createRouter } from '@tanstack/react-router';
+import { routeTree } from './routeTree.gen'; // ✅ 確認路徑
 
-const App = () => {
-  const {pathname} = useLocation(); 
-  return (
-    <div>
-      {!pathname.includes("/admin") && <Navabr/>}
-      <Routes>
-        <Route path="/" element={<Home />}></Route>
-        <Route path="/marketplace" element={<Marketplace />} />
-        <Route path="/my-listings" element={<MyListings />} />
-        <Route path="/listing/:listingId" element={<ListingDetails />} />
-        <Route path="/auctions/:autionId" element={<Aution />} />
-        <Route path="/crate-listing" element={<ManageListing />} />
-        <Route path="/edit-listing/:id" element={<ManageListing />} />
-        <Route path="/messages" element={<Messages />} />
-        <Route path="/my-orders" element={<MyOrders />} />
-        <Route path="/loading" element={<Loading />} />
-      </Routes>
-    </div>
-  );
-};
+const router = createRouter({ 
+  routeTree,
+  defaultPreload: 'intent',
+  defaultNotFoundComponent: () => <div className="p-8 text-center">404 - 頁面不存在</div>, // ✅ 避免默認 Not Found
+  context: { /* Redux 等全域狀態 */ },
+});
+
+function App() {
+  return <RouterProvider router={router} />;
+}
 
 export default App;

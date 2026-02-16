@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Hero from "../components/Hero";
 import LatestListing from "../components/LatestListing";
 import Plans from "../components/Plans";
@@ -6,6 +6,10 @@ import InfiniteScrollAnimationPage from "../components/InfiniteScrollAnimationPa
 import { bannerItems } from "../app/config/bannerConfig";
 import MarqueeCarousel from "../components/MarqueeCarousel.jsx";
 import { XIcon } from "lucide-react";
+import { createFileRoute } from '@tanstack/react-router';
+
+
+
 
 const stocksData = [
   { id: 1, territory: "維爾茨堡", guild: "土匪" },
@@ -191,3 +195,6 @@ const Home = () => {
 };
 
 export default Home;
+export const Route = createFileRoute('/')({
+  component: Home,
+});

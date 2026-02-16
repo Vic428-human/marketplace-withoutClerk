@@ -1,6 +1,8 @@
 import React from "react";
+import { createFileRoute } from '@tanstack/react-router';
 
-const Message = () => {
+
+const Messages = () => {
   const quantity = 10;
 
   const items = [
@@ -82,4 +84,8 @@ const Message = () => {
   );
 };
 
-export default Message;
+export default Messages;
+
+export const Route = createFileRoute('/Messages')({
+  component: Messages,
+});
