@@ -94,11 +94,12 @@ NEW-ITEM -Path internal\config\config.go -ItemType File // create config.go file
 > 本地端會有不同專案，專案對應的DB都不同，如果忘記當前專案DB名稱是哪一個，可在環境變數中看到是 todo_api，
 > 特別備註是因為，當前維護不只一個專案用到 postgres，像是[拍賣場專案](https://github.com/Vic428-human/next14-ts-auction-app)就有用到，那個時候定義的 drizzle跟postagres是bb_bids，
 > 我當時還以為我誤刪交易所這邊的資料庫。
+- 連接特定DB 
 ```
-// 連接特定DB 
 psql -U postgres -d todo_api // 查看得到 todo_api => POSTGRES_URL=postgres://postgres:<結婚周年>@localhost:5432/todo_api?sslmode=disable
-
 ```
+- cors問題
+> 有時候不一定是因為go沒設定，可能只是開多個專案，別的後端專案佔領3000 port了
 
 #### Handler 
 - Handler 層用途 
