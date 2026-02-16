@@ -2,7 +2,7 @@
 > 本專案已經具備React+Postgres+golang
 
 ### 待辦
--  [x] 把傳統路由升級成 createFileRoute，檔案名自動變路由，優點如下:
+-  [x] [26/0217]把傳統路由升級成 createFileRoute，檔案名自動變路由，優點如下:
 ```
 檔案即路由：Home.jsx → /home，改名自動同步
 零配置新增：放檔案 → 立即可用，永不用改 App.jsx
