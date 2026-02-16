@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import Hero from "../components/Hero";
-import LatestListing from "../components/LatestListing";
-import Plans from "../components/Plans";
-import InfiniteScrollAnimationPage from "../components/InfiniteScrollAnimationPage";
-import { bannerItems } from "../app/config/bannerConfig";
+import Hero from "../components/Hero.jsx";
+import LatestListing from "../components/LatestListing.jsx";
+import Plans from "../components/Plans.jsx";
+import InfiniteScrollAnimationPage from "../components/InfiniteScrollAnimationPage.jsx";
+import { bannerItems } from "../app/config/bannerConfig.js";
 import MarqueeCarousel from "../components/MarqueeCarousel.jsx";
 import { XIcon } from "lucide-react";
 import { createFileRoute } from '@tanstack/react-router';
