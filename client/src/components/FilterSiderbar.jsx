@@ -9,8 +9,9 @@ const FilterSiderbar = ({ showFilter, setShowFilter, filters, setFilters }) => {
   const [expandSections, setExpandSections] = useState({
     platform: true,
     price: true,
-    verified: false,
-    featured: false,
+    // 先不用下面這兩個篩選
+    // verified: false,
+    // featured: false,
   });
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("search") || "");
@@ -20,6 +21,10 @@ const FilterSiderbar = ({ showFilter, setShowFilter, filters, setFilters }) => {
     if (e.target.value) {
       setSearchParams({ search: e.target.value });
       setSearch(e.target.value);
+      onFiltersChange({
+        ...filters,
+        inputValue: e.target.value,
+      });
     } else {
       navigator(`/marketplace`);
       setSearch("");
@@ -142,8 +147,8 @@ const FilterSiderbar = ({ showFilter, setShowFilter, filters, setFilters }) => {
                 // 讓泡泡（tooltip）跟著滑塊移動。
                 style={{
                   left: `calc(${(Number(filters.maxPrice || 100000) / 100000) * 100}% )`,
-                  transform: 'translateX(-75%)', 
-                  bottom: `40px`
+                  transform: "translateX(-75%)",
+                  bottom: `40px`,
                 }}
               >
                 NT$ {(filters.maxPrice || 100000).toLocaleString()}
