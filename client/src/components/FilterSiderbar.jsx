@@ -132,7 +132,7 @@ const FilterSiderbar = ({ showFilter, setShowFilter, filters, setFilters }) => {
             onClick={() => toggleSection("price")}
             className="flex items-center justify-between w-full mb-3"
           >
-            <label lassName="text-sm font-medium text-gray-800">價格</label>
+            <label className="text-sm font-medium text-gray-800">價格</label>
             <ChevronDown
               className={`size-4 transition-transform ${expandSections.price ? "rotate-180" : ""}`}
             />

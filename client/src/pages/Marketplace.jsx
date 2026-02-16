@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ListingCard from "../components/ListingCard";
 import FilterSiderbar from "../components/FilterSiderbar";
+import { createFileRoute } from "@tanstack/react-router";
+
+
 
 const Marketplace = () => {
   const navigator = useNavigate();
@@ -11,7 +14,7 @@ const Marketplace = () => {
   const [showFilter, setShowFilter] = useState(false);
   // TODO: 篩選器會有多種情況，預計拿這邊的狀態傳給後端，然後進行篩選
   const [filters, setFilters] = useState({
-    inputValue:"",
+    inputValue: "",
     platform: null,
     maxPrice: 100000,
     minPrice: 0,
@@ -20,7 +23,7 @@ const Marketplace = () => {
   });
 
   // TODO: call API前先拿 inputValue，然後只先透過 inputValue 去查詢
-  console.log('filters==>', filters)
+  console.log("filters==>", filters);
 
   // 認證過的優先顯示
   const sortedListings = [...listings].sort((a, b) => b.verified - a.verified);
@@ -70,3 +73,8 @@ const Marketplace = () => {
 };
 
 export default Marketplace;
+
+export const Route = createFileRoute("/Marketplace")({
+  path: "/marketplace",
+  component: Marketplace,
+});

@@ -1,13 +1,11 @@
+import { createFileRoute } from "@tanstack/react-router"
 import React from "react";
 import { useLocation } from "react-router-dom";
-
-
-
 
 const Aution = () => {
   const location = useLocation();
 
-    const items = [
+  const items = [
     {
       position: 2,
       src: "https://rd.fharr.com/images/tw/card/4121/",
@@ -99,3 +97,7 @@ const Aution = () => {
 };
 
 export default Aution;
+
+export const Route = createFileRoute('/Aution')({  // 或 '/aution'
+  component: Aution,
+});

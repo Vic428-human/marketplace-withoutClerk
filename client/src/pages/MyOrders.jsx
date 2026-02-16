@@ -1,11 +1,17 @@
+import { createFileRoute } from '@tanstack/react-router'
 import React from "react";
 
-const MyOrder = () => {
+
+const MyOrders = () => {
   return (
     <div>
-      <h1>MyOrder page</h1>
+      <h1>MyOrders page</h1>
     </div>
   );
 };
 
-export default MyOrder;
+export default MyOrders;
+
+export const Route = createFileRoute('/MyOrders')({
+  component: MyOrders,
+});

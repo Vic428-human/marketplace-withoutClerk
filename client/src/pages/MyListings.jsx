@@ -1,5 +1,7 @@
 import React from "react";
 import TodoForm from "../components/TodoForm";
+import { createFileRoute } from '@tanstack/react-router';
+
 
 const MyListings = () => {
   return (
@@ -11,3 +13,8 @@ const MyListings = () => {
 };
 
 export default MyListings;
+
+export const Route = createFileRoute('/MyListings')({
+  component: MyListings,
+});
+
