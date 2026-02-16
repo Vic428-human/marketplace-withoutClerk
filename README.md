@@ -1,5 +1,6 @@
 ### 前言
-> 本專案已經具備React+Postgres+golang
+> 技術棧 React、Tanstack Query、Postgres、Golang，會把從其他小專案學習到的技術，活用在此專案，該專案有更新功能的話，會多半是跟後端相關，
+> 而實驗性質的前端切版或是功能，會放在[交易所-版本1](https://github.com/Vic428-human?tab=repositories)這邊。
 
 ### 待辦
 -  [] 交易市集API串接
