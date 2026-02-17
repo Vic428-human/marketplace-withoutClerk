@@ -8,8 +8,10 @@ export const Route = createRootRoute({
 function RootLayout() {
   return (
     <div className="min-h-screen">
-      <Navbar /> {/* 全域導航 */}
-      <main className="pt-16"> {/* 避開 Navbar */}
+      {/* 固定或正常高度 */}
+      <Navbar /> 
+      {/* 所有頁面都會被往下推 5rem。 */}
+      <main className="mt-20"> 
         <Outlet /> {/* ✅ 關鍵：自動渲染子頁面 */}
       </main>
     </div>
