@@ -2,9 +2,14 @@ import React, { useState } from "react";
 import { ChevronDown, Currency, Filter, X } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-const FilterSiderbar = ({ showFilter, setShowFilter, filters, setFilters }) => {
-  const currency = import.meta.env.VITE_CURRENCY || "$";
-
+const FilterSiderbar = ({
+  showFilter,
+  setShowFilter,
+  filters,
+  setFilters,
+  onSearch,
+  searchValue,
+}) => {
   const navigator = useNavigate();
   const [expandSections, setExpandSections] = useState({
     platform: true,
@@ -13,22 +18,23 @@ const FilterSiderbar = ({ showFilter, setShowFilter, filters, setFilters }) => {
     // verified: false,
     // featured: false,
   });
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [search, setSearch] = useState(searchParams.get("search") || "");
+  const [search, setSearch] = useState(searchValue || "");
 
-  // input搜尋欄位打字的時候同步更新Search Params（搜尋參數），沒輸入的時候，預設導回市集頁面
+  const currency = "$";
   const onChangeSearch = (e) => {
     if (e.target.value) {
-      setSearchParams({ search: e.target.value });
-      setSearch(e.target.value);
-      onFiltersChange({
-        ...filters,
-        inputValue: e.target.value,
-      });
+      setSearch(e.target.value); // 只更新本地狀態，不觸發 API
     } else {
       navigator(`/marketplace`);
       setSearch("");
     }
+  };
+
+  const handleSubmit = () => {
+    if (search.trim()) {
+      onSearch(search); // 通知父層觸發查詢
+    }
+    setShowFilter(false);
   };
 
   const toggleSection = (section) => {
@@ -175,6 +181,12 @@ const FilterSiderbar = ({ showFilter, setShowFilter, filters, setFilters }) => {
             </div>
           )}
         </div>
+        <button
+          onClick={handleSubmit}
+          className="w-full bg-amber-500 text-white py-2 px-4 rounded-md hover:bg-amber-600"
+        >
+          搜尋商品
+        </button>
       </div>
     </div>
   );

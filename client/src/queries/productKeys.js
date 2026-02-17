@@ -1,5 +1,5 @@
+// queries/productKeys.js
 export const productKeys = {
-  all: ["products"],
-  // 未來如果有篩選、分類、搜尋等，可以擴充
-  // list: (filters?: any) => [...productKeys.all, filters] as const,
+  all: ['products', 'all'],
+  list: (keyword) => ['products', 'list', keyword || 'all'],
 };
