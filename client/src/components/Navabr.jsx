@@ -43,7 +43,7 @@ const Navabr = () => {
               交易市集
             </Link>
              <Link
-              to={user ? "/auctions/default" : "#"}
+              to={user ? "/aution" : "#"}
               onClick={() => (user ? scrollTo(0, 0) : clerk.openSignIn())}
             >
               競拍區
@@ -90,7 +90,7 @@ const Navabr = () => {
                   label="競拍區"
                   labelIcon={<ListIcon />}
                   size={16}
-                  onClick={() => navigate("/my-listings")}
+                  onClick={() => navigate("/aution")}
                 />
               </UserButton.MenuItems>
               <UserButton.MenuItems>
