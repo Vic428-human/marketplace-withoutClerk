@@ -21,8 +21,8 @@ const Navabr = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   return (
-    <div>
-      <nav className="h-20">
+
+      <nav className="">
         <div className="fixed left-0 top-0 right-0 z-100 flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white transition-all">
           {/* scroll to the top of the page           */}
           {/* <img
@@ -151,7 +151,6 @@ const Navabr = () => {
           </div>
         </div>
       </nav>
-    </div>
   );
 };
 

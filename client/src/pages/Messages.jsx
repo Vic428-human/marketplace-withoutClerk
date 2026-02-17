@@ -1,6 +1,6 @@
 import React from "react";
-import { createFileRoute } from '@tanstack/react-router';
-
+import { createFileRoute } from "@tanstack/react-router";
+import { assets } from "../assets/assets";
 
 const Messages = () => {
   const quantity = 10;
@@ -59,12 +59,41 @@ const Messages = () => {
   ];
 
   return (
-    <div className="w-full h-screen text-center overflow-hidden relative">
+    // w-screen = 100vw
+    //
+    <div className="-mt-20 w-screen h-screen text-center overflow-hidden relative">
+      {/* 最底層背景 */}
+      <div
+        className="absolute inset-0 z-0
+                 bg-cover bg-center bg-no-repeat"
+        style={{
+          // backgroundImage: "url('https://png.pngtree.com/background/20230412/original/pngtree-colorful-and-beautiful-background-of-starry-sky-picture-image_2395079.jpg')",
+      //  
+      // backgroundImage: "url('https://truth.bahamut.com.tw/s01/201811/25fbe557a8a3eed9210087f92900fbac.JPG')",
+      backgroundImage: "url('https://en.pimg.jp/120/301/641/1/120301641.jpg')",
+        }}
+      />
+      {/* 中間人物 */}
+      <div
+        className="absolute left-1/2 top-[5%]
+                 -translate-x-1/2
+                 w-[420px]
+                 pointer-events-none z-0
+                "
+      >
+        <img
+          src={assets.model}
+          alt="center"
+          className="w-full object-contain"
+        />
+      </div>
+      {/* 旋轉卡牌 */}
       <div
         className="banner-slider absolute w-[150px] h-[200px] top-[15%] left-[calc(50%-100px)]
-                   [transform-style:preserve-3d] [transform:perspective(1000px)]"
+                   [transform-style:preserve-3d] [transform:perspective(1000px)]  z-10"
         style={{ ["--quantity"]: quantity }}
       >
+        {/* 原本的旋轉卡片 */}
         {items.map((it) => (
           <div
             key={it.position}
@@ -86,6 +115,6 @@ const Messages = () => {
 
 export default Messages;
 
-export const Route = createFileRoute('/Messages')({
+export const Route = createFileRoute("/Messages")({
   component: Messages,
 });

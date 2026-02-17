@@ -14,6 +14,7 @@ import user_profile from './user_profile.png';
 import avatar01 from './avatar01.png';
 import avatar02 from './avatar02.png';
 import avatar03 from './avatar03.png';
+import model from './model.png';
 
 export const assets = {
     logo,
@@ -30,6 +31,7 @@ export const assets = {
     emblem06,
     emblem07,
     emblem08,
+    model,
 };
 
 export const socialMediaLinks = {

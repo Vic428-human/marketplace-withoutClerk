@@ -65,7 +65,7 @@ const Marketplace = () => {
     return Number(b.verified) - Number(a.verified);
   });
   return (
-    <div className="flex flex-col px-6 md:px-16 lg:px-24 xl:px-32">
+    <div className="lex flex-col px-6 md:px-16 lg:px-24 xl:px-32">
       <div className="flex items-center justify-between text-slate-500">
         <button
           onClick={() => {
@@ -96,8 +96,6 @@ const Marketplace = () => {
           filters={filters}
           setFilters={setFilters}
         />
-        {/* TODO: 按下送出後，作為post api的參數 */}
-        <button>搜尋</button>
         <div className="flex-1 grid xl:grid-cols-2 gap-4">
           {sortedProducts.length === 0 ? (
             <p className="col-span-full text-center py-12 text-slate-500">
