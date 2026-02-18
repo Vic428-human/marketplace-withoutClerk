@@ -4,6 +4,7 @@ package main
 import (
 	"log"
 	"time"
+	"todo_api/internal/chat"
 	"todo_api/internal/config"
 	"todo_api/internal/database"
 	"todo_api/internal/handlers"
@@ -11,9 +12,11 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool" // PostgreSQL驅動程式的connection pool版本，提供高效連線管理
+	// 新增
 )
 
 func main() {
+	// 1. config + DB pool (現有，不動)
 	var cfg *config.Config
 	var err error
 
@@ -32,9 +35,7 @@ func main() {
 
 	defer pool.Close() // 確保程式結束時關閉連線池
 
-	// create server, take a look at routes, want api fast, use instance from the memory, pointer variable
-	// * is a pointer, reference something in the memory
-	// pointer refers to the address or instance in memory, and not copy entire thing
+	// 2. Gin router + CORS (現有，不動)
 	var router *gin.Engine = gin.Default() // gin => do client request and response
 
 	/*
@@ -54,7 +55,11 @@ func main() {
 	corsConfig.MaxAge = 12 * time.Hour
 	router.Use(cors.New(corsConfig))
 
-	// 2️⃣ 將「同一個」pool 實例傳給所有 handler
+	// 🔥 3. 【新增】Chat Room (這裡放！)
+	chatRoom := chat.NewRoom()
+	go chatRoom.Run() // 非阻塞，REST API 照常運行。Room 只監聽 channel，不影響 Gin
+
+	// 4. 所有 REST routes (現有，不動)
 	router.GET("/", func(c *gin.Context) {
 		router.SetTrustedProxies(nil) // if you don't use any proxy, you can disable this feature by using nil, then Context.ClientIP() will return the remote address directly to avoid some unnecessary computation
 		// gin.H is a shortcut for map[string]interface{} or map[string]any
@@ -65,11 +70,15 @@ func main() {
 		})
 	})
 
-	// 當前專案會用到
+	// 當前專案會用到 REST API
 	router.POST("/todos", handlers.CreateTodoHandler(pool))
 	router.GET("/todos", handlers.GetAllTodosHandler(pool))
 	router.GET("/todos/:id", handlers.GetTodoByIDHandler(pool))
 	router.PUT("/todos/:id", handlers.UpdateToDoHandler(pool))
+	// 當前專案會用到 WebSocket
+	router.GET("/ws", func(c *gin.Context) {
+		chatRoom.ServeHTTP(c.Writer, c.Request)
+	})
 
 	// 交易所才會用到，只是在這進行測試
 	router.POST("/products", handlers.CreatteProductHandler(pool))
@@ -79,6 +88,7 @@ func main() {
 	// router 加這行（不碰現有）已經實驗過搜尋 "太陽神" 關鍵字會只拿到 太陽神有關的商品列表 => http://localhost:3000/products/search?keyword=太陽神
 	router.GET("/products/search", handlers.ListProductsHandler(pool))
 
-	router.Run(":" + cfg.Port) // listens on 0.0.0.0:8080 by default
+	// 6. Run server (現有，不動)
+	router.Run(":" + cfg.Port) // 後端port是3000
 
 }

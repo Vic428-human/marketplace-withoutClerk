@@ -1,9 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router"
-import React from "react";
-import { useLocation } from "react-router-dom";
+import { createFileRoute } from "@tanstack/react-router";
+import { assets } from "../assets/assets";
 
 const Aution = () => {
-  const location = useLocation();
+  const quantity = 10;
 
   const items = [
     {
@@ -58,39 +57,57 @@ const Aution = () => {
     },
   ];
 
-    const quantity = 10;
   return (
-    <div>
-      {/* Aution : {location.state.alt} */}
-      <div>
-
-        <div className="mt-8 w-full h-[300px] text-center fixed top-[5%] z-50">
+    // w-screen = 100vw
+    //
+    <div className="-mt-20 w-screen h-screen text-center overflow-hidden relative">
+      {/* 最底層背景 */}
+      <div
+        className="absolute inset-0 z-0
+                  bg-cover bg-center bg-no-repeat"
+        style={{
+          // backgroundImage: "url('https://png.pngtree.com/background/20230412/original/pngtree-colorful-and-beautiful-background-of-starry-sky-picture-image_2395079.jpg')",
+          //
+          // backgroundImage: "url('https://truth.bahamut.com.tw/s01/201811/25fbe557a8a3eed9210087f92900fbac.JPG')",
+          backgroundImage:
+            "url('https://en.pimg.jp/120/301/641/1/120301641.jpg')",
+        }}
+      />
+      {/* 中間人物 */}
+      <div
+        className="absolute left-1/2 top-[5%]
+                  -translate-x-1/2
+                  w-[420px]
+                  pointer-events-none z-0
+                 "
+      >
+        <img
+          src={assets.model}
+          alt="center"
+          className="w-full object-contain"
+        />
+      </div>
+      {/* 旋轉卡牌 */}
+      <div
+        className="banner-slider absolute w-[150px] h-[200px] top-[15%] left-[calc(50%-100px)]
+                    [transform-style:preserve-3d] [transform:perspective(1000px)]  z-10"
+        style={{ ["--quantity"]: quantity }}
+      >
+        {/* 原本的旋轉卡片 */}
+        {items.map((it) => (
           <div
-            className="banner-slider absolute w-[75px] h-[100px] top-[15%] left-[calc(50%-100px)]
-                   [transform-style:preserve-3d] [transform:perspective(1000px)]"
-            style={{ ["--quantity"]: quantity }}
+            key={it.position}
+            className="absolute inset-0
+                        [transform:rotateY(calc((var(--position)-1)*(360deg/var(--quantity))))_translateZ(550px)]"
+            style={{ ["--position"]: it.position }}
           >
-            {items.map((it) => (
-              <div
-                key={it.position}
-                className="absolute inset-0
-                       [transform:rotateY(calc((var(--position)-1)*(360deg/var(--quantity))))_translateZ(550px)]"
-                style={{ ["--position"]: it.position }}
-                title={it.alt}
-                onClick={() => {
-                  navigator(`/auctions/${it.alt}`, { state: { alt: it.alt } });
-                  scrollTo(0, 0);
-                }}
-              >
-                <img
-                  className="w-full h-full object-cover"
-                  src={it.src}
-                  alt={it.alt}
-                />
-              </div>
-            ))}
+            <img
+              className="w-full h-full object-cover"
+              src={it.src}
+              alt={it.alt}
+            />
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );
@@ -98,6 +115,7 @@ const Aution = () => {
 
 export default Aution;
 
-export const Route = createFileRoute('/Aution')({  // 或 '/aution'
+export const Route = createFileRoute("/Aution")({
+  path: "/Aution",
   component: Aution,
 });
