@@ -4,11 +4,21 @@
 
 ### 待辦
 -  [] 交易市集API串接
--  [] 移植之前做好的 [聊天室](https://github.com/Vic428-human/websocket-golang-chat-room) 跟 旋轉木馬卡片功能 在刊登賣場
 -  [進行中] 點選拍賣場的卡片，進入當前卡片競拍頁面 [Autoin App](https://github.com/Vic428-human/Austion-app) 
 
 
 ### 近期已完成
+- [x] [26/0218] 引入聊天室功能，並對代碼整體效能跟代碼進行封裝等優化
+```
+1. 連線、送訊息、typing、disconnect 都封裝
+2. 防止 WebSocket 收到非 JSON
+3. typing TTL 與 UI 完全分離、timer 管理集中、避免 memory leak
+4. UI 拆成三個元件，分層設計
+5. 效能優化: useCallback 包裝 websokcet連線邏輯、例如訊息傳送
+6. 透過 useRef 讓值永遠獲得的是最新的，解決 closure 問題
+7. UI添加，讓聊天室可以看出是哪一個登入平台登入的，以及使用者自己的名字
+8. 將獨立專案的聊天室移植過去 交易所平台的專案
+```
 - [x] [26/0217] 交易市集虛寶查詢，並優化效能，避免相同關鍵字短時間查詢時反覆呼叫API
 - [x] [26/0217] 把傳統路由升級成 createFileRoute ，檔案名自動變路由，優點如下:
 ```
