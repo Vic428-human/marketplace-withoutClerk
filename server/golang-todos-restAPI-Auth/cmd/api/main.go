@@ -80,6 +80,9 @@ func main() {
 		chatRoom.ServeHTTP(c.Writer, c.Request)
 	})
 
+	// ✅ 新增 SSE
+	router.GET("/events", handlers.SseHandler)
+
 	// 交易所才會用到，只是在這進行測試
 	router.POST("/products", handlers.CreatteProductHandler(pool))
 	router.GET("/products", handlers.GetAllProductsHandler(pool)) // 無 keyword：全拿
