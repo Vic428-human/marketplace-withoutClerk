@@ -2,29 +2,12 @@ import { useEffect, useState } from "react";
 import Hero from "../components/Hero";
 import LatestListing from "../components/LatestListing";
 import Plans from "../components/Plans";
-import InfiniteScrollAnimationPage from "../components/InfiniteScrollAnimationPage";
 import { bannerItems } from "../app/config/bannerConfig";
 import MarqueeCarousel from "../components/MarqueeCarousel.jsx";
 import { XIcon } from "lucide-react";
-import { createFileRoute } from '@tanstack/react-router';
-
-
-
-
-const stocksData = [
-  { id: 1, territory: "維爾茨堡", guild: "土匪" },
-  { id: 2, territory: "夏洛滕堡", guild: "不想說·__·" },
-  { id: 3, territory: "紅樓", guild: "鼎旺乾坤－瞬殺無痕" },
-  { id: 4, territory: "紐倫堡", guild: "嶽夜森林" },
-  { id: 5, territory: "權德", guild: "?" },
-  { id: 6, territory: "尤布利格", guild: "不想說·__·" },
-  { id: 7, territory: "米榭思德茲", guild: "凌雲閣" },
-  { id: 8, territory: "克林喜德", guild: "今夜不准睡" },
-  { id: 9, territory: "明淨", guild: "血染的風采" },
-  { id: 10, territory: "天壇", guild: "?" },
-  { id: 11, territory: "佛影", guild: "鼎旺乾坤－瞬殺無痕" },
-  { id: 12, territory: "竹林唄", guild: "?" },
-];
+import { createFileRoute } from "@tanstack/react-router";
+import SseStats from "../components/SseStats.jsx";
+import ProductsSseFeed from "../components/ProductsSseFeed.jsx";
 
 const cardsData = [
   {
@@ -78,8 +61,6 @@ const Home = () => {
       return true; // 解析失敗時預設 true
     }
   });
-  const [stocks] = useState(stocksData);
-
   useEffect(() => {
     window.localStorage.setItem(
       "MY_WELCOME_SHOW_BANNER",
@@ -136,7 +117,9 @@ const Home = () => {
           </div>
         )}
 
-        <InfiniteScrollAnimationPage stocks={stocks} />
+        {/* <SseStats url="http://localhost:3000/events" /> */}
+        <ProductsSseFeed />
+
         <div className="flex">
           {/* 左半邊 */}
           <div className="flex-1 flex flex-col items-center max-md:hidden">
@@ -195,6 +178,6 @@ const Home = () => {
 };
 
 export default Home;
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute("/")({
   component: Home,
 });

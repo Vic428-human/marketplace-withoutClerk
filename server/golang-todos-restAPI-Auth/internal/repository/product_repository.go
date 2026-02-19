@@ -121,6 +121,7 @@ func GetProductById(pool *pgxpool.Pool, id int) (*models.Product, error) {
 		SELECT id, owner_id, title, game, platform, username, views, monthly_views, price, description, verified, country, featured, created_at, updated_at
 		FROM products
 		WHERE id = $1
+
 	`
 
 	var product models.Product
