@@ -82,7 +82,7 @@ func main() {
 
 	// 6) Cron（只負責更新 cache，不要在這裡動 router）
 	cr := cron.New()
-	_, err = cr.AddFunc("@every 1m", func() {
+	_, err = cr.AddFunc("@every 1h", func() {
 		log.Println("cron job running: refresh products cache")
 
 		products, err := repository.GetAllProducts(pool)
