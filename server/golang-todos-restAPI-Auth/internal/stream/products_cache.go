@@ -44,6 +44,7 @@ type ProductsCache struct {
 	products  []models.Product // 實際儲存的產品資料
 	version   int64            // 每次更新 +1，用來讓 SSE 判斷是否需要重播
 	updatedAt time.Time        // 最後更新時間
+	max       int
 }
 
 /*
@@ -54,11 +55,15 @@ NewProductsCache
 ⚠️ 千萬不要在 cron 裡面 new。
 ⚠️ 只能建立一次，然後注入到 handler。
 */
-func NewProductsCache() *ProductsCache {
+func NewProductsCache(max int) *ProductsCache {
+	if max <= 0 {
+		max = 10
+	}
 	return &ProductsCache{
 		products:  make([]models.Product, 0),
 		version:   0,
 		updatedAt: time.Now(),
+		max:       max,
 	}
 }
 
@@ -82,9 +87,14 @@ func (c *ProductsCache) Set(products []models.Product) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
+	n := c.max
+	if len(products) < n {
+		n = len(products)
+	}
+
 	// 建立新的 slice，避免直接引用原本的底層陣列
-	cp := make([]models.Product, len(products))
-	copy(cp, products) // Set() 用寫鎖、copy slice ✅
+	cp := make([]models.Product, n)
+	copy(cp, products[:n]) // Set() 用寫鎖、copy slice ✅
 
 	c.products = cp
 	c.version++              // 每次更新版本 +1

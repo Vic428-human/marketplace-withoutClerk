@@ -7,6 +7,7 @@ import MarqueeCarousel from "../components/MarqueeCarousel.jsx";
 import { XIcon } from "lucide-react";
 import { createFileRoute } from "@tanstack/react-router";
 import SseStats from "../components/SseStats.jsx";
+import ProductsSseFeed from "../components/ProductsSseFeed.jsx";
 
 const cardsData = [
   {
@@ -116,7 +117,9 @@ const Home = () => {
           </div>
         )}
 
-        <SseStats url="http://localhost:3000/events" />
+        {/* <SseStats url="http://localhost:3000/events" /> */}
+        <ProductsSseFeed />
+
         <div className="flex">
           {/* 左半邊 */}
           <div className="flex-1 flex flex-col items-center max-md:hidden">

@@ -9,6 +9,7 @@ import (
 	"todo_api/internal/config"
 	"todo_api/internal/database"
 	"todo_api/internal/handlers"
+	"todo_api/internal/models"
 	"todo_api/internal/repository"
 	"todo_api/internal/stream"
 
@@ -51,24 +52,37 @@ func main() {
 	chatRoom := chat.NewRoom()
 	go chatRoom.Run()
 
-	// 4) Products Cache（只建立一次：cron 寫、SSE 讀）
-	productsCache := stream.NewProductsCache()
+	const maxProductsForStream = 10
 
-	// 5) 啟動時先抓一次 products（避免等一小時）
-	refreshProducts := func() {
+	// 4) Products Cache（只建立一次：cron 寫、SSE 讀）
+	productsCache := stream.NewProductsCache(maxProductsForStream)
+
+	// 小工具：只留前 N 筆（假設 products 已依你 SQL 排好順序）
+	limitProducts := func(products []models.Product, n int) []models.Product {
+		if n <= 0 || len(products) <= n {
+			return products
+		}
+		return products[:n]
+	}
+
+	// 5) 啟動時先抓一次 products（避免等 1 分鐘/1 小時）
+	refreshProducts := func(tag string) {
 		products, err := repository.GetAllProducts(pool)
 		if err != nil {
-			log.Printf("initial refresh products failed: %v", err)
+			log.Printf("%s refresh products failed: %v", tag, err)
 			return
 		}
+
+		products = limitProducts(products, maxProductsForStream)
 		productsCache.Set(products)
-		log.Printf("initial products cache loaded: %d products", len(products))
+
+		log.Printf("%s products cache loaded: %d products", tag, len(products))
 	}
-	refreshProducts()
+	refreshProducts("initial")
 
 	// 6) Cron（只負責更新 cache，不要在這裡動 router）
 	cr := cron.New()
-	_, err = cr.AddFunc("@every 1h", func() { // 從程式啟動那一刻起，每隔 1 小時執行一次這個 function
+	_, err = cr.AddFunc("@every 1m", func() {
 		log.Println("cron job running: refresh products cache")
 
 		products, err := repository.GetAllProducts(pool)
@@ -77,7 +91,9 @@ func main() {
 			return
 		}
 
+		products = limitProducts(products, maxProductsForStream)
 		productsCache.Set(products)
+
 		log.Printf("products cache updated: %d products", len(products))
 	})
 	if err != nil {
@@ -110,7 +126,7 @@ func main() {
 	// 原本 SSE（mem）—不動
 	router.GET("/events", handlers.SseHandler)
 
-	// ✅ 新增：Products SSE（stream）
+	// ✅ 新增：Products SSE（stream） 不會在瀏覽器 DevTools → Network 裡看到任何 /products 呼叫
 	router.GET("/products/stream", handlers.ProductsSseHandler(productsCache))
 
 	// Products REST（你原本的）

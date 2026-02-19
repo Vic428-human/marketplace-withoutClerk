@@ -120,17 +120,9 @@ func ProductsSseHandler(cache *stream.ProductsCache) gin.HandlerFunc {
 				}
 
 			case <-t.C:
-				/* =========================
-				   (8-1) 檢查 cache 是否更新
-				   =========================
-				   你現在的寫法：每 5 秒都 Snapshot() 一次
-				   ✅ 正確但較耗資源：Snapshot 會 copy 整包 products slice
-				   ⭐ 建議未來優化：先用 cache.Version() cheap check，
-				      只有版本變了才 Snapshot()
-				*/
-				cur := cache.Snapshot()
-				if cur.Version != version {
-					// cache 已更新：換成新資料，並重置播放指標
+				curVer := cache.Version() // ✅ 只讀 int64（幾乎零成本）
+				if curVer != version {
+					cur := cache.Snapshot() // ✅ 只有版本變才 copy
 					products = cur.Products
 					version = cur.Version
 					i = 0
