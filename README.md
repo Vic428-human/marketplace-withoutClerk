@@ -1,10 +1,13 @@
 ### 前言
-> 技術棧 React、Tanstack Query、Postgres、Golang，會把從其他小專案學習到的技術，活用在此專案，該專案有更新功能的話，會多半是跟後端相關，
-> 而實驗性質的前端切版或是功能，會放在[交易所-版本1](https://github.com/Vic428-human?tab=repositories)這邊。
+> 技術棧 React、Tanstack Query、Postgres、Golang、Websocket、SSE，專案仍然在維護中。
+```
+本專案定位為線上遊戲交易所，
+```
 
-### 待辦
+
+### TODO:
 -  [] 交易市集API串接
--  [進行中] 點選拍賣場的卡片，進入當前卡片競拍頁面 [Autoin App](https://github.com/Vic428-human/Austion-app) 
+-  [進行中] 點選拍賣場的卡片，進入當前卡片競拍頁面 [Autoin App](https://github.com/Vic428-human/next14-ts-auction-app) 
 
 
 ### 近期已完成
