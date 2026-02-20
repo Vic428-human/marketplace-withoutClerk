@@ -1,14 +1,13 @@
-### 前言
-> 技術棧 React、Tanstack Query、Postgres、Golang、Websocket、SSE，專案仍然在維護中。
+### 技術棧
+> React、Tanstack Query、Postgres、Golang、Websocket、SSE，專案仍然在維護中。
 ```
-本專案定位為線上遊戲交易所，
+本專案屬於長期維護項目，所以就不刻意列舉有哪些功能，有興趣的人可以自行看下方 近期已完成 欄目得知過往開發了那些features。
 ```
 
 
 ### TODO:
--  [] 交易市集API串接
 -  [進行中] 點選拍賣場的卡片，進入當前卡片競拍頁面 [Autoin App](https://github.com/Vic428-human/next14-ts-auction-app) 
-
+-  [] 交易市集API串接 (透過關鍵字查詢已完成，但價格區間、登入平台查詢還尚未動工)
 
 ### 近期已完成
 - [x] [26/0220] 首頁的最新10筆刊登商品的推播公告
