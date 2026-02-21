@@ -8,8 +8,35 @@
 ### TODO:
 -  [進行中] 先做 JWT 常規帳密（註冊／登入）+ Postgres，等會員登入jwt等驗證流程沒問題後，才加 Google OAuth。
 ```
-Clerk 是 雲端 SaaS 服務 + SDK，Clerk 發自己的 JWT（clerk.jwt.verify()），不是我們後端的 token，App 要額外整合 Clerk SDK + webhook sync user 資料到 Postgres。
+拔除原因: 
+1.Clerk 是 雲端 SaaS 服務 + SDK，Clerk 發自己的 JWT（clerk.jwt.verify()），不是我們後端的 token，
+App 要額外整合 Clerk SDK + webhook sync user 資料到 Postgres。
 結果：雙軌驗證邏輯（Clerk JWT + 你 JWT），痛點多（token 交換、session sync）。
+
+2.金流系統不預期仰賴Clerk，因為並非業界慣例。
+
+初步設想註冊所需欄位:
+1.預期設計的註冊所需資訊，有email+密碼即可，那些名字啊，都先不要設計進去，先確保註冊時，OAuth跟JWT都吃同一套欄位。
+當用戶授權後，Google 回傳這些（OAuth2 userinfo endpoint）：
+{
+  "sub": "123456789",           // Google user ID (唯一)
+  "name": "John Doe",           // 顯示名稱
+  "email": "john.doe@gmail.com", // 驗證過的 email
+}
+
+2.Postgres 存什麼（你的 marketplace_user 對應）
+export const users = pgTable("marketplace_user", {
+  // === 核心識別（兩種都用） ===
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  
+  // === 共用欄位（Google + 帳密都有） ===
+  name: text("name").notNull(),                    // Google name 或 註冊時填
+  email: text("email").notNull().unique(),         // 兩種來源都有
+}                          
+)
+
 ```
 -  [暫緩] 點選拍賣場的卡片，進入當前卡片競拍頁面 [Autoin App](https://github.com/Vic428-human/next14-ts-auction-app) 
 -  [] 交易市集API串接 (透過關鍵字查詢已完成，但價格區間、登入平台查詢還尚未動工)
