@@ -15,7 +15,7 @@ import {
 import { useUser, useClerk, UserButton } from "@clerk/clerk-react";
 
 const Navabr = () => {
-  const { isSignedIn, user, isLoaded } = useUser();
+  const { user } = useUser();
   const clerk = useClerk();
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -59,6 +59,12 @@ const Navabr = () => {
               onClick={() => (user ? scrollTo(0, 0) : clerk.openSignIn())}
             >
               我的賣場
+            </Link>
+            <Link
+              to="/memberRegisterPage"
+              onClick={() => (user ? scrollTo(0, 0) : clerk.openSignIn())}
+            >
+              會員專區
             </Link>
           </div>
           {!user ? (

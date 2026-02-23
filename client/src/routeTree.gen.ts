@@ -16,7 +16,11 @@ import { Route as MarketplaceRouteImport } from './pages/Marketplace'
 import { Route as ManageListingRouteImport } from './pages/ManageListing'
 import { Route as ListingDetailsRouteImport } from './pages/ListingDetails'
 import { Route as AutionRouteImport } from './pages/Aution'
+import { Route as MemberRegisterPageRouteRouteImport } from './pages/MemberRegisterPage/route'
 import { Route as IndexRouteImport } from './pages/index'
+import { Route as MemberRegisterPageIndexRouteImport } from './pages/MemberRegisterPage/index'
+import { Route as MemberRegisterPageRegisterRouteImport } from './pages/MemberRegisterPage/register'
+import { Route as MemberRegisterPageForgotPasswordRouteImport } from './pages/MemberRegisterPage/forgot-password'
 
 const MyOrdersRoute = MyOrdersRouteImport.update({
   id: '/MyOrders',
@@ -53,14 +57,37 @@ const AutionRoute = AutionRouteImport.update({
   path: '/Aution',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MemberRegisterPageRouteRoute = MemberRegisterPageRouteRouteImport.update({
+  id: '/MemberRegisterPage',
+  path: '/MemberRegisterPage',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MemberRegisterPageIndexRoute = MemberRegisterPageIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MemberRegisterPageRouteRoute,
+} as any)
+const MemberRegisterPageRegisterRoute =
+  MemberRegisterPageRegisterRouteImport.update({
+    id: '/register',
+    path: '/register',
+    getParentRoute: () => MemberRegisterPageRouteRoute,
+  } as any)
+const MemberRegisterPageForgotPasswordRoute =
+  MemberRegisterPageForgotPasswordRouteImport.update({
+    id: '/forgot-password',
+    path: '/forgot-password',
+    getParentRoute: () => MemberRegisterPageRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/MemberRegisterPage': typeof MemberRegisterPageRouteRouteWithChildren
   '/Aution': typeof AutionRoute
   '/ListingDetails': typeof ListingDetailsRoute
   '/ManageListing': typeof ManageListingRoute
@@ -68,6 +95,9 @@ export interface FileRoutesByFullPath {
   '/Messages': typeof MessagesRoute
   '/MyListings': typeof MyListingsRoute
   '/MyOrders': typeof MyOrdersRoute
+  '/MemberRegisterPage/forgot-password': typeof MemberRegisterPageForgotPasswordRoute
+  '/MemberRegisterPage/register': typeof MemberRegisterPageRegisterRoute
+  '/MemberRegisterPage/': typeof MemberRegisterPageIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,10 +108,14 @@ export interface FileRoutesByTo {
   '/Messages': typeof MessagesRoute
   '/MyListings': typeof MyListingsRoute
   '/MyOrders': typeof MyOrdersRoute
+  '/MemberRegisterPage/forgot-password': typeof MemberRegisterPageForgotPasswordRoute
+  '/MemberRegisterPage/register': typeof MemberRegisterPageRegisterRoute
+  '/MemberRegisterPage': typeof MemberRegisterPageIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/MemberRegisterPage': typeof MemberRegisterPageRouteRouteWithChildren
   '/Aution': typeof AutionRoute
   '/ListingDetails': typeof ListingDetailsRoute
   '/ManageListing': typeof ManageListingRoute
@@ -89,11 +123,15 @@ export interface FileRoutesById {
   '/Messages': typeof MessagesRoute
   '/MyListings': typeof MyListingsRoute
   '/MyOrders': typeof MyOrdersRoute
+  '/MemberRegisterPage/forgot-password': typeof MemberRegisterPageForgotPasswordRoute
+  '/MemberRegisterPage/register': typeof MemberRegisterPageRegisterRoute
+  '/MemberRegisterPage/': typeof MemberRegisterPageIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/MemberRegisterPage'
     | '/Aution'
     | '/ListingDetails'
     | '/ManageListing'
@@ -101,6 +139,9 @@ export interface FileRouteTypes {
     | '/Messages'
     | '/MyListings'
     | '/MyOrders'
+    | '/MemberRegisterPage/forgot-password'
+    | '/MemberRegisterPage/register'
+    | '/MemberRegisterPage/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,9 +152,13 @@ export interface FileRouteTypes {
     | '/Messages'
     | '/MyListings'
     | '/MyOrders'
+    | '/MemberRegisterPage/forgot-password'
+    | '/MemberRegisterPage/register'
+    | '/MemberRegisterPage'
   id:
     | '__root__'
     | '/'
+    | '/MemberRegisterPage'
     | '/Aution'
     | '/ListingDetails'
     | '/ManageListing'
@@ -121,10 +166,14 @@ export interface FileRouteTypes {
     | '/Messages'
     | '/MyListings'
     | '/MyOrders'
+    | '/MemberRegisterPage/forgot-password'
+    | '/MemberRegisterPage/register'
+    | '/MemberRegisterPage/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MemberRegisterPageRouteRoute: typeof MemberRegisterPageRouteRouteWithChildren
   AutionRoute: typeof AutionRoute
   ListingDetailsRoute: typeof ListingDetailsRoute
   ManageListingRoute: typeof ManageListingRoute
@@ -185,6 +234,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AutionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/MemberRegisterPage': {
+      id: '/MemberRegisterPage'
+      path: '/MemberRegisterPage'
+      fullPath: '/MemberRegisterPage'
+      preLoaderRoute: typeof MemberRegisterPageRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -192,11 +248,52 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/MemberRegisterPage/': {
+      id: '/MemberRegisterPage/'
+      path: '/'
+      fullPath: '/MemberRegisterPage/'
+      preLoaderRoute: typeof MemberRegisterPageIndexRouteImport
+      parentRoute: typeof MemberRegisterPageRouteRoute
+    }
+    '/MemberRegisterPage/register': {
+      id: '/MemberRegisterPage/register'
+      path: '/register'
+      fullPath: '/MemberRegisterPage/register'
+      preLoaderRoute: typeof MemberRegisterPageRegisterRouteImport
+      parentRoute: typeof MemberRegisterPageRouteRoute
+    }
+    '/MemberRegisterPage/forgot-password': {
+      id: '/MemberRegisterPage/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/MemberRegisterPage/forgot-password'
+      preLoaderRoute: typeof MemberRegisterPageForgotPasswordRouteImport
+      parentRoute: typeof MemberRegisterPageRouteRoute
+    }
   }
 }
 
+interface MemberRegisterPageRouteRouteChildren {
+  MemberRegisterPageForgotPasswordRoute: typeof MemberRegisterPageForgotPasswordRoute
+  MemberRegisterPageRegisterRoute: typeof MemberRegisterPageRegisterRoute
+  MemberRegisterPageIndexRoute: typeof MemberRegisterPageIndexRoute
+}
+
+const MemberRegisterPageRouteRouteChildren: MemberRegisterPageRouteRouteChildren =
+  {
+    MemberRegisterPageForgotPasswordRoute:
+      MemberRegisterPageForgotPasswordRoute,
+    MemberRegisterPageRegisterRoute: MemberRegisterPageRegisterRoute,
+    MemberRegisterPageIndexRoute: MemberRegisterPageIndexRoute,
+  }
+
+const MemberRegisterPageRouteRouteWithChildren =
+  MemberRegisterPageRouteRoute._addFileChildren(
+    MemberRegisterPageRouteRouteChildren,
+  )
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MemberRegisterPageRouteRoute: MemberRegisterPageRouteRouteWithChildren,
   AutionRoute: AutionRoute,
   ListingDetailsRoute: ListingDetailsRoute,
   ManageListingRoute: ManageListingRoute,
