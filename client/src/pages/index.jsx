@@ -87,7 +87,7 @@ const Home = () => {
             </div>
           </div>
         )}
-
+        {/* TODO: 放 slider banner */}
         {/* <SseStats url="http://localhost:3000/events" /> */}
         <ProductsSseFeed />
 
