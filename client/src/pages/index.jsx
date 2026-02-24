@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { XIcon } from "lucide-react";
+import { bannerItems } from "../app/config/bannerConfig";
 import Hero from "../components/Hero";
 import LatestListing from "../components/LatestListing";
 import Plans from "../components/Plans";
-import { bannerItems } from "../app/config/bannerConfig";
-import MarqueeCarousel from "../components/MarqueeCarousel.jsx";
-import { XIcon } from "lucide-react";
-import { createFileRoute } from "@tanstack/react-router";
-import SseStats from "../components/SseStats.jsx";
 import ProductsSseFeed from "../components/ProductsSseFeed.jsx";
+import MarqueeCarousel from "../components/MarqueeCarousel.jsx";
+import { useCountdown } from "../hooks/useCountdown";
+import { getStoredValue, setStoredValue } from "../utils/localStorage";
 
 const cardsData = [
   {
@@ -51,54 +52,24 @@ const leftBanners = bannerItems.filter((item) => item.side === "left");
 const rightBanners = bannerItems.filter((item) => item.side === "right");
 
 const Home = () => {
-  const [isCountingDown, setIsCountingDown] = useState(false);
-  const [remindTime, setRemindTime] = useState(3);
-  const [showBanner, setShowBanner] = useState(() => {
-    try {
-      const data = window.localStorage.getItem("MY_WELCOME_SHOW_BANNER");
-      return data !== null ? JSON.parse(data) : true;
-    } catch {
-      return true; // 解析失敗時預設 true
-    }
-  });
-  useEffect(() => {
-    window.localStorage.setItem(
-      "MY_WELCOME_SHOW_BANNER",
-      JSON.stringify(showBanner),
-    );
-  }, [showBanner]);
+  const [isAdOpen, setIsAdOpen] = useState(
+    getStoredValue("WELCOME_AD_IS_OPEN", true),
+  );
+  const handleCloseAd = () => setIsAdOpen(false);
+  const { remindTime, isCountingDown, startCountdown } = useCountdown(
+    3,
+    handleCloseAd,
+  );
+  useEffect(() => setStoredValue("WELCOME_AD_IS_OPEN", isAdOpen), [isAdOpen]);
 
   return (
     <>
       <div className="">
-        {/* <button
-          onClick={() => {
-            setShowBanner(true);
-            setRemindTime(3);
-          }}
-        >
-          測試打開廣告
-        </button> */}
-        {showBanner && (
+        {isAdOpen && (
           <div className="fixed inset-0 z-100 w-full h-full bg-yellow-200/30 flex items-center justify-center">
             <div className="relative">
               <button
-                onClick={() => {
-                  if (isCountingDown) return; // 防止重複點擊
-                  setIsCountingDown(true); // 開始進入倒數模式
-                  const timer = setInterval(() => {
-                    setRemindTime((v) => {
-                      if (v > 0) {
-                        return v - 1;
-                      }
-                      clearInterval(timer);
-                      setShowBanner(false);
-                      setIsCountingDown(false); // 新增：倒數結束後重置狀態
-
-                      return 0;
-                    });
-                  }, 1000);
-                }}
+                onClick={startCountdown}
                 className="absolute top-1 right-2 z-110 text-red-500"
               >
                 <XIcon className="w-5 h-5" />
