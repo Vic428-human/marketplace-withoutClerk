@@ -103,7 +103,7 @@ export default function MemberLoginSection() {
                     notices.map((n, idx) => (
                       <div
                         key={n.id}
-                        className={`flex gap-3 ${idx === 0 ? "text-red-500" : "text-white"}`}
+                        className={`flex gap-3 ${idx === 0 ? "text-yellow-300" : "text-white"}`}
                       >
                         <span className="shrink-0">{n.date}</span>
                         <span>{n.text}</span>

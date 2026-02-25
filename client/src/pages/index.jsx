@@ -73,86 +73,98 @@ const Home = () => {
 
   return (
     <>
-      <div className="">
-        {isAdOpen && (
-          <div className="fixed inset-0 z-50 w-full h-full bg-yellow-200/30 flex items-center justify-center">
-            <div className="relative">
-              <button
-                onClick={startCountdown}
-                className="absolute top-1 right-2 z-110 text-red-500"
-              >
-                <XIcon className="w-5 h-5" />
-              </button>
-              {isCountingDown ? (
-                <p className="mb-1">{remindTime}s 後關閉</p>
-              ) : (
-                <p className="mb-1">按 X 即可關閉</p>
-              )}
-              <img
-                src="https://p2.bahamut.com.tw/B/2KU/17/9d5087cd7079a2b12b2e8d6bef1us6h5.JPG"
-                alt=""
-                className="w-100 h-auto"
+      {/* 外層 div 從空 class → 變成 relative 容器 */}
+      <div className="relative w-full">
+        {/* fixed inset-0（把背景圖層固定在 viewport） */}
+        {/* 圖片小於容器時，可能會 repeat，所以要避免圖片重複出現，確保只出現一次，不會在 X/Y 方向重複貼滿*/}
+        <div
+          className="fixed inset-0 -z-10 pointer-events-none bg-no-repeat bg-left-top bg-cover"
+          style={{
+            backgroundImage:
+              "url(https://static.gnjoy.com.tw/TRO/event/20260202_horseYear/img/acc_fixed_flower.png)",
+          }}
+        />
+        <div className="relative z-10">
+          {isAdOpen && (
+            <div className="fixed inset-0 z-50 w-full h-full bg-yellow-200/30 flex items-center justify-center">
+              <div className="relative">
+                <button
+                  onClick={startCountdown}
+                  className="absolute top-1 right-2 z-110 text-red-500"
+                >
+                  <XIcon className="w-5 h-5" />
+                </button>
+                {isCountingDown ? (
+                  <p className="mb-1">{remindTime}s 後關閉</p>
+                ) : (
+                  <p className="mb-1">按 X 即可關閉</p>
+                )}
+                <img
+                  src="https://p2.bahamut.com.tw/B/2KU/17/9d5087cd7079a2b12b2e8d6bef1us6h5.JPG"
+                  alt=""
+                  className="w-100 h-auto"
+                />
+              </div>
+            </div>
+          )}
+          <div className="relative">
+            <div className="w-full">
+              <Carousel slides={slides} />
+            </div>
+          </div>
+          <MemberLoginSection />
+          {/* 下面先不動 */}
+          <div className="flex">
+            {/* 左半邊 */}
+            <div className="flex-1 flex flex-col items-center max-md:hidden">
+              <MarqueeCarousel
+                type="guild"
+                bannerData={leftBanners}
+                style={`flex flex-col`}
+                direction="vertical"
               />
             </div>
-          </div>
-        )}
-        <div className="relative">
-          <div className="w-full">
-            <Carousel slides={slides} />
-          </div>
-        </div>
-        <MemberLoginSection />
-        {/* 下面先不動 */}
-        <div className="flex">
-          {/* 左半邊 */}
-          <div className="flex-1 flex flex-col items-center max-md:hidden">
-            <MarqueeCarousel
-              type="guild"
-              bannerData={leftBanners}
-              style={`flex flex-col`}
-              direction="vertical"
-            />
-          </div>
-          {/*正中間*/}
-          <div className="flex-1.5 flex flex-col items-center">
-            <Hero />
-            <LatestListing />
-            <div className="w-full">
-              <Plans />
-              <div className="text-center mb-14">
-                <h2 className="text-gray-700 text-4xl font-semibold">
-                  金主爸爸
-                </h2>
-                <p className="text-gray-500 text-sm max-w-md mx-auto">
-                  感謝金主爸爸的贊助，讓小弟得以營運此平台。
-                </p>
-              </div>
-              <div className="block max-md:hidden">
-                <MarqueeCarousel
-                  type="donate"
-                  bannerData={cardsData}
-                  style={`flex`}
-                  direction="horizontal"
-                />
-              </div>
-              <div className="hidden max-md:block">
-                <MarqueeCarousel
-                  type="donate"
-                  bannerData={cardsData}
-                  style={`flex flex-col`}
-                  direction="vertical"
-                />
+            {/*正中間*/}
+            <div className="flex-1.5 flex flex-col items-center">
+              <Hero />
+              <LatestListing />
+              <div className="w-full">
+                <Plans />
+                <div className="text-center mb-14">
+                  <h2 className="text-gray-700 text-4xl font-semibold">
+                    金主爸爸
+                  </h2>
+                  <p className="text-gray-500 text-sm max-w-md mx-auto">
+                    感謝金主爸爸的贊助，讓小弟得以營運此平台。
+                  </p>
+                </div>
+                <div className="block max-md:hidden">
+                  <MarqueeCarousel
+                    type="donate"
+                    bannerData={cardsData}
+                    style={`flex`}
+                    direction="horizontal"
+                  />
+                </div>
+                <div className="hidden max-md:block">
+                  <MarqueeCarousel
+                    type="donate"
+                    bannerData={cardsData}
+                    style={`flex flex-col`}
+                    direction="vertical"
+                  />
+                </div>
               </div>
             </div>
-          </div>
-          {/* 右半邊 */}
-          <div className="flex-1 flex flex-col items-center max-md:hidden">
-            <MarqueeCarousel
-              type="guild"
-              bannerData={rightBanners}
-              style={`flex flex-col`}
-              direction="vertical"
-            />
+            {/* 右半邊 */}
+            <div className="flex-1 flex flex-col items-center max-md:hidden">
+              <MarqueeCarousel
+                type="guild"
+                bannerData={rightBanners}
+                style={`flex flex-col`}
+                direction="vertical"
+              />
+            </div>
           </div>
         </div>
       </div>
