@@ -101,8 +101,6 @@ const Home = () => {
             <Carousel slides={slides} />
           </div>
         </div>
-        <ProductsSseFeed />
-        {/* TODO: Membr login */}
         <MemberLoginSection />
         {/* 下面先不動 */}
         <div className="flex">

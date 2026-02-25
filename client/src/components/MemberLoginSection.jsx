@@ -1,76 +1,131 @@
 import { useEffect, useState } from "react";
+import { Signal, SignalLow } from "lucide-react";
+
+function safeStr(v, fallback = "") {
+  if (v === null || v === undefined) return fallback;
+  const s = String(v);
+  return s.trim() ? s : fallback;
+}
+
+function formatDate(ts) {
+  const d = new Date(Number(ts) || Date.now());
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}/${m}/${day}`;
+}
 
 export default function MemberLoginSection() {
+  const SSE_URL = "http://localhost:3000/products/stream";
+
+  // ✅ 公告清單：一開始就是空的，全部靠 SSE
+  const [notices, setNotices] = useState([]);
+  const [connected, setConnected] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    setConnected(false);
+    setError("");
+    setNotices([]); // 需要的話：每次 url 變更就清空
+
+    const es = new EventSource(SSE_URL);
+
+    es.onopen = () => {
+      setConnected(true);
+      setError("");
+    };
+
+    const onProduct = (e) => {
+      try {
+        const payload = JSON.parse(e.data);
+        const p = payload?.data ?? {};
+
+        const username = safeStr(p.username, "某位使用者");
+        const title = safeStr(p.title, "某個商品");
+        const ts = payload?.ts ?? Date.now();
+
+        const item = {
+          id: `${payload?.version ?? "v"}-${payload?.index ?? "i"}-${ts}`, // ✅ 給 React key 用
+          date: formatDate(ts),
+          text: `${username} 剛才刊登了「${title}」商品`,
+          tone: "red", // 你要紅字就 red；不然改 white
+          ts,
+          raw: p, // 需要的話可以保留原始 product
+        };
+
+        setNotices((prev) => {
+          const next = [item, ...prev];
+          return next.slice(0, 10);
+        });
+      } catch (err) {
+        console.error("Invalid SSE product payload:", err, e.data);
+      }
+    };
+
+    es.addEventListener("product", onProduct);
+
+    es.onerror = () => {
+      setConnected(false);
+      setError("SSE disconnected / reconnecting…");
+    };
+
+    return () => {
+      es.removeEventListener("product", onProduct);
+      es.close();
+    };
+  }, [SSE_URL]);
+
   return (
-    <section className="w-full">
+    <section className="w-full mt-5 mb-5">
       <div className="mx-auto max-w-[1200px] px-6">
-        {/* ✅ 兩欄同高：items-stretch + 每欄用 grid 切 auto / auto / 1fr / auto */}
         <div className="flex items-stretch gap-12">
           {/* 左：訊息公告 */}
           <div className="flex-1">
-            {/* ✅ 固定整欄高度（業界常見：這裡可依設計調整） */}
-            <div className="grid min-h-[280px] grid-rows-[auto_auto_1fr_auto]">
-              {/* 標題列 */}
+            <div className="grid min-h-[280px] max-h-[280px] grid-rows-[auto_auto_1fr_auto]">
+              {" "}
               <div className="flex items-center justify-between">
-                <h2 className="text-red-500 text-xl font-semibold">訊息公告</h2>
+                <div className="text-xl font-semibold flex items-center gap-2">
+                  <h2 className="text-red-500">訊息公告</h2>
+                  <span>{connected ? <Signal  className="w-5 h-5 text-green-500"/> : <SignalLow  className="w-5 h-5 text-red-500"/>}</span>
+                </div>
                 <button className="bg-red-600 px-4 py-1 text-sm text-white">
                   更多
                 </button>
               </div>
-
-              {/* 上 border */}
               <div className="mt-4 border-b border-[#a17575]" />
-
-              {/* ✅ 兩條 border 中間：固定高度 + 可滾動（關鍵：min-h-0） */}
               <div className="min-h-0 overflow-y-auto mt-6">
                 <div className="space-y-5 text-sm">
-                  <div className="flex gap-3 text-white">
-                    <span className="shrink-0">2026/02/24</span>
-                    <span>
-                      《商城》「波利造型音效一卡通」出貨延期說明與補償公告
-                    </span>
-                  </div>
-                  <div className="flex gap-3 text-red-500">
-                    <span className="shrink-0">2026/02/05</span>
-                    <span>《商城》2月活動－馬年迎春：好運隨行（進行中）</span>
-                  </div>
-                  <div className="flex gap-3 text-white">
-                    <span className="shrink-0">2025/08/22</span>
-                    <span>《GNJOY》小額付費MID門號身分識別說明</span>
-                  </div>
-                  <div className="flex gap-3 text-white">
-                    <span className="shrink-0">2026/02/10</span>
-                    <span>《商城》2026春節物流暫停出貨通知</span>
-                  </div>
-                  <div className="flex gap-3 text-white">
-                    <span className="shrink-0">2026/02/10</span>
-                    <span>《GNJOY》2026農曆春節期間客服中心服務說明</span>
-                  </div>
-
-                  {/* 你之後資料多了只會在這裡滾，不會撐高整欄 */}
+                  {notices.length === 0 ? (
+                    <div className="text-white/60 text-sm">
+                      目前沒有即時訊息…
+                    </div>
+                  ) : (
+                    notices.map((n, idx) => (
+                      <div
+                        key={n.id}
+                        className={`flex gap-3 ${idx === 0 ? "text-red-500" : "text-white"}`}
+                      >
+                        <span className="shrink-0">{n.date}</span>
+                        <span>{n.text}</span>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
-
-              {/* 下 border */}
               <div className="mt-8 border-b border-[#a17575]" />
             </div>
           </div>
 
-          {/* 右：密碼登入 */}
+          {/* 右：密碼登入（你原本的） */}
           <div className="flex-1 w-full max-w-[500px]">
-            {/* ✅ 固定整欄高度，讓右側跟左側同一套規則 */}
-            <div className="grid min-h-[280px] grid-rows-[auto_auto_1fr_auto]">
-              {/* 標題列 */}
+            <div className="grid min-h-[280px] max-h-[280px] grid-rows-[auto_auto_1fr_auto]">
               <div className="flex items-center justify-between">
                 <h2 className="text-red-500 text-xl font-semibold">登入會員</h2>
               </div>
 
-              {/* 上 border */}
               <div className="mt-4 border-b border-[#a17575]" />
 
-              {/* ✅ 兩條 border 中間：固定高度 + 可滾動 */}
               <div className="min-h-0 overflow-y-auto">
-                {/* 帳號密碼 */}
                 <div className="grid grid-cols-2 gap-4 mt-6">
                   <input
                     className="h-11 bg-transparent border border-white/30 px-3 text-sm"
@@ -88,11 +143,8 @@ export default function MemberLoginSection() {
                     登入會員
                   </button>
                 </div>
-
-                {/* 如果你之後要加更多登入方式/說明文字，超出也只會滾動這塊 */}
               </div>
 
-              {/* 下 border */}
               <div className="mt-8 border-b border-[#a17575]" />
             </div>
           </div>
