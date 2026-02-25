@@ -8,6 +8,7 @@ import Plans from "../components/Plans";
 import ProductsSseFeed from "../components/ProductsSseFeed.jsx";
 import MarqueeCarousel from "../components/MarqueeCarousel.jsx";
 import Carousel from "../components/Carousel.jsx";
+import MemberLoginSection from "../components/MemberLoginSection.jsx";
 import { useCountdown } from "../hooks/useCountdown";
 import { getStoredValue, setStoredValue } from "../utils/localStorage";
 
@@ -95,15 +96,13 @@ const Home = () => {
             </div>
           </div>
         )}
-        {/* TODO: 放 slider banner */}
         <div className="relative">
           <div className="w-full">
             <Carousel slides={slides} />
           </div>
         </div>
-        {/* <SseStats url="http://localhost:3000/events" /> */}
-        <ProductsSseFeed />
-
+        <MemberLoginSection />
+        {/* 下面先不動 */}
         <div className="flex">
           {/* 左半邊 */}
           <div className="flex-1 flex flex-col items-center max-md:hidden">
