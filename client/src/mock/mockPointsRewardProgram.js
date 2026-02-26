@@ -3,7 +3,7 @@ export const mockPointsRewardProgram = {
     eventId: "points-reward-demo",
     title: "積分獎勵",
   },
-  //   points / rewards / tasks 分開
+  //  points / rewards / tasks 分開
   points: {
     unitLabel: "積分",
     maxMilestone: 150,

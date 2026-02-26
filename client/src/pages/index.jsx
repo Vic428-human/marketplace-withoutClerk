@@ -12,6 +12,7 @@ import MemberLoginSection from "../components/MemberLoginSection.jsx";
 import { useCountdown } from "../hooks/useCountdown";
 import { getStoredValue, setStoredValue } from "../utils/localStorage";
 import { mockPointsRewardProgram } from "../mock/mockPointsRewardProgram";
+import { buildProgressModel } from "../utils/progressModel";
 
 const cardsData = [
   {
@@ -71,12 +72,14 @@ const Home = () => {
     handleCloseAd,
   );
   useEffect(() => setStoredValue("WELCOME_AD_IS_OPEN", isAdOpen), [isAdOpen]);
-  const program = mockPointsRewardProgram;
 
-  // 積分由大到小，從上至下
-  const milestonesDesc = program.points.milestones
-    .slice()
-    .sort((a, b) => b.points - a.points);
+  const program = mockPointsRewardProgram;
+  const model = buildProgressModel({
+    program,
+    milestonesDesc: program.points.milestones,
+    fallbackPointsNow: program.points.defaultValue || 130,
+  });
+
   return (
     <>
       {/* 外層 div 從空 class → 變成 relative 容器 */}
@@ -121,142 +124,69 @@ const Home = () => {
           <MemberLoginSection />
           <section className="w-full">
             <div className="mx-auto w-[min(92vw,1400px)] px-4 sm:px-6">
-              {/* 背景框 */}
               <div
                 className="relative w-full aspect-[1536/845]
-        bg-[url('https://roworld.gnjoy.hk/mlktwgh/png/bg-bbb27a79.png')]
-        bg-no-repeat bg-center bg-contain"
+          bg-[url('https://roworld.gnjoy.hk/mlktwgh/png/bg-bbb27a79.png')]
+          bg-no-repeat bg-center bg-contain"
                 style={{
                   "--bar-x": "18%",
                   "--bar-top": "20%",
                   "--bar-bottom": "22%",
                 }}
               >
-                {/* 進度條 */}
                 <div
                   className="
-          absolute
-          left-[var(--bar-x)]
-          top-[var(--bar-top)]
-          bottom-[var(--bar-bottom)]
-          -translate-x-1/2
-          w-[180px]
-          z-10
-          pointer-events-none
-        "
+              absolute left-[var(--bar-x)] top-[var(--bar-top)] bottom-[var(--bar-bottom)]
+              -translate-x-1/2 w-[180px] z-10 pointer-events-none
+            "
                 >
-                  {(() => {
-                    // 計算當前分數
-                    const pointsNow = Number(program?.points?.current ?? 10);
-                    // 有哪些積分門檻?
-                    const thresholds = milestonesDesc.map((m) =>
-                      Number(m.points),
-                    );
-                    const maxThreshold = Math.max(1, ...thresholds);
-
-                    // 積分可能超過門檻最大值，可以把數值限縮在一定範圍內
-                    const clamp = (v, min, max) =>
-                      Math.min(max, Math.max(min, v));
-                    const activeProgress = clamp(pointsNow / maxThreshold, 0, 1);
-                    
-                    // 微調進度條UI長短
-                    const topPadPct = 6; 
-                    const bottomPadPct = 12;
-                    const trackPct = 100 - topPadPct - bottomPadPct;
-
-                    // 激活的進度條，從哪裡開始填滿
-                    const fillStyle = {
-                      bottom: `${bottomPadPct}%`,
-                      height: `${activeProgress * trackPct}%`,
-                    };
-
-                    const getMilestoneTopPct = (points) => {
-                      const t01 = 1 - Number(points) / maxThreshold; // 0=最上, 1=最下
-                      return topPadPct + t01 * trackPct;
-                    };
-
-                    return (
-                      <>
-                        {/* ✅ 咖啡色底條 */}
-                        <div
-                          className="
-                  absolute
-                  left-1/2
-                  -translate-x-1/2
-                  top-0
-                  bottom-0
-                  w-[10px]
-                  rounded-full
-                  bg-[#9a6a4d]/70
-                "
-                          style={{
-                            top: `${topPadPct}%`,
-                            bottom: `${bottomPadPct}%`,
-                          }}
+                  <div
+                    className="absolute left-1/2 -translate-x-1/2 w-[10px] rounded-full bg-[#9a6a4d]/70"
+                    style={{
+                      top: `${model.topPadPct}%`,
+                      bottom: `${model.bottomPadPct}%`,
+                      width: `${model.barWidth}px`,
+                    }}
+                  />
+                  <div
+                    className="absolute left-1/2 -translate-x-1/2 rounded-full bg-[#7bb46a] transition-[height] duration-500"
+                    style={{
+                      ...model.fillStyle,
+                      width: `${model.barWidth}px`,
+                    }}
+                  />
+                  {model.milestonesUI.map((m) => (
+                    <div
+                      key={m.key}
+                      className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2"
+                      style={{ top: `${m.topPct}%` }}
+                    >
+                      <div className="flex flex-col items-center">
+                        <img
+                          src={m.iconUrl}
+                          alt=""
+                          className={[
+                            "w-[64px] h-[64px] object-contain select-none",
+                            m.reached ? "" : "opacity-70 grayscale-[20%]",
+                          ].join(" ")}
                         />
 
-                        {/* ✅ 綠色進度條（從底部往上長，並保留 bottomPad） */}
-                        <div
-                          className="
-                  absolute
-                  left-1/2
-                  -translate-x-1/2
-                  w-[10px]
-                  rounded-full
-                  bg-[#7bb46a]
-                  transition-[height] duration-500
-                "
-                          style={fillStyle}
-                        />
-
-                        {/* ✅ milestones：依點數比例定位 */}
-                        {milestonesDesc.map((m) => {
-                          const reached = pointsNow >= Number(m.points);
-
-                          return (
-                            <div
-                              key={m.rewardId}
-                              className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2"
-                              style={{
-                                top: `${getMilestoneTopPct(m.points)}%`,
-                              }}
-                            >
-                              <div className="flex flex-col items-center">
-                                <img
-                                  src={
-                                    m.iconUrl ??
-                                    "https://roworld.gnjoy.hk/mlktwgh/png/milestone-item-9b906a33.png"
-                                  }
-                                  alt=""
-                                  className={[
-                                    "w-[64px] h-[64px] object-contain select-none",
-                                    reached ? "" : "opacity-70 grayscale-[20%]",
-                                  ].join(" ")}
-                                />
-
-                                {/* 圖示與文字貼近 */}
-                                <div className="-mt-2 flex items-baseline leading-none">
-                                  <div
-                                    className={[
-                                      "text-2xl font-extrabold",
-                                      reached
-                                        ? "text-[#f4e7d6]"
-                                        : "text-[#cdb59e]",
-                                    ].join(" ")}
-                                  >
-                                    {m.points}
-                                  </div>
-                                  <div className="ml-[2px] text-sm font-semibold text-[#b08a66]">
-                                    {program.points.unitLabel}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </>
-                    );
-                  })()}
+                        <div className="-mt-2 flex items-baseline leading-none">
+                          <div
+                            className={[
+                              "text-2xl font-extrabold",
+                              m.reached ? "text-[#f4e7d6]" : "text-[#cdb59e]",
+                            ].join(" ")}
+                          >
+                            {m.points}
+                          </div>
+                          <div className="ml-[2px] text-sm font-semibold text-[#b08a66]">
+                            {program?.points?.unitLabel}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
