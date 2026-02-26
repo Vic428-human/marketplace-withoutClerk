@@ -77,7 +77,7 @@ const Home = () => {
   const model = buildProgressModel({
     program,
     milestonesDesc: program.points.milestones,
-    fallbackPointsNow: program.points.defaultValue || 130,
+    fallbackPointsNow: program.points.defaultValue || 150,
   });
 
   return (
@@ -175,12 +175,12 @@ const Home = () => {
                           <div
                             className={[
                               "text-2xl font-extrabold",
-                              m.reached ? "text-[#f4e7d6]" : "text-[#cdb59e]",
+                              m.reached ? " text-red-500" : "text-[#d1853f]",
                             ].join(" ")}
                           >
                             {m.points}
                           </div>
-                          <div className="ml-[2px] text-sm font-semibold text-[#b08a66]">
+                          <div className="ml-[2px] text-sm font-semibold text-[#d1853f]">
                             {program?.points?.unitLabel}
                           </div>
                         </div>
