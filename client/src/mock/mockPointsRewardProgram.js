@@ -3,17 +3,26 @@ export const mockPointsRewardProgram = {
     eventId: "points-reward-demo",
     title: "積分獎勵",
   },
-
+  //   points / rewards / tasks 分開
   points: {
     unitLabel: "積分",
     maxMilestone: 150,
     milestones: [
-      {
-        points: 150,
-        rewardId: "reward_150"
-      }
+     {
+      points: 150,
+      rewardId: "reward_150"
+      
+    },
+    {
+      points: 300,
+      rewardId: "reward_300"
+    },
+    {
+      points: 450,
+      rewardId: "reward_450"
+    }
     ],
-    defaultValue: 0
+    defaultValue: 0,
   },
 
   rewards: [
@@ -23,9 +32,9 @@ export const mockPointsRewardProgram = {
       title: "150積分獎勵",
       preview: {
         imageUrl: "https://via.placeholder.com/120",
-        description: "神秘寶箱 x1"
-      }
-    }
+        description: "神秘寶箱 x1",
+      },
+    },
   ],
 
   tasks: [
@@ -38,8 +47,8 @@ export const mockPointsRewardProgram = {
       action: {
         label: "前往完成",
         url: "/account/bind-phone",
-        requiresLogin: true
-      }
-    }
-  ]
+        requiresLogin: true,
+      },
+    },
+  ],
 };
