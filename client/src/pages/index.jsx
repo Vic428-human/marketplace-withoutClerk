@@ -80,12 +80,12 @@ const Home = () => {
   const model = buildProgressModel({
     program,
     milestonesDesc: program.points.milestones,
-    fallbackPointsNow: program.points.defaultValue || 300,
+    fallbackPointsNow: program.points.defaultValue || 450,
   });
 
   // TODO: 這邊之後要再找時間另外整理，這邊只是為了測試
   const pointsNow = Number(
-    program?.points?.current ? program.points.defaultValue : 300,
+    program?.points?.current ? program.points.defaultValue : 450,
   );
 
   const milestones = Array.isArray(model?.milestonesUI)
@@ -195,6 +195,17 @@ const Home = () => {
               />
             </div> */}
             {/*正中間*/}
+          
+            {/* 右半邊 */}
+            {/* <div className="flex-1 flex flex-col items-center max-md:hidden">
+              <MarqueeCarousel
+                type="guild"
+                bannerData={rightBanners}
+                style={`flex flex-col`}
+                direction="vertical"
+              />
+            </div> */}
+          </div>
             <div className="flex-1.5 flex flex-col items-center">
               <Hero />
               <LatestListing />
@@ -226,16 +237,6 @@ const Home = () => {
                 </div>
               </div>
             </div>
-            {/* 右半邊 */}
-            {/* <div className="flex-1 flex flex-col items-center max-md:hidden">
-              <MarqueeCarousel
-                type="guild"
-                bannerData={rightBanners}
-                style={`flex flex-col`}
-                direction="vertical"
-              />
-            </div> */}
-          </div>
         </div>
       </div>
     </>

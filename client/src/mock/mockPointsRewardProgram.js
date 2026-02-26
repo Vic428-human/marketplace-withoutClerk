@@ -31,7 +31,7 @@ export const mockPointsRewardProgram = {
       milestonePoints: 150,
       title: "150積分獎勵",
       preview: {
-        imageUrl: "https://roworld.gnjoy.hk/mlktwgh/png/award-450-4b6f89db.png",
+        imageUrl: "https://roworld.gnjoy.hk/mlktwgh/png/award-150-8546a9c1.png",
         description: "神秘寶箱 x1",
       },
     },
@@ -40,7 +40,7 @@ export const mockPointsRewardProgram = {
       milestonePoints: 300,
       title: "300積分獎勵",
       preview: {
-        imageUrl: "https://roworld.gnjoy.hk/mlktwgh/png/award-450-4b6f89db.png",
+        imageUrl: "https://roworld.gnjoy.hk/mlktwgh/png/award-250-f6e1af32.png",
         description: "神秘寶箱 x2",
       },
     },
