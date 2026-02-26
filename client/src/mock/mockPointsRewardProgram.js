@@ -31,8 +31,26 @@ export const mockPointsRewardProgram = {
       milestonePoints: 150,
       title: "150積分獎勵",
       preview: {
-        imageUrl: "https://via.placeholder.com/120",
+        imageUrl: "https://roworld.gnjoy.hk/mlktwgh/png/award-450-4b6f89db.png",
         description: "神秘寶箱 x1",
+      },
+    },
+    {
+      rewardId: "reward_300",
+      milestonePoints: 300,
+      title: "300積分獎勵",
+      preview: {
+        imageUrl: "https://roworld.gnjoy.hk/mlktwgh/png/award-450-4b6f89db.png",
+        description: "神秘寶箱 x2",
+      },
+    },
+    {
+      rewardId: "reward_450",
+      milestonePoints: 450,
+      title: "450積分獎勵",
+      preview: {
+        imageUrl: "https://roworld.gnjoy.hk/mlktwgh/png/award-450-4b6f89db.png",
+        description: "神秘寶箱 x3",
       },
     },
   ],
