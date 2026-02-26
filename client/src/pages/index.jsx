@@ -11,6 +11,7 @@ import Carousel from "../components/Carousel.jsx";
 import MemberLoginSection from "../components/MemberLoginSection.jsx";
 import { useCountdown } from "../hooks/useCountdown";
 import { getStoredValue, setStoredValue } from "../utils/localStorage";
+import { mockPointsRewardProgram } from "../mock/mockPointsRewardProgram";
 
 const cardsData = [
   {
@@ -70,7 +71,7 @@ const Home = () => {
     handleCloseAd,
   );
   useEffect(() => setStoredValue("WELCOME_AD_IS_OPEN", isAdOpen), [isAdOpen]);
-
+  const program = mockPointsRewardProgram;
   return (
     <>
       {/* 外層 div 從空 class → 變成 relative 容器 */}
@@ -122,10 +123,39 @@ const Home = () => {
               bg-[url('https://roworld.gnjoy.hk/mlktwgh/png/bg-bbb27a79.png')]
               bg-no-repeat bg-center bg-contain
               "
+                // 對齊「積分」那個「積」：這裡用整張圖的百分比去定
+                style={{
+                  "--bar-x": "18%",
+                  "--bar-top": "20%",
+                  "--bar-h": "58%",
+                }}
               >
-                {/* 內容安全區：先用 padding 把內容推進畫框內 */}
-                <div className="h-full w-full">
-
+                {/* ✅ 直條：直接以「整個畫框」為參考，不會因為左欄在手機變高/變矮而改變 */}
+                <div
+                  className="
+      absolute
+      left-[var(--bar-x)]
+      top-[var(--bar-top)]
+      h-[var(--bar-h)]
+      w-[10px]
+      rounded-full
+      bg-[#9a6a4d]/70
+    "
+                />
+                {/* ✅ 內容安全區：把內容推進畫框內（你之後可微調 %） */}
+                <div className="absolute inset-0 px-[6%] pt-[9%] pb-[10%]">
+                  {/* ✅ 兩欄：左（進度/獎勵）右（任務） */}
+                  <div className="grid h-full grid-cols-12 gap-6">
+                    {/* ---------------- Left: Progress + Rewards ---------------- */}
+                    <aside className="col-span-12 md:col-span-4">
+                      <div className="relative h-full">
+                        {/* （這裡就不要再放那根 absolute 直條） */}
+                         {/* milestones list */}
+                      </div>
+                    </aside>
+                    {/* ---------------- Right: Tasks ---------------- */}
+                    <main className="col-span-12 md:col-span-8"></main>
+                  </div>
                 </div>
               </div>
             </div>
