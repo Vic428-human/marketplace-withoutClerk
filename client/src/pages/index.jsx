@@ -113,6 +113,23 @@ const Home = () => {
             </div>
           </div>
           <MemberLoginSection />
+          <section className="w-full">
+            {/* 外層：置中 + 留邊 */}
+            <div className="mx-auto w-[min(92vw,880px)] px-4 sm:px-6">
+              {/* 外框背景容器: 建立定位容器、固定比例避免變形、保證背景完整顯示*/}
+              <div
+                className="relative w-full aspect-[1536/845]
+              bg-[url('https://roworld.gnjoy.hk/mlktwgh/png/bg-bbb27a79.png')]
+              bg-no-repeat bg-center bg-contain
+              "
+              >
+                {/* 內容安全區：先用 padding 把內容推進畫框內 */}
+                <div className="h-full w-full">
+
+                </div>
+              </div>
+            </div>
+          </section>
           {/* 下面先不動 */}
           <div className="flex">
             {/* 左半邊 */}
