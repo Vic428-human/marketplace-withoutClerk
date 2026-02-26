@@ -9,6 +9,8 @@ import ProductsSseFeed from "../components/ProductsSseFeed.jsx";
 import MarqueeCarousel from "../components/MarqueeCarousel.jsx";
 import Carousel from "../components/Carousel.jsx";
 import MemberLoginSection from "../components/MemberLoginSection.jsx";
+import DesktopPointsRewards from "../components/pointsRewards/DesktopPointsRewards.jsx";
+import MobilePointsRewards from "../components/pointsRewards/MobilePointsRewards.jsx";
 import { useCountdown } from "../hooks/useCountdown";
 import { getStoredValue, setStoredValue } from "../utils/localStorage";
 import { mockPointsRewardProgram } from "../mock/mockPointsRewardProgram";
@@ -52,8 +54,9 @@ const cardsData = [
   },
 ];
 
-const leftBanners = bannerItems.filter((item) => item.side === "left");
-const rightBanners = bannerItems.filter((item) => item.side === "right");
+// 公會旗幟先暫時不用
+// const leftBanners = bannerItems.filter((item) => item.side === "left");
+// const rightBanners = bannerItems.filter((item) => item.side === "right");
 
 const slides = [
   "https://banner.gnjoy.com.tw/Uploads/a9980f2aeb9e488c90e5863f5f3b32ad.jpg",
@@ -77,8 +80,49 @@ const Home = () => {
   const model = buildProgressModel({
     program,
     milestonesDesc: program.points.milestones,
-    fallbackPointsNow: program.points.defaultValue || 150,
+    fallbackPointsNow: program.points.defaultValue || 300,
   });
+
+  // TODO: 這邊之後要再找時間另外整理，這邊只是為了測試
+  const pointsNow = Number(
+    program?.points?.current ? program.points.defaultValue : 300,
+  );
+
+  const milestones = Array.isArray(model?.milestonesUI)
+    ? model.milestonesUI
+    : [];
+  const pts = milestones.map((m) => Number(m.points));
+
+  const minP = pts.length ? Math.min(...pts) : 0;
+  const maxP = pts.length ? Math.max(...pts) : 1;
+  const range = Math.max(1, maxP - minP);
+
+  const clamp01 = (v) => Math.max(0, Math.min(1, v));
+  const progress01 = clamp01((pointsNow - minP) / range);
+
+  const leftPadPct = 6;
+  const rightPadPct = 6;
+  const usablePct = 100 - leftPadPct - rightPadPct;
+
+  const milestonesMobileUI = milestones
+    .slice()
+    .sort((a, b) => Number(a.points) - Number(b.points))
+    .map((m) => {
+      const p = Number(m.points);
+      const t01 = clamp01((p - minP) / range);
+      const leftPct = leftPadPct + t01 * usablePct;
+      return { ...m, leftPct };
+    });
+
+  const fillPct = progress01 * usablePct;
+
+  const mobile = {
+    pointsNow,
+    leftPadPct,
+    rightPadPct,
+    fillPct,
+    milestonesMobileUI,
+  };
 
   return (
     <>
@@ -122,86 +166,34 @@ const Home = () => {
             </div>
           </div>
           <MemberLoginSection />
+
           <section className="w-full">
             <div className="mx-auto w-[min(92vw,1400px)] px-4 sm:px-6">
-              <div
-                className="relative w-full aspect-[1536/845]
-          bg-[url('https://roworld.gnjoy.hk/mlktwgh/png/bg-bbb27a79.png')]
-          bg-no-repeat bg-center bg-contain"
-                style={{
-                  "--bar-x": "18%",
-                  "--bar-top": "20%",
-                  "--bar-bottom": "22%",
-                }}
-              >
-                <div
-                  className="
-              absolute left-[var(--bar-x)] top-[var(--bar-top)] bottom-[var(--bar-bottom)]
-              -translate-x-1/2 w-[180px] z-10 pointer-events-none
-            "
-                >
-                  <div
-                    className="absolute left-1/2 -translate-x-1/2 w-[10px] rounded-full bg-[#9a6a4d]/70"
-                    style={{
-                      top: `${model.topPadPct}%`,
-                      bottom: `${model.bottomPadPct}%`,
-                      width: `${model.barWidth}px`,
-                    }}
-                  />
-                  <div
-                    className="absolute left-1/2 -translate-x-1/2 rounded-full bg-[#7bb46a] transition-[height] duration-500"
-                    style={{
-                      ...model.fillStyle,
-                      width: `${model.barWidth}px`,
-                    }}
-                  />
-                  {model.milestonesUI.map((m) => (
-                    <div
-                      key={m.key}
-                      className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2"
-                      style={{ top: `${m.topPct}%` }}
-                    >
-                      <div className="flex flex-col items-center">
-                        <img
-                          src={m.iconUrl}
-                          alt=""
-                          className={[
-                            "w-[64px] h-[64px] object-contain select-none",
-                            m.reached ? "" : "opacity-70 grayscale-[20%]",
-                          ].join(" ")}
-                        />
-
-                        <div className="-mt-2 flex items-baseline leading-none">
-                          <div
-                            className={[
-                              "text-2xl font-extrabold",
-                              m.reached ? " text-red-500" : "text-[#d1853f]",
-                            ].join(" ")}
-                          >
-                            {m.points}
-                          </div>
-                          <div className="ml-[2px] text-sm font-semibold text-[#d1853f]">
-                            {program?.points?.unitLabel}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <DesktopPointsRewards
+                className="hidden lg:block" // 1024px 以上才顯示
+                program={program}
+                model={model}
+              />
+              <MobilePointsRewards
+                className="lg:hidden"
+                program={program}
+                model={model}
+                mobile={mobile}
+              />
             </div>
           </section>
-          {/* 下面先不動 */}
+
+          {/* 下面公會旗幟banner，會影響到手機平板的布局，還需要優化，先暫時隱藏 */}
           <div className="flex">
             {/* 左半邊 */}
-            <div className="flex-1 flex flex-col items-center max-md:hidden">
+            {/* <div className="flex-1 flex flex-col items-center max-md:hidden">
               <MarqueeCarousel
                 type="guild"
                 bannerData={leftBanners}
                 style={`flex flex-col`}
                 direction="vertical"
               />
-            </div>
+            </div> */}
             {/*正中間*/}
             <div className="flex-1.5 flex flex-col items-center">
               <Hero />
@@ -235,14 +227,14 @@ const Home = () => {
               </div>
             </div>
             {/* 右半邊 */}
-            <div className="flex-1 flex flex-col items-center max-md:hidden">
+            {/* <div className="flex-1 flex flex-col items-center max-md:hidden">
               <MarqueeCarousel
                 type="guild"
                 bannerData={rightBanners}
                 style={`flex flex-col`}
                 direction="vertical"
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
