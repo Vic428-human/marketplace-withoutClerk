@@ -1,6 +1,6 @@
 import React from 'react';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
-import { routeTree } from './routeTree.gen'; // ✅ 確認路徑
+import { routeTree } from './routeTree.gen'; 
 
 const router = createRouter({ 
   routeTree,

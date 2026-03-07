@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
-import { useUser } from "@clerk/clerk-react";
 const Hero = () => {
-  const { user } = useUser();
   const [input, setInput] = useState("");
   const navigate = useNavigate();
   const onSubmitHandler = (e) => {
@@ -16,18 +14,7 @@ const Hero = () => {
         {/* Avatars + Stars */}
         <div className="flex items-center mt-24 md:mt-36">
           <div className="flex space-x-0 pr-3">
-            {user && (
-              <img
-                onClick={() => {
-                  navigate("/");
-                  scrollTo(0, 0);
-                }}
-                src={user.imageUrl}
-                alt="自己的頭像"
-                className="h-10 cursor-pointer"
-              />
-            )}
-
+          
             <img
               onClick={() => {
                 navigate("/");
