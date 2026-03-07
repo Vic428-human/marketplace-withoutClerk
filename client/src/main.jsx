@@ -2,10 +2,10 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
-import { ClerkProvider } from "@clerk/clerk-react";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider } from "./context/auth-context";
 
 // Import your Publishable Key
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -16,15 +16,12 @@ if (!PUBLISHABLE_KEY) {
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <ClerkProvider
-      publishableKey={PUBLISHABLE_KEY}
-      appearance={{ variables: { colorPrimary: "#4f46e5" } }}
-    >
-      <Provider store={store}>
-        <QueryClientProvider client={queryClient}>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
           <App />
-        </QueryClientProvider>
-      </Provider>
-    </ClerkProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </Provider>
   </BrowserRouter>,
 );

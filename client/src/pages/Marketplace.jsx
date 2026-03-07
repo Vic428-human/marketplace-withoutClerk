@@ -9,12 +9,13 @@ import { productKeys } from "../queries/productKeys";
 import { useQuery } from "@tanstack/react-query";
 import { searchProducts } from "../api/products";
 import ChatRoom from "../components/chat/ChatRoom";
+import { useAuth } from "../hooks/use-auth";
 
 const MINUTES = 1000 * 60;
 
 const Marketplace = () => {
+  const { isAuthenticated, userInfo, authLoading } = useAuth();
   const navigator = useNavigate();
-  // ✅ 狀態 hooks
   const [showFilter, setShowFilter] = useState(false);
   const [open, setOpen] = useState(false);
   const [filters, setFilters] = useState({
@@ -25,44 +26,11 @@ const Marketplace = () => {
     // verified: false,
     // featured: false,
   });
-  const [authLoading, setAuthLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userInfo, setUserInfo] = useState(null);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await fetch("http://localhost:3000/auth/me", {
-          credentials: "include",
-        });
-
-        if (!res.ok) {
-          setIsAuthenticated(false);
-          setUserInfo(null);
-          return;
-        }
-
-        const data = await res.json();
-        setIsAuthenticated(true);
-        setUserInfo(data.user);
-      } catch (err) {
-        console.error("檢查登入狀態失敗:", err);
-        setIsAuthenticated(false);
-        setUserInfo(null);
-      } finally {
-        setAuthLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, []);
-
-  // ✅ 所有邏輯 hooks
   const handleSearch = useCallback((keyword) => {
     setFilters((prev) => ({ ...prev, inputValue: keyword }));
   }, []);
 
-  // ✅ 查詢 hooks，同樣key短時間內重新呼叫不會耗效能
   const { data, isLoading, error } = useQuery({
     queryKey: productKeys.list(filters.inputValue || "all"),
     queryFn: () =>
@@ -72,7 +40,6 @@ const Marketplace = () => {
     gcTime: 10 * MINUTES,
   });
 
-  // ✅ 計算 hooks (依賴 data)
   const products = useMemo(() => data ?? [], [data]);
   const sortedProducts = useMemo(() => {
     return products.length
@@ -82,7 +49,8 @@ const Marketplace = () => {
       : [];
   }, [products]);
 
-  // 建議加上載入中與錯誤處理（使用者體驗會好很多）
+   if (authLoading) return <div>驗證中...</div>;
+
   if (isLoading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
