@@ -2,6 +2,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -43,6 +44,7 @@ func main() {
 		"Access-Control-Allow-Headers",
 		"Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With",
 	}
+	// AllowCredentials = true , 不然 cookie 不會成功
 	corsConfig.AllowCredentials = true
 	corsConfig.ExposeHeaders = []string{"Content-Length"}
 	corsConfig.MaxAge = 12 * time.Hour
@@ -136,7 +138,8 @@ func main() {
 	router.GET("/products/:id", handlers.GetProductByIDHandler(pool))
 	router.GET("/products/search", handlers.ListProductsHandler(pool))
 	router.POST("/auth/login", handlers.LoginHandler(pool, cfg))
-
+	router.GET("/auth/me", handlers.MeHandler(cfg))
+	fmt.Println("registering /auth/me")
 	// 8) Run server（最後）
 	if err := router.Run(":" + cfg.Port); err != nil {
 		log.Fatal(err)

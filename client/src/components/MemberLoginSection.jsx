@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import { Signal, SignalLow } from "lucide-react";
+import { useState } from "react";
 import { useProductNotices } from "../hooks/useProductNotices";
 import { ProductNoticesPanel } from "../components/Home/ProductNoticesPanel";
 
 export default function MemberLoginSection() {
   const SSE_URL = "http://localhost:3000/products/stream";
   const { notices, connected, error } = useProductNotices(SSE_URL);
+
 
   // 表單狀態
   const [email, setEmail] = useState("");
@@ -20,6 +20,7 @@ export default function MemberLoginSection() {
     try {
       const response = await fetch("http://localhost:3000/auth/login", {
         method: "POST",
+        credentials: "include", // 送 request 時帶上現有 cookie，允許瀏覽器接收後端回傳的 cookie
         headers: {
           "Content-Type": "application/json",
         },
@@ -29,9 +30,11 @@ export default function MemberLoginSection() {
         }),
       });
       const data = await response.json();
-      console.log("登入成功:", data);
+      if (response.ok) {
+        console.log("登入成功", data);
+      }
     } catch (err) {
-      console.log('登入失敗:', err);
+      console.log("登入失敗:", err);
       setLoginError(err.error);
     } finally {
       setLoading(false);

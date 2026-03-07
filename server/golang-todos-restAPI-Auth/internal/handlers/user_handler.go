@@ -27,6 +27,7 @@ func LoginHandler(pool *pgxpool.Pool, cfg *config.Config) gin.HandlerFunc {
 
 		if err := c.BindJSON(&loginRequest); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 		}
 
 		user, err := repository.GetUserByEmail(pool, loginRequest.Email)
@@ -64,6 +65,18 @@ func LoginHandler(pool *pgxpool.Pool, cfg *config.Config) gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, LoginResponse{Token: tokenString})
+		c.SetCookie(
+			"token",     // cookie 名稱
+			tokenString, // cookie 值
+			3600*24,     // maxAge，秒
+			"/",         // path
+			"",          // domain，localhost 通常留空
+			false,       // secure，本地開發先 false；正式上線 HTTPS 要 true
+			true,        // httpOnly
+		)
+
+		c.JSON(http.StatusOK, gin.H{
+			"message": "login success",
+		})
 	}
 }

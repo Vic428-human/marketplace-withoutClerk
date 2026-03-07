@@ -84,7 +84,6 @@ function useChatSocket({ name, urlBase }) {
   const myNameRef = useRef(name);
 
   const { typingUsers, markTyping, clearAll: clearTyping } = useTypingUsersTTL(2500);
-
   useEffect(() => {
     myNameRef.current = name;
   }, [name]);
@@ -207,7 +206,7 @@ function ChatHeader({ user, displayName, connected, typingUsers }) {
           <img src={user.imageUrl} alt="avatar" className="h-full w-full object-cover" />
         ) : (
           <div className="h-full w-full flex items-center justify-center bg-[#075e54] text-white text-lg font-semibold">
-            {displayName?.[0]?.toUpperCase() || "U"}
+             {displayName ? displayName.substring(0, 5) : ''}
           </div>
         )}
       </div>
@@ -346,19 +345,17 @@ export default function ChatRoom({
   className = "",
   autoConnect = true,
 }) {
-  const displayName = useMemo(() => (name || "anonymous").trim() || "anonymous", [name]);
   const [text, setText] = useState("");
-
   const { connected, messages, typingUsers, connect, sendChat, sendTyping } = useChatSocket({
-    name: displayName,
+    name: name || "anonymous",
     urlBase,
   });
 
   useEffect(() => {
     if (!autoConnect) return;
-    if (!displayName) return;
+  
     connect();
-  }, [autoConnect, displayName, connect]);
+  }, [autoConnect, connect]);
 
   const handleSend = useCallback(() => {
     const trimmed = text.trim();
@@ -375,12 +372,12 @@ export default function ChatRoom({
     >
       <ChatHeader
         user={user}
-        displayName={displayName}
+        displayName={name}
         connected={connected}
         typingUsers={typingUsers}
       />
 
-      <MessageList messages={messages} myName={displayName} />
+      <MessageList messages={messages} myName={name} />
 
       <Composer
         connected={connected}
