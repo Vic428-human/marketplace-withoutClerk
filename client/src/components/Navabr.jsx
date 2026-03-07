@@ -1,10 +1,14 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
-import { MenuIcon ,XIcon } from "lucide-react";
+import { MenuIcon, XIcon } from "lucide-react";
 
 const Navabr = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+  // ✅ 從 Redux 抓 token
+  const token = useSelector((state) => state.userAccount.token);
+
   return (
     <nav className="">
       <div className="fixed left-0 top-0 right-0 z-100 flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white transition-all">
@@ -22,7 +26,20 @@ const Navabr = () => {
           <Link to="/memberRegisterPage">會員專區</Link>
         </div>
         <div>
-
+          {/* ✅ 根據 token 顯示不同內容 */}
+          {token ? (
+            <div className="flex items-center gap-2 text-sm bg-green-100 px-3 py-1 rounded-full">
+              <span>✅ 已登入</span>
+              <span className="text-xs truncate max-w-32">
+                {token.substring(0, 20)}...
+              </span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 text-sm bg-green-100 px-3 py-1 rounded-full">
+              <span>❌ 尚未登入</span>
+             
+            </div>
+          )}
           <MenuIcon
             onClick={() => setMenuOpen(true)}
             className="sm:hidden cursor-pointer"

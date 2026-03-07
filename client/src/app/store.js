@@ -1,8 +1,9 @@
 import { configureStore, Tuple } from '@reduxjs/toolkit'
 import listingReducer from './feature/listingSlice'
-
+import userAccountReducer from './feature/userAccountSlice'
 const reducer = {
   listing: listingReducer,
+  userAccount: userAccountReducer, 
 }
 
 export const store = configureStore({

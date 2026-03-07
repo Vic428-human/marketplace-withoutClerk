@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector  } from "react-redux";
 import { Signal, SignalLow } from "lucide-react";
 import { useProductNotices } from "../hooks/useProductNotices";
 import { ProductNoticesPanel } from "../components/Home/ProductNoticesPanel";
+import { setUserAccount } from "../app/feature/userAccountSlice";
 
 export default function MemberLoginSection() {
   const SSE_URL = "http://localhost:3000/products/stream";
   const { notices, connected, error } = useProductNotices(SSE_URL);
+  const token = useSelector((state) => state.userAccount.token)
+  console.log('Token:', token)
+  const dispatch = useDispatch();
 
   // 表單狀態
   const [email, setEmail] = useState("");
@@ -29,9 +34,15 @@ export default function MemberLoginSection() {
         }),
       });
       const data = await response.json();
-      console.log("登入成功:", data);
+      if (data.token) {
+        dispatch(
+          setUserAccount({
+            token: data.token,
+          }),
+        );
+      }
     } catch (err) {
-      console.log('登入失敗:', err);
+      console.log("登入失敗:", err);
       setLoginError(err.error);
     } finally {
       setLoading(false);

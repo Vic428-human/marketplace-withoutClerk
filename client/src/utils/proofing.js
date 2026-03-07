@@ -1,5 +1,4 @@
 export function safeExtractProduct(payload){
-  console.log('payload', payload);
   if (!payload || typeof payload !== "object") {
     return null; // 或 throw new Error("無效 payload")
   }
