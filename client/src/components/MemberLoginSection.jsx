@@ -1,16 +1,11 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector  } from "react-redux";
-import { Signal, SignalLow } from "lucide-react";
+import { useState } from "react";
 import { useProductNotices } from "../hooks/useProductNotices";
 import { ProductNoticesPanel } from "../components/Home/ProductNoticesPanel";
-import { setUserAccount } from "../app/feature/userAccountSlice";
 
 export default function MemberLoginSection() {
   const SSE_URL = "http://localhost:3000/products/stream";
   const { notices, connected, error } = useProductNotices(SSE_URL);
-  const token = useSelector((state) => state.userAccount.token)
-  console.log('Token:', token)
-  const dispatch = useDispatch();
+
 
   // 表單狀態
   const [email, setEmail] = useState("");
@@ -25,6 +20,7 @@ export default function MemberLoginSection() {
     try {
       const response = await fetch("http://localhost:3000/auth/login", {
         method: "POST",
+        credentials: "include", // 送 request 時帶上現有 cookie，允許瀏覽器接收後端回傳的 cookie
         headers: {
           "Content-Type": "application/json",
         },
@@ -34,12 +30,8 @@ export default function MemberLoginSection() {
         }),
       });
       const data = await response.json();
-      if (data.token) {
-        dispatch(
-          setUserAccount({
-            token: data.token,
-          }),
-        );
+      if (response.ok) {
+        console.log("登入成功", data);
       }
     } catch (err) {
       console.log("登入失敗:", err);

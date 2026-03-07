@@ -1,7 +1,6 @@
-import React, { useMemo, useCallback, useState } from "react";
+import React, { useMemo, useCallback, useState, useEffect } from "react";
 import { ArrowLeftIcon, FilterIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import ListingCard from "../components/ListingCard";
 import FilterSiderbar from "../components/FilterSiderbar";
 import { createFileRoute } from "@tanstack/react-router";
@@ -10,19 +9,14 @@ import { productKeys } from "../queries/productKeys";
 import { useQuery } from "@tanstack/react-query";
 import { searchProducts } from "../api/products";
 import ChatRoom from "../components/chat/ChatRoom";
-import {parseToken} from "../utils/parseToken";
 
 const MINUTES = 1000 * 60;
 
 const Marketplace = () => {
-  const token = useSelector((state) => state.userAccount.token);
-  const { userInfo, isExpired } = parseToken(token);
-
   const navigator = useNavigate();
   // ✅ 狀態 hooks
   const [showFilter, setShowFilter] = useState(false);
   const [open, setOpen] = useState(false);
-
   const [filters, setFilters] = useState({
     inputValue: "",
     platform: null,
@@ -31,7 +25,38 @@ const Marketplace = () => {
     // verified: false,
     // featured: false,
   });
-  const showBlocking = token;
+  const [authLoading, setAuthLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/auth/me", {
+          credentials: "include",
+        });
+
+        if (!res.ok) {
+          setIsAuthenticated(false);
+          setUserInfo(null);
+          return;
+        }
+
+        const data = await res.json();
+        setIsAuthenticated(true);
+        setUserInfo(data.user);
+      } catch (err) {
+        console.error("檢查登入狀態失敗:", err);
+        setIsAuthenticated(false);
+        setUserInfo(null);
+      } finally {
+        setAuthLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
+
   // ✅ 所有邏輯 hooks
   const handleSearch = useCallback((keyword) => {
     setFilters((prev) => ({ ...prev, inputValue: keyword }));
@@ -129,16 +154,20 @@ const Marketplace = () => {
           {/* ✅ Chat panel：在按鈕上方 */}
           {open && (
             <div className="absolute bottom-[72px] right-0 w-[360px] h-[500px]">
-              {!showBlocking ? (
+              {authLoading ? (
+                <div className="w-full h-full bg-white rounded-xl shadow-lg overflow-hidden flex items-center justify-center p-4">
+                  <p className="text-sm text-gray-500">正在確認登入狀態...</p>
+                </div>
+              ) : !isAuthenticated ? (
                 <div className="w-full h-full bg-white rounded-xl shadow-lg overflow-hidden flex items-center justify-center p-4">
                   <p className="text-sm text-gray-500">
-                    正在使用你的 Clerk 帳號登入並連線聊天室
+                    請先登入後再使用聊天室
                   </p>
                 </div>
               ) : (
                 <div className="w-full h-full bg-white rounded-xl shadow-lg overflow-hidden">
                   <ChatRoom
-                    user={'token'}
+                    user={String(userInfo?.id || "")}
                     name={userInfo?.email || "Guest"}
                     urlBase="ws://localhost:3000/ws"
                   />
