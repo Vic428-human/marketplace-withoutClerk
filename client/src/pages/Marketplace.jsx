@@ -10,17 +10,14 @@ import { productKeys } from "../queries/productKeys";
 import { useQuery } from "@tanstack/react-query";
 import { searchProducts } from "../api/products";
 import ChatRoom from "../components/chat/ChatRoom";
-import { useUser } from "@clerk/clerk-react";
+import {parseToken} from "../utils/parseToken";
 
 const MINUTES = 1000 * 60;
-function getClerkName(user) {
-  if (!user) return "anonymous";
-  const username = (user.fullName || "").trim();
-  return username || "anonymous";
-}
 
 const Marketplace = () => {
-  const { user, isLoaded } = useUser(); // sync loading
+  const token = useSelector((state) => state.userAccount.token);
+  const { userInfo, isExpired } = parseToken(token);
+
   const navigator = useNavigate();
   // ✅ 狀態 hooks
   const [showFilter, setShowFilter] = useState(false);
@@ -34,9 +31,7 @@ const Marketplace = () => {
     // verified: false,
     // featured: false,
   });
-  const clerkName = useMemo(() => getClerkName(user), [user]);
-  const showBlocking = !isLoaded || !user;
-
+  const showBlocking = token;
   // ✅ 所有邏輯 hooks
   const handleSearch = useCallback((keyword) => {
     setFilters((prev) => ({ ...prev, inputValue: keyword }));
@@ -134,17 +129,17 @@ const Marketplace = () => {
           {/* ✅ Chat panel：在按鈕上方 */}
           {open && (
             <div className="absolute bottom-[72px] right-0 w-[360px] h-[500px]">
-              {showBlocking ? (
+              {!showBlocking ? (
                 <div className="w-full h-full bg-white rounded-xl shadow-lg overflow-hidden flex items-center justify-center p-4">
                   <p className="text-sm text-gray-500">
-                    正在使用你的 Clerk 帳號登入並連線聊天室!
+                    正在使用你的 Clerk 帳號登入並連線聊天室
                   </p>
                 </div>
               ) : (
                 <div className="w-full h-full bg-white rounded-xl shadow-lg overflow-hidden">
                   <ChatRoom
-                    user={user}
-                    name={clerkName}
+                    user={'token'}
+                    name={userInfo?.email || "Guest"}
                     urlBase="ws://localhost:3000/ws"
                   />
                 </div>
