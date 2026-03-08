@@ -1,3 +1,4 @@
+// GET /events/points-reward-demo
 export const mockPointsRewardProgram = {
   event: {
     eventId: "points-reward-demo",
@@ -8,23 +9,21 @@ export const mockPointsRewardProgram = {
     unitLabel: "積分",
     maxMilestone: 150,
     milestones: [
-     {
-      points: 150,
-      rewardId: "reward_150"
-      
-    },
-    {
-      points: 300,
-      rewardId: "reward_300"
-    },
-    {
-      points: 450,
-      rewardId: "reward_450"
-    }
+      {
+        points: 150,
+        rewardId: "reward_150",
+      },
+      {
+        points: 300,
+        rewardId: "reward_300",
+      },
+      {
+        points: 450,
+        rewardId: "reward_450",
+      },
     ],
     defaultValue: 0,
   },
-
   rewards: [
     {
       rewardId: "reward_150",
@@ -54,19 +53,19 @@ export const mockPointsRewardProgram = {
       },
     },
   ],
-
   tasks: [
     {
-      taskId: "task_bind_phone",
-      badgeText: "特別任務",
-      title: "綁定手機門號",
-      points: 200,
-      limitText: "活動參與限制 1 次",
-      action: {
-        label: "前往完成",
-        url: "/account/bind-phone",
-        requiresLogin: true,
-      },
-    },
+      "taskId": "task_bind_phone",
+      "title": "綁定手機門號",
+      "points": 200,
+      "status": {
+        "isCompleted": false,      // 用戶進度（如「小明完成了沒」）是每個人獨立的
+        "currentCount": 0,         // 當前完成次數
+        "canClaim": true           // 是否可領取/完成
+      }
+    }
   ],
 };
+
+// POST /events/points-reward-demo/tasks/{taskId}/complete
+// Authorization: Bearer {token}
