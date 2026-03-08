@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../context/auth-context-def";  // 新增這行，注意路徑
 import { useProductNotices } from "../hooks/useProductNotices";
 import { ProductNoticesPanel } from "../components/Home/ProductNoticesPanel";
 
-export default function MemberLoginSection({ onLoginSuccess }) {
+export default function MemberLoginSection() {
+  const { refreshAuth } = useContext(AuthContext); // 取得 refresh 方法
   const SSE_URL = "http://localhost:3000/products/stream";
   const { notices, connected, error } = useProductNotices(SSE_URL);
-
 
   // 表單狀態
   const [email, setEmail] = useState("");
@@ -32,11 +33,19 @@ export default function MemberLoginSection({ onLoginSuccess }) {
       const data = await response.json();
       if (response.ok) {
         console.log("登入成功", data);
-         onLoginSuccess?.(); // 通知父元件
+        // 登入成功後，呼叫父層級的 refreshAuth
+        const isAuthUpdated = await refreshAuth();
+        if (isAuthUpdated) {
+          // 可以清空表單或顯示成功訊息
+          setEmail("");
+          setPassword("");
+        }
+      }else {
+        setLoginError(data.message || "登入失敗");
       }
     } catch (err) {
       console.log("登入失敗:", err);
-      setLoginError(err.error);
+      setLoginError("網路錯誤，請稍後再試");
     } finally {
       setLoading(false);
     }

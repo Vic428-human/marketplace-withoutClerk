@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../context/auth-context-def";
 import { createFileRoute } from "@tanstack/react-router";
 import { XIcon } from "lucide-react";
-import { bannerItems } from "../app/config/bannerConfig";
 import Hero from "../components/Hero";
 import LatestListing from "../components/LatestListing";
 import Plans from "../components/Plans";
@@ -54,10 +54,6 @@ const cardsData = [
   },
 ];
 
-// 公會旗幟先暫時不用
-// const leftBanners = bannerItems.filter((item) => item.side === "left");
-// const rightBanners = bannerItems.filter((item) => item.side === "right");
-
 const slides = [
   "https://banner.gnjoy.com.tw/Uploads/a9980f2aeb9e488c90e5863f5f3b32ad.jpg",
   "https://banner.gnjoy.com.tw/Uploads/42601ff3dc914ad5bfa4f5ff4347170f.jpg",
@@ -66,8 +62,8 @@ const slides = [
 ];
 
 const Home = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  console.log("isLoggedIn", isLoggedIn);
+  const { isAuthenticated, authLoading } = useContext(AuthContext);
+
   const [isAdOpen, setIsAdOpen] = useState(
     getStoredValue("WELCOME_AD_IS_OPEN", true),
   );
@@ -80,19 +76,19 @@ const Home = () => {
 
   // const program = mockPointsRewardProgram;
   const [program, setProgram] = useState(null);
-  console.log("program==>", program);
+
   useEffect(() => {
-    if (!isLoggedIn) return;
+    if (!isAuthenticated) return;
+
     fetch("http://localhost:3000/events/points-reward-demo/tasks", {
       credentials: "include",
     })
       .then((r) => r.json())
       .then((data) => {
-        console.log("API response:", data);
         setProgram(data);
       })
       .catch((err) => console.error("fetch failed", err));
-  }, [isLoggedIn]);
+  }, [isAuthenticated]);
 
   const model = program
     ? buildProgressModel({
@@ -181,9 +177,9 @@ const Home = () => {
               <Carousel slides={slides} />
             </div>
           </div>
-          <MemberLoginSection onLoginSuccess={() => setIsLoggedIn(true)} />
+          <MemberLoginSection />
 
-          {program ? (
+          {isAuthenticated && model ? (
             <section className="w-full">
               <div className="mx-auto w-[min(92vw,1400px)] px-4 sm:px-6">
                 <DesktopPointsRewards
