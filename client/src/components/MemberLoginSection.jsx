@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useProductNotices } from "../hooks/useProductNotices";
 import { ProductNoticesPanel } from "../components/Home/ProductNoticesPanel";
 
-export default function MemberLoginSection() {
+export default function MemberLoginSection({ onLoginSuccess }) {
   const SSE_URL = "http://localhost:3000/products/stream";
   const { notices, connected, error } = useProductNotices(SSE_URL);
 
@@ -32,6 +32,7 @@ export default function MemberLoginSection() {
       const data = await response.json();
       if (response.ok) {
         console.log("登入成功", data);
+         onLoginSuccess?.(); // 通知父元件
       }
     } catch (err) {
       console.log("登入失敗:", err);

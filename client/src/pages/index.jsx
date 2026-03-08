@@ -66,6 +66,8 @@ const slides = [
 ];
 
 const Home = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  console.log("isLoggedIn", isLoggedIn);
   const [isAdOpen, setIsAdOpen] = useState(
     getStoredValue("WELCOME_AD_IS_OPEN", true),
   );
@@ -76,21 +78,35 @@ const Home = () => {
   );
   useEffect(() => setStoredValue("WELCOME_AD_IS_OPEN", isAdOpen), [isAdOpen]);
 
-  const program = mockPointsRewardProgram;
-  const model = buildProgressModel({
-    program,
-    milestonesDesc: program.points.milestones,
-    fallbackPointsNow: program.points.defaultValue || 450,
-  });
+  // const program = mockPointsRewardProgram;
+  const [program, setProgram] = useState(null);
+  console.log("program==>", program);
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    fetch("http://localhost:3000/events/points-reward-demo/tasks", {
+      credentials: "include",
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        console.log("API response:", data);
+        setProgram(data);
+      })
+      .catch((err) => console.error("fetch failed", err));
+  }, [isLoggedIn]);
 
-  // TODO: 這邊之後要再找時間另外整理，這邊只是為了測試
-  const pointsNow = Number(
-    program?.points?.current ? program.points.defaultValue : 450,
-  );
+  const model = program
+    ? buildProgressModel({
+        program,
+        milestonesDesc: program.points.milestones,
+        fallbackPointsNow: program.points.defaultValue || 100,
+      })
+    : null;
 
-  const milestones = Array.isArray(model?.milestonesUI)
-    ? model.milestonesUI
-    : [];
+  const pointsNow = program
+    ? Number(program?.points?.current ? program.points.defaultValue : 450)
+    : 0;
+  const milestones =
+    program && Array.isArray(model?.milestonesUI) ? model.milestonesUI : [];
   const pts = milestones.map((m) => Number(m.points));
 
   const minP = pts.length ? Math.min(...pts) : 0;
@@ -165,23 +181,31 @@ const Home = () => {
               <Carousel slides={slides} />
             </div>
           </div>
-          <MemberLoginSection />
+          <MemberLoginSection onLoginSuccess={() => setIsLoggedIn(true)} />
 
-          <section className="w-full">
-            <div className="mx-auto w-[min(92vw,1400px)] px-4 sm:px-6">
-              <DesktopPointsRewards
-                className="hidden lg:block" // 1024px 以上才顯示
-                program={program}
-                model={model}
-              />
-              <MobilePointsRewards
-                className="lg:hidden"
-                program={program}
-                model={model}
-                mobile={mobile}
-              />
-            </div>
-          </section>
+          {program ? (
+            <section className="w-full">
+              <div className="mx-auto w-[min(92vw,1400px)] px-4 sm:px-6">
+                <DesktopPointsRewards
+                  className="hidden lg:block"
+                  program={program}
+                  model={model}
+                />
+                <MobilePointsRewards
+                  className="lg:hidden"
+                  program={program}
+                  model={model}
+                  mobile={mobile}
+                />
+              </div>
+            </section>
+          ) : (
+            <section className="w-full">
+              <div className="mx-auto w-[min(92vw,1400px)] px-4 sm:px-6 py-8 text-center">
+                <p className="text-gray-400 text-sm">請先登入以查看積分任務</p>
+              </div>
+            </section>
+          )}
 
           {/* 下面公會旗幟banner，會影響到手機平板的布局，還需要優化，先暫時隱藏 */}
           <div className="flex">
@@ -195,7 +219,7 @@ const Home = () => {
               />
             </div> */}
             {/*正中間*/}
-          
+
             {/* 右半邊 */}
             {/* <div className="flex-1 flex flex-col items-center max-md:hidden">
               <MarqueeCarousel
@@ -206,37 +230,37 @@ const Home = () => {
               />
             </div> */}
           </div>
-            <div className="flex-1.5 flex flex-col items-center">
-              <Hero />
-              <LatestListing />
-              <div className="w-full">
-                <Plans />
-                <div className="text-center mb-14">
-                  <h2 className="text-gray-700 text-4xl font-semibold">
-                    金主爸爸
-                  </h2>
-                  <p className="text-gray-500 text-sm max-w-md mx-auto">
-                    感謝金主爸爸的贊助，讓小弟得以營運此平台。
-                  </p>
-                </div>
-                <div className="block max-md:hidden">
-                  <MarqueeCarousel
-                    type="donate"
-                    bannerData={cardsData}
-                    style={`flex`}
-                    direction="horizontal"
-                  />
-                </div>
-                <div className="hidden max-md:block">
-                  <MarqueeCarousel
-                    type="donate"
-                    bannerData={cardsData}
-                    style={`flex flex-col`}
-                    direction="vertical"
-                  />
-                </div>
+          <div className="flex-1.5 flex flex-col items-center">
+            <Hero />
+            <LatestListing />
+            <div className="w-full">
+              <Plans />
+              <div className="text-center mb-14">
+                <h2 className="text-gray-700 text-4xl font-semibold">
+                  金主爸爸
+                </h2>
+                <p className="text-gray-500 text-sm max-w-md mx-auto">
+                  感謝金主爸爸的贊助，讓小弟得以營運此平台。
+                </p>
+              </div>
+              <div className="block max-md:hidden">
+                <MarqueeCarousel
+                  type="donate"
+                  bannerData={cardsData}
+                  style={`flex`}
+                  direction="horizontal"
+                />
+              </div>
+              <div className="hidden max-md:block">
+                <MarqueeCarousel
+                  type="donate"
+                  bannerData={cardsData}
+                  style={`flex flex-col`}
+                  direction="vertical"
+                />
               </div>
             </div>
+          </div>
         </div>
       </div>
     </>
