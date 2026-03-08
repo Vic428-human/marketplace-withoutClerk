@@ -38,14 +38,15 @@ func GetEventTasksHandler(pool *pgxpool.Pool, cfg *config.Config) gin.HandlerFun
 			return
 		}
 		userID, ok := claims["user_id"].(string)
-
 		if !ok {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid user_id"})
 			return
 		}
+
 		// 4. 從 URL 取出 eventId
 		eventID := c.Param("eventId")
 		fmt.Printf(">>>user %s is fetching tasks for event %s\n", userID, eventID)
+
 		// 5. 查詢資料庫
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
@@ -55,12 +56,29 @@ func GetEventTasksHandler(pool *pgxpool.Pool, cfg *config.Config) gin.HandlerFun
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch tasks"})
 			return
 		}
+
+		pointsConfig, err := repository.GetEventPointsConfig(ctx, pool, eventID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch points config"})
+			return
+		}
+
+		rewards, err := repository.GetEventRewards(ctx, pool, eventID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch rewards"})
+			return
+		}
+
 		c.JSON(http.StatusOK, gin.H{
 			"event": gin.H{
 				"eventId": eventID,
 			},
-			"tasks":  tasks,
-			"userID": userID,
+			"points":  pointsConfig,
+			"rewards": rewards,
+			"tasks":   tasks,
+			"user": gin.H{
+				"userId": userID,
+			},
 		})
 	}
 }

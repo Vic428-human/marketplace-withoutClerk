@@ -80,7 +80,7 @@ const Home = () => {
   const model = buildProgressModel({
     program,
     milestonesDesc: program.points.milestones,
-    fallbackPointsNow: program.points.defaultValue || 450,
+    fallbackPointsNow: program.points.defaultValue || 100,
   });
 
   // TODO: 這邊之後要再找時間另外整理，這邊只是為了測試
