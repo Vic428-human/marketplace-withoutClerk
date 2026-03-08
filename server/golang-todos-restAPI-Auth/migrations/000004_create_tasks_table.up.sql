@@ -1,7 +1,7 @@
--- tasks 表只存「任務規則」，不含用戶狀態
+-- 特定活動，旗下對應的所有任務，所以未來擴充某個活動底下的任務時，直接在這加入任務即可
 CREATE TABLE IF NOT EXISTS tasks (
     task_id VARCHAR(100) PRIMARY KEY,           -- task_daily_login、task_bind_phone，API 直接傳 task_id，除錯容易，也符合 DDD (領域驅動設計) 思維
-    event_id VARCHAR(100) NOT NULL,             -- 所屬活動 : 同一套任務系統可能用於多個活動（如「夏日活動」、「聖誕活動」）
+    event_id VARCHAR(100) NOT NULL,             -- 所屬活動 : points-reward-demo (會有多種活動)
     title VARCHAR(255) NOT NULL,                -- 任務標題 : 綁定手機門號
     description TEXT,                           -- 任務說明: 可選，用於顯示更詳細的規則或提示
     badge_text VARCHAR(50),                     -- 角標文字: 如「特別任務」、「限時」，用於前端視覺強調。

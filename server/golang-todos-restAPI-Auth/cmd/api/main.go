@@ -139,6 +139,8 @@ func main() {
 	router.GET("/products/search", handlers.ListProductsHandler(pool))
 	router.POST("/auth/login", handlers.LoginHandler(pool, cfg))
 	router.GET("/auth/me", handlers.MeHandler(cfg))
+	router.GET("/events/:eventId/tasks", handlers.GetEventTasksHandler(pool, cfg))
+
 	fmt.Println("registering /auth/me")
 	// 8) Run server（最後）
 	if err := router.Run(":" + cfg.Port); err != nil {
