@@ -8,6 +8,19 @@ import (
 )
 
 func GetEventTasksByUser(ctx context.Context, pool *pgxpool.Pool, userID string, eventID string) ([]models.TaskWithStatus, error) {
+	// 懶初始化：第一次進入活動時，自動建立該用戶的所有任務初始進度
+	initQuery := `
+		INSERT INTO user_task_progress (user_id, task_id, event_id)
+		SELECT $1, task_id, event_id
+		FROM tasks
+		WHERE event_id = $2
+		ON CONFLICT (user_id, task_id, event_id) DO NOTHING
+	`
+	_, err := pool.Exec(ctx, initQuery, userID, eventID)
+	if err != nil {
+		return nil, err
+	}
+
 	query := `
 		SELECT 
 			t.task_id,
