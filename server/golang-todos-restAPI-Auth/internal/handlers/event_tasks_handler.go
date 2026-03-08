@@ -59,7 +59,8 @@ func GetEventTasksHandler(pool *pgxpool.Pool, cfg *config.Config) gin.HandlerFun
 			"event": gin.H{
 				"eventId": eventID,
 			},
-			"tasks": tasks,
+			"tasks":  tasks,
+			"userID": userID,
 		})
 	}
 }
