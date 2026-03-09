@@ -15,7 +15,9 @@ import { useCountdown } from "../hooks/useCountdown";
 import { getStoredValue, setStoredValue } from "../utils/localStorage";
 // import { mockPointsRewardProgram } from "../mock/mockPointsRewardProgram";
 import { buildProgressModel } from "../utils/progressModel";
-import { useMediaQuery, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useMediaQuery } from "../hooks/useMediaQuery";
+
 
 const cardsData = [
   {
@@ -63,7 +65,7 @@ const slides = [
 ];
 
 const Home = () => {
-  const isDesktop = useMediaQuery("(min-width: 1024px)"); //  只渲染一個版本，伺服器和客戶端就一致
+  const isMobile = useMediaQuery('(max-width: 768px)'); //  只渲染一個版本，伺服器和客戶端就一致
   const { isAuthenticated } = useContext(AuthContext);
 
   const [isAdOpen, setIsAdOpen] = useState(
@@ -184,7 +186,7 @@ const Home = () => {
             <section className="w-full">
               <div className="mx-auto w-[min(92vw,1400px)] px-4 sm:px-6">
                 {/* 不需要同時 mount DesktopPointsRewards 和 MobilePointsRewards，再靠 CSS 隱藏 */}
-                {isDesktop ? (
+                {!isMobile ? (
                   <DesktopPointsRewards program={program} model={model} />
                 ) : (
                   <MobilePointsRewards
