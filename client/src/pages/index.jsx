@@ -13,8 +13,9 @@ import DesktopPointsRewards from "../components/pointsRewards/DesktopPointsRewar
 import MobilePointsRewards from "../components/pointsRewards/MobilePointsRewards.jsx";
 import { useCountdown } from "../hooks/useCountdown";
 import { getStoredValue, setStoredValue } from "../utils/localStorage";
-import { mockPointsRewardProgram } from "../mock/mockPointsRewardProgram";
+// import { mockPointsRewardProgram } from "../mock/mockPointsRewardProgram";
 import { buildProgressModel } from "../utils/progressModel";
+import { useMediaQuery, useQuery } from "@tanstack/react-query";
 
 const cardsData = [
   {
@@ -62,7 +63,8 @@ const slides = [
 ];
 
 const Home = () => {
-  const { isAuthenticated, authLoading } = useContext(AuthContext);
+  const isDesktop = useMediaQuery("(min-width: 1024px)"); //  只渲染一個版本，伺服器和客戶端就一致
+  const { isAuthenticated } = useContext(AuthContext);
 
   const [isAdOpen, setIsAdOpen] = useState(
     getStoredValue("WELCOME_AD_IS_OPEN", true),
@@ -74,21 +76,19 @@ const Home = () => {
   );
   useEffect(() => setStoredValue("WELCOME_AD_IS_OPEN", isAdOpen), [isAdOpen]);
 
-  // const program = mockPointsRewardProgram;
-  const [program, setProgram] = useState(null);
-
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
-    fetch("http://localhost:3000/events/points-reward-demo/tasks", {
-      credentials: "include",
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        setProgram(data);
-      })
-      .catch((err) => console.error("fetch failed", err));
-  }, [isAuthenticated]);
+  const {
+    data: program,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["points-program"],
+    queryFn: () =>
+      fetch("http://localhost:3000/events/points-reward-demo/tasks", {
+        credentials: "include",
+      }).then((r) => r.json()),
+    enabled: !!isAuthenticated, // 確保只有登入後才會 fetch
+    staleTime: 5 * 60 * 1000, // 五分鐘內不會重新打 API
+  });
 
   const model = program
     ? buildProgressModel({
@@ -178,27 +178,21 @@ const Home = () => {
             </div>
           </div>
           <MemberLoginSection />
-
-          {isAuthenticated && model ? (
+          {isLoading && <div>載入積分任務中...</div>}
+          {error && <div>載入失敗，請稍後再試</div>}
+          {program && model && (
             <section className="w-full">
               <div className="mx-auto w-[min(92vw,1400px)] px-4 sm:px-6">
-                <DesktopPointsRewards
-                  className="hidden lg:block"
-                  program={program}
-                  model={model}
-                />
-                <MobilePointsRewards
-                  className="lg:hidden"
-                  program={program}
-                  model={model}
-                  mobile={mobile}
-                />
-              </div>
-            </section>
-          ) : (
-            <section className="w-full">
-              <div className="mx-auto w-[min(92vw,1400px)] px-4 sm:px-6 py-8 text-center">
-                <p className="text-gray-400 text-sm">請先登入以查看積分任務</p>
+                {/* 不需要同時 mount DesktopPointsRewards 和 MobilePointsRewards，再靠 CSS 隱藏 */}
+                {isDesktop ? (
+                  <DesktopPointsRewards program={program} model={model} />
+                ) : (
+                  <MobilePointsRewards
+                    program={program}
+                    model={model}
+                    mobile={mobile}
+                  />
+                )}
               </div>
             </section>
           )}
