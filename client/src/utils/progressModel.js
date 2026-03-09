@@ -49,5 +49,6 @@ export function buildProgressModel({
     barWidth,
     fillStyle,
     milestonesUI,
+    fallbackPointsNow,
   };
 }

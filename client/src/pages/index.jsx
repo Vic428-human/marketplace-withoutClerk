@@ -14,10 +14,11 @@ import MobilePointsRewards from "../components/pointsRewards/MobilePointsRewards
 import { useCountdown } from "../hooks/useCountdown";
 import { getStoredValue, setStoredValue } from "../utils/localStorage";
 // import { mockPointsRewardProgram } from "../mock/mockPointsRewardProgram";
-import { buildProgressModel } from "../utils/progressModel";
 import { useQuery } from "@tanstack/react-query";
 import { useMediaQuery } from "../hooks/useMediaQuery";
-
+import { computeMobileProgress } from "../utils/pointsProgressCalculator";
+import { buildBaseProgressModel } from "../utils/buildBaseProgressModel";
+import {computeDesktopProgress} from "../utils/computeDesktopProgress";
 
 const cardsData = [
   {
@@ -65,7 +66,8 @@ const slides = [
 ];
 
 const Home = () => {
-  const isMobile = useMediaQuery('(max-width: 768px)'); //  只渲染一個版本，伺服器和客戶端就一致
+  // useMediaQuery 可以避免 Hydration mismatch。 指的是 伺服器端渲染 (SSR) 輸出的 HTML 和 客戶端 React 在 hydration 過程中建立的 Virtual DOM 不一致時，React 會發出警告或造成 UI 閃爍的問題。
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const { isAuthenticated } = useContext(AuthContext);
 
   const [isAdOpen, setIsAdOpen] = useState(
@@ -79,65 +81,57 @@ const Home = () => {
   useEffect(() => setStoredValue("WELCOME_AD_IS_OPEN", isAdOpen), [isAdOpen]);
 
   const {
-    data: program,
+    data: program, // 這一步是對的，因為 desktop 和 mobile 都需要原始資料。
     isLoading,
     error,
   } = useQuery({
     queryKey: ["points-program"],
-    queryFn: () =>
-      fetch("http://localhost:3000/events/points-reward-demo/tasks", {
-        credentials: "include",
-      }).then((r) => r.json()),
-    enabled: !!isAuthenticated, // 確保只有登入後才會 fetch
-    staleTime: 5 * 60 * 1000, // 五分鐘內不會重新打 API
+    queryFn: async () => {
+      const response = await fetch(
+        "http://localhost:3000/events/points-reward-demo/tasks",
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          signal: AbortSignal.timeout(10000),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`API 錯誤：${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      if (
+        !data ||
+        typeof data !== "object" ||
+        !data.points ||
+        !Array.isArray(data.tasks)
+      ) {
+        throw new Error("API 回傳格式不正確");
+      }
+
+      return data;
+    },
+    enabled: !!isAuthenticated,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    retry: 2,
   });
 
-  const model = program
-    ? buildProgressModel({
-        program,
-        milestonesDesc: program.points.milestones,
-        fallbackPointsNow: program.points.defaultValue || 100,
-      })
+  const baseProgress = program ? buildBaseProgressModel(program) : null;
+
+  const desktopProgress = baseProgress
+    ? computeDesktopProgress(baseProgress)
     : null;
 
-  const pointsNow = program
-    ? Number(program?.points?.current ? program.points.defaultValue : 450)
-    : 0;
-  const milestones =
-    program && Array.isArray(model?.milestonesUI) ? model.milestonesUI : [];
-  const pts = milestones.map((m) => Number(m.points));
-
-  const minP = pts.length ? Math.min(...pts) : 0;
-  const maxP = pts.length ? Math.max(...pts) : 1;
-  const range = Math.max(1, maxP - minP);
-
-  const clamp01 = (v) => Math.max(0, Math.min(1, v));
-  const progress01 = clamp01((pointsNow - minP) / range);
-
-  const leftPadPct = 6;
-  const rightPadPct = 6;
-  const usablePct = 100 - leftPadPct - rightPadPct;
-
-  const milestonesMobileUI = milestones
-    .slice()
-    .sort((a, b) => Number(a.points) - Number(b.points))
-    .map((m) => {
-      const p = Number(m.points);
-      const t01 = clamp01((p - minP) / range);
-      const leftPct = leftPadPct + t01 * usablePct;
-      return { ...m, leftPct };
-    });
-
-  const fillPct = progress01 * usablePct;
-
-  const mobile = {
-    pointsNow,
-    leftPadPct,
-    rightPadPct,
-    fillPct,
-    milestonesMobileUI,
-  };
-
+  const mobileProgress = baseProgress
+    ? computeMobileProgress(baseProgress)
+    : null;
   return (
     <>
       {/* 外層 div 從空 class → 變成 relative 容器 */}
@@ -182,46 +176,18 @@ const Home = () => {
           <MemberLoginSection />
           {isLoading && <div>載入積分任務中...</div>}
           {error && <div>載入失敗，請稍後再試</div>}
-          {program && model && (
+          {desktopProgress && mobileProgress && (
             <section className="w-full">
               <div className="mx-auto w-[min(92vw,1400px)] px-4 sm:px-6">
-                {/* 不需要同時 mount DesktopPointsRewards 和 MobilePointsRewards，再靠 CSS 隱藏 */}
                 {!isMobile ? (
-                  <DesktopPointsRewards program={program} model={model} />
+                  <DesktopPointsRewards progress={desktopProgress} />
                 ) : (
-                  <MobilePointsRewards
-                    program={program}
-                    model={model}
-                    mobile={mobile}
-                  />
+                  <MobilePointsRewards progress={mobileProgress} />
                 )}
               </div>
             </section>
           )}
 
-          {/* 下面公會旗幟banner，會影響到手機平板的布局，還需要優化，先暫時隱藏 */}
-          <div className="flex">
-            {/* 左半邊 */}
-            {/* <div className="flex-1 flex flex-col items-center max-md:hidden">
-              <MarqueeCarousel
-                type="guild"
-                bannerData={leftBanners}
-                style={`flex flex-col`}
-                direction="vertical"
-              />
-            </div> */}
-            {/*正中間*/}
-
-            {/* 右半邊 */}
-            {/* <div className="flex-1 flex flex-col items-center max-md:hidden">
-              <MarqueeCarousel
-                type="guild"
-                bannerData={rightBanners}
-                style={`flex flex-col`}
-                direction="vertical"
-              />
-            </div> */}
-          </div>
           <div className="flex-1.5 flex flex-col items-center">
             <Hero />
             <LatestListing />
