@@ -38,7 +38,8 @@ func main() {
 	router := gin.Default()
 
 	corsConfig := cors.DefaultConfig()
-	corsConfig.AllowOrigins = []string{"http://localhost:5173"}
+	// 5173 是交易所前台，3001 是交易所後台
+	corsConfig.AllowOrigins = []string{"http://localhost:5173", "http://localhost:3001"}
 	corsConfig.AllowMethods = []string{"GET", "POST", "PUT"}
 	corsConfig.AllowHeaders = []string{
 		"Access-Control-Allow-Headers",
@@ -137,8 +138,13 @@ func main() {
 	router.PUT("/products/:id", handlers.UpdateProductHandler(pool)) // 你原本少了開頭 /，我順便修正
 	router.GET("/products/:id", handlers.GetProductByIDHandler(pool))
 	router.GET("/products/search", handlers.ListProductsHandler(pool))
+	// TODO: 0315 新增 查看所有已經註冊的名單 查 users / user CRUD
+	router.GET("/users", handlers.GetUsersHandler(pool))
+	// 權限相關 login / register
 	router.POST("/auth/login", handlers.LoginHandler(pool, cfg))
+	// 驗證自己是否已經登入
 	router.GET("/auth/me", handlers.MeHandler(cfg))
+	// 獎勵進度表
 	router.GET("/events/:eventId/tasks", handlers.GetEventTasksHandler(pool, cfg))
 
 	fmt.Println("registering /auth/me")
