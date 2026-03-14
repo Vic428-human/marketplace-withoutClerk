@@ -174,6 +174,8 @@ const Home = () => {
             </div>
           </div>
           <MemberLoginSection />
+          {/* TODO: 0315 把db的任務區的UI顯示出來，只需要先把api response的會傳內容，顯示出來，積分獎勵任務完成的DB操作邏輯放在下一個階段。 */}
+          {/* 參考設計 https://roworld.gnjoy.hk/mlktwgh/?srtl=3276.0.0.0&op_scid=9pVYQqZd-jL3siwUTvONG&customFrom=global-website*/}
           {isLoading && <div>載入積分任務中...</div>}
           {error && <div>載入失敗，請稍後再試</div>}
           {desktopProgress && mobileProgress && (
