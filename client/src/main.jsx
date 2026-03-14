@@ -20,9 +20,7 @@ createRoot(document.getElementById("root")).render(
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-         
             <App />
-
         </AuthProvider>
       </QueryClientProvider>
     </Provider>

@@ -137,8 +137,13 @@ func main() {
 	router.PUT("/products/:id", handlers.UpdateProductHandler(pool)) // 你原本少了開頭 /，我順便修正
 	router.GET("/products/:id", handlers.GetProductByIDHandler(pool))
 	router.GET("/products/search", handlers.ListProductsHandler(pool))
+	// TODO: 0315 新增 查看所有已經註冊的名單
+	// router.GET("/users", handlers.GetUsersHandler(pool))
+	// 登入
 	router.POST("/auth/login", handlers.LoginHandler(pool, cfg))
+	// 驗證自己是否已經登入
 	router.GET("/auth/me", handlers.MeHandler(cfg))
+	// 獎勵進度表
 	router.GET("/events/:eventId/tasks", handlers.GetEventTasksHandler(pool, cfg))
 
 	fmt.Println("registering /auth/me")
