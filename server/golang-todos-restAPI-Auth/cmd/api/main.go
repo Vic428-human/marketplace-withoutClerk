@@ -146,6 +146,7 @@ func main() {
 	router.GET("/auth/me", handlers.MeHandler(cfg))
 	// 獎勵進度表
 	router.GET("/events/:eventId/tasks", handlers.GetEventTasksHandler(pool, cfg))
+	router.PATCH("/events/:eventId/tasks/:taskId/progress", handlers.UpdateEventTaskProgressHandler(pool, cfg))
 
 	fmt.Println("registering /auth/me")
 	// 8) Run server（最後）

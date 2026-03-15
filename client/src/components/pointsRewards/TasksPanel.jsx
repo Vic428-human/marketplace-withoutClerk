@@ -20,7 +20,16 @@ function getTaskButtonMeta(task) {
 }
 
 function TaskItem({ task, index, onAction }) {
-  const buttonMeta = getTaskButtonMeta(task);
+  const isClaimed = task?.status?.isClaimed;
+  const isCompleted = task?.status?.isCompleted;
+
+  const buttonText = isClaimed
+    ? "已領取"
+    : isCompleted
+      ? "領取獎勵"
+      : "前往完成";
+
+  const isDisabled = isClaimed;
 
   return (
     <div
@@ -63,18 +72,22 @@ function TaskItem({ task, index, onAction }) {
 
       <button
         type="button"
-        disabled={buttonMeta.disabled}
+        disabled={isDisabled}
         onClick={() => onAction?.(task)}
-        className="
-          w-full shrink-0 rounded-full border-2 border-[#9c7700]
-          bg-[#f2c21b] px-4 py-2
+        className={`
+          w-full shrink-0 rounded-full border-2 px-4 py-2
           text-sm font-bold text-white
           disabled:cursor-not-allowed disabled:opacity-60
           sm:px-5 sm:py-2.5 sm:text-base
           lg:w-auto lg:px-6 lg:py-3 lg:text-lg
-        "
+          ${
+            isCompleted
+              ? "border-red-700 bg-red-500"
+              : "border-[#9c7700] bg-[#f2c21b]"
+          }
+        `}
       >
-        {buttonMeta.text}
+        {buttonText}
       </button>
     </div>
   );
