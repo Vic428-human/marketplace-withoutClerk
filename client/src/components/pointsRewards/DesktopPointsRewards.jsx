@@ -1,6 +1,12 @@
 import { useMemo } from "react";
+import TasksPanel from "./TasksPanel";
 
-export default function DesktopPointsRewards({ className = "", progress }) {
+export default function DesktopPointsRewards({
+  className = "",
+  progress,
+  tasks = [], // 避免一開始還沒拿到 API 時噴錯
+  onTaskAction, // 把按鈕點擊事件傳進來
+}) {
   const {
     milestonesUI = [],
     topPadPct,
@@ -18,8 +24,11 @@ export default function DesktopPointsRewards({ className = "", progress }) {
     return (
       <button
         type="button"
-        className={["w-[100px]", reached ? "" : "opacity-80"].join(" ")}
+      className={[reached ? "" : "opacity-80"].join(" ")}
         onClick={() => {}}
+        style={{
+        width: "clamp(52px, 7vw, 100px)",
+      }}
       >
         <div
           className="relative w-full aspect-144/136 bg-no-repeat bg-center bg-contain"
@@ -54,6 +63,7 @@ export default function DesktopPointsRewards({ className = "", progress }) {
         "--bar-bottom": "22%",
       }}
     >
+      {/* 左邊 milestones / rewards */}
       <div
         className="
           absolute left-[var(--bar-x)] top-[var(--bar-top)] bottom-[var(--bar-bottom)]
@@ -137,6 +147,18 @@ export default function DesktopPointsRewards({ className = "", progress }) {
             })}
           </div>
         </div>
+      </div>
+      {/* 右邊 TasksPanel */}
+      <div
+        className="
+    absolute
+    top-[18%] h-[55%]
+    left-[35%] w-[48%]
+    lg:left-[35%] lg:w-[49%]
+    xl:left-[32%] xl:w-[50%]
+  "
+      >
+        <TasksPanel tasks={tasks} onTaskAction={onTaskAction} />
       </div>
     </div>
   );
