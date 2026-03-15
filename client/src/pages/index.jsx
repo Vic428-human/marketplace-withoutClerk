@@ -18,7 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { computeMobileProgress } from "../utils/pointsProgressCalculator";
 import { buildBaseProgressModel } from "../utils/buildBaseProgressModel";
-import {computeDesktopProgress} from "../utils/computeDesktopProgress";
+import { computeDesktopProgress } from "../utils/computeDesktopProgress";
 
 const cardsData = [
   {
@@ -122,7 +122,7 @@ const Home = () => {
     gcTime: 10 * 60 * 1000,
     retry: 2,
   });
-
+  console.log(program);
   const baseProgress = program ? buildBaseProgressModel(program) : null;
 
   const desktopProgress = baseProgress
@@ -182,7 +182,13 @@ const Home = () => {
             <section className="w-full">
               <div className="mx-auto w-[min(92vw,1400px)] px-4 sm:px-6">
                 {!isMobile ? (
-                  <DesktopPointsRewards progress={desktopProgress} />
+                  <DesktopPointsRewards
+                    progress={desktopProgress}
+                    tasks={program.tasks}
+                    onTaskAction={(task) => {
+                      console.log("click task", task);
+                    }}
+                  />
                 ) : (
                   <MobilePointsRewards progress={mobileProgress} />
                 )}
