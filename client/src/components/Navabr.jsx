@@ -1,13 +1,43 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate, Link } from "react-router-dom";
+import { useMemo, useState, useContext } from "react";
+import { AuthContext } from "../context/auth-context-def.js";
+import { Link } from "react-router-dom";
 import { MenuIcon, XIcon } from "lucide-react";
+import { Loader2 } from "lucide-react";
+
+const UserAvatar = ({ userInfo, letter }) => (
+  <div className="flex-shrink-0 size-8 flex items-center justify-center rounded-full bg-indigo-600 text-white font-bold overflow-hidden shadow-sm">
+    {userInfo?.imageUrl ? (
+      <img
+        src={userInfo.imageUrl}
+        alt="profile"
+        className="size-full object-cover"
+      />
+    ) : (
+      <span className="text-sm">{letter}</span>
+    )}
+  </div>
+);
 
 const Navabr = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const navigate = useNavigate();
-  // ✅ 從 Redux 抓 token
-  const token = useSelector((state) => state.userAccount.token);
+  const { isAuthenticated, userInfo, authLoading } = useContext(AuthContext);
+  const { displayName, avatarLetter } = useMemo(() => {
+    if (!userInfo?.email) return { displayName: "會員", avatarLetter: "?" };
+    const name = userInfo.email.split("@")[0];
+    return {
+      displayName: name,
+      avatarLetter: name.charAt(0).toUpperCase(),
+    };
+  }, [userInfo]);
+
+  if (authLoading) {
+    return (
+      <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full border border-gray-200">
+        <Loader2 className="size-4 animate-spin text-indigo-600" />
+        <span className="text-xs font-medium text-gray-500">正在驗證...</span>
+      </div>
+    );
+  }
 
   return (
     <nav className="">
@@ -25,21 +55,21 @@ const Navabr = () => {
           <Link to={"/my-listings"}>我的賣場</Link>
           <Link to="/memberRegisterPage">會員專區</Link>
         </div>
-        <div>
-          {/* ✅ 根據 token 顯示不同內容 */}
-          {token ? (
-            <div className="flex items-center gap-2 text-sm bg-green-100 px-3 py-1 rounded-full">
-              <span>✅ 已登入</span>
-              <span className="text-xs truncate max-w-32">
-                {token.substring(0, 20)}...
+        <div className="flex items-center gap-4">
+          {isAuthenticated ? (
+            <div className="flex items-center gap-3 px-3 py-1 bg-green-50 rounded-full border border-green-200 hover:bg-green-100 transition-colors cursor-pointer">
+              <UserAvatar userInfo={userInfo} letter={avatarLetter} />
+              <span className="text-sm font-medium text-green-800 max-w-[120px] truncate">
+                {displayName}
               </span>
             </div>
           ) : (
-            <div className="flex items-center gap-2 text-sm bg-green-100 px-3 py-1 rounded-full">
-              <span>❌ 尚未登入</span>
-             
+            <div className="flex items-center gap-2 text-sm bg-gray-100 px-3 py-1 rounded-full text-gray-500 hover:bg-gray-200 transition-colors">
+              <span className="filter grayscale opacity-70">👤</span>
+              <span>尚未登入</span>
             </div>
           )}
+          {/* Mobile Menu Icon */}
           <MenuIcon
             onClick={() => setMenuOpen(true)}
             className="sm:hidden cursor-pointer"
