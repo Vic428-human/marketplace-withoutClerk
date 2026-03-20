@@ -1,5 +1,5 @@
 ### 技術棧 🔧
-> React、Tanstack Query、Postgres、Golang、Websocket、SSE
+> React、Tanstack Query、Postgres、Golang、Websocket、SSE、CRON
 
 ### 近期已完成
 - [x] [26/0319] 顯示登入/登出狀態、使用者頭像
