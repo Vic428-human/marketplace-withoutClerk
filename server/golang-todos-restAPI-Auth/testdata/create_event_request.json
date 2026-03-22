@@ -1,0 +1,76 @@
+{
+  "event": {
+    "eventId": "summer-login-campaign",
+    "title": "暑期登入活動",
+    "description": "暑期限定累積積分活動",
+    "isActive": true
+  },
+  "pointsConfig": {
+    "unitLabel": "積分",
+    "maxMilestone": 450,
+    "defaultValue": 0
+  },
+  "milestones": [
+    {
+      "points": 150,
+      "rewardId": "reward_150"
+    },
+    {
+      "points": 300,
+      "rewardId": "reward_300"
+    },
+    {
+      "points": 450,
+      "rewardId": "reward_450"
+    }
+  ],
+  "rewards": [
+    {
+      "rewardId": "reward_150",
+      "milestonePoints": 150,
+      "title": "150積分獎勵",
+      "preview": {
+        "imageUrl": "",
+        "description": "神秘寶箱 x1"
+      }
+    },
+    {
+      "rewardId": "reward_300",
+      "milestonePoints": 300,
+      "title": "300積分獎勵",
+      "preview": {
+        "imageUrl": "",
+        "description": "神秘寶箱 x2"
+      }
+    },
+    {
+      "rewardId": "reward_450",
+      "milestonePoints": 450,
+      "title": "450積分獎勵",
+      "preview": {
+        "imageUrl": "",
+        "description": "神秘寶箱 x3"
+      }
+    }
+  ],
+  "tasks": [
+    {
+      "taskId": "task_daily_login",
+      "title": "每日登入",
+      "description": "每日登入一次即可完成",
+      "badgeText": "每日",
+      "pointsReward": 50,
+      "actionUrl": "/login",
+      "maxCompletionCount": 1
+    },
+    {
+      "taskId": "task_bind_phone",
+      "title": "綁定手機門號",
+      "description": "完成手機門號綁定",
+      "badgeText": "新手",
+      "pointsReward": 200,
+      "actionUrl": "/account/bind-phone",
+      "maxCompletionCount": 1
+    }
+  ]
+}

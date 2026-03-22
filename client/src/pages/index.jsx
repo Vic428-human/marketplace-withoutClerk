@@ -88,7 +88,8 @@ const Home = () => {
     queryKey: ["points-program"],
     queryFn: async () => {
       const response = await fetch(
-        "http://localhost:3000/events/points-reward-demo/tasks",
+        // summer-login-campaign-test
+        "http://localhost:8080/events/summer-login-campaign-test/tasks",
         {
           method: "GET",
           credentials: "include",

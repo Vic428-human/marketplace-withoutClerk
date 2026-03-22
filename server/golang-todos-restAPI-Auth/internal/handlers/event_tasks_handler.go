@@ -50,19 +50,19 @@ func GetEventTasksHandler(pool *pgxpool.Pool, cfg *config.Config) gin.HandlerFun
 		// 5. 查詢資料庫
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-
+		// 來源 tasks、user_task_progress 表
 		tasks, err := repository.GetEventTasksByUser(ctx, pool, userID, eventID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch tasks"})
 			return
 		}
-
+		// 來源 event_points_config、event_milestones 表
 		pointsConfig, err := repository.GetEventPointsConfig(ctx, pool, eventID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch points config"})
 			return
 		}
-
+		// 來源 rewards 表
 		rewards, err := repository.GetEventRewards(ctx, pool, eventID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch rewards"})

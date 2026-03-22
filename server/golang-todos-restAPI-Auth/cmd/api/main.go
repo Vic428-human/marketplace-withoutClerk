@@ -21,6 +21,7 @@ import (
 )
 
 func main() {
+	fmt.Println(">>> KADY TEST 0322")
 	// 1) config + DB pool（只建立一次）
 	cfg, err := config.Load()
 	if err != nil {
@@ -148,8 +149,10 @@ func main() {
 	router.GET("/events/:eventId/tasks", handlers.GetEventTasksHandler(pool, cfg))
 	router.PATCH("/events/:eventId/tasks/:taskId/progress", handlers.UpdateEventTaskProgressHandler(pool, cfg))
 
-	fmt.Println("registering /auth/me")
-	// 8) Run server（最後）
+	fmt.Println(">>> registering POST /admin/events")
+	router.POST("/admin/events", handlers.CreateEventHandler(pool, cfg))
+	fmt.Println(">>> registered POST /admin/events")
+	fmt.Println(">>> server starting on port", cfg.Port)
 	if err := router.Run(":" + cfg.Port); err != nil {
 		log.Fatal(err)
 	}

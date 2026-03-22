@@ -28,7 +28,7 @@ function formatBytes(n) {
   return `${v.toFixed(i === 0 ? 0 : 2)} ${units[i]}`;
 }
 
-export default function SseStats({ url = "http://localhost:3000/events" }) {
+export default function SseStats({ url = "http://localhost:8080/events" }) {
   const [connected, setConnected] = useState(false);
   const [memRaw, setMemRaw] = useState("");
   const [cpuRaw, setCpuRaw] = useState("");

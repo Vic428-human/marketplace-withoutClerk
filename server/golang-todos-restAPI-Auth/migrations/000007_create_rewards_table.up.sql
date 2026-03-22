@@ -1,3 +1,4 @@
+-- 定義某活動下 reward 的詳細內容，包括圖片
 CREATE TABLE IF NOT EXISTS rewards (
     id BIGSERIAL PRIMARY KEY,
     reward_id VARCHAR(100) NOT NULL,           -- reward_150

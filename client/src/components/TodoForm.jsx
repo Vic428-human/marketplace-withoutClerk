@@ -8,7 +8,7 @@ const TodoForm = () => {
     const { mutate: createTodo, isPending: isCreating } = useMutation({
         mutationKey: ["createTodo"],
         mutationFn: async (todoTitle) => {  // 改名為 todoTitle 更明確
-            const res = await fetch('http://localhost:3000/todos', {  // 確認後端 URL 正確
+            const res = await fetch('http://localhost:8080/todos', {  // 確認後端 URL 正確
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
