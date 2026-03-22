@@ -1,6 +1,6 @@
 import axios from "axios";
 export const getProducts = async () => {
-  const response = await fetch("http://localhost:3000/products", {
+  const response = await fetch("http://localhost:8080/products", {
     headers: {
       Accept: "application/json",
     },
@@ -17,7 +17,7 @@ export const getProducts = async () => {
 
 export const searchProducts = async (keyword) => {
   const { data } = await axios.get(
-    `http://localhost:3000/products/search?keyword=${keyword}`,
+    `http://localhost:8080/products/search?keyword=${keyword}`,
   );
   return data;
 };

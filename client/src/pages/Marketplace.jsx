@@ -137,7 +137,7 @@ const Marketplace = () => {
                   <ChatRoom
                     user={String(userInfo?.id || "")}
                     name={userInfo?.email || "Guest"}
-                    urlBase="ws://localhost:3000/ws"
+                    urlBase="ws://localhost:8080/ws"
                   />
                 </div>
               )}

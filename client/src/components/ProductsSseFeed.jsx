@@ -17,7 +17,7 @@ function safeStr(v, fallback = "") {
 }
 
 export default function ProductsSseTicker({
-  url = "http://localhost:3000/products/stream",
+  url = "http://localhost:8080/products/stream",
 }) {
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState("");

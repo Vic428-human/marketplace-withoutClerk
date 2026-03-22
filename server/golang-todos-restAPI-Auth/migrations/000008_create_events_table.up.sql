@@ -1,0 +1,9 @@
+-- 這張表先負責什麼 ? event_id 、活動標題、活動描述、是否啟用
+CREATE TABLE IF NOT EXISTS events (
+    event_id VARCHAR(100) PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);

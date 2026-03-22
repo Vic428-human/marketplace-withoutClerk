@@ -21,7 +21,7 @@ func main() {
 		admin.GET("", h.ServeAdminDashboard)
     }
     
-    router.Run(":" + cfg.Port) //8080
+    router.Run(":" + cfg.Port) 
 }
 
 type Config struct {
