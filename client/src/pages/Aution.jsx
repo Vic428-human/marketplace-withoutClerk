@@ -1,111 +1,103 @@
-import { createFileRoute } from "@tanstack/react-router";
+import React, { useEffect, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { assets } from "../assets/assets";
 
 const Aution = () => {
-  const quantity = 10;
+  const [listings, setListings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const items = [
-    {
-      position: 2,
-      src: "https://rd.fharr.com/images/tw/card/4121/",
-      alt: "皮里恩",
-    },
-    {
-      position: 1,
-      src: "https://rd.fharr.com/images/tw/card/4168/",
-      alt: "黑暗之王",
-    },
-    {
-      position: 3,
-      src: "https://rd.fharr.com/images/tw/card/4302/",
-      alt: "塔奧群卡",
-    },
-    {
-      position: 4,
-      src: "https://rd.fharr.com/images/tw/card/4241/",
-      alt: "聖天使波利卡片",
-    },
-    {
-      position: 5,
-      src: "https://rd.fharr.com/images/tw/card/4131/",
-      alt: "月夜貓卡片",
-    },
-    {
-      position: 6,
-      src: "https://rd.fharr.com/images/tw/card/4306/",
-      alt: "蛙王",
-    },
-    {
-      position: 7,
-      src: "https://rz.fharr.com/images/tw/card/4123/",
-      alt: "虎王卡片",
-    },
-    {
-      position: 8,
-      src: "https://rd.fharr.com/images/tw/card/4144/",
-      alt: "俄塞里斯卡片",
-    },
-    {
-      position: 9,
-      src: "https://rd.fharr.com/images/tw/card/4143/",
-      alt: "獸人英雄卡片",
-    },
-    {
-      position: 10,
-      src: "https://rd.fharr.com/images/tw/card/4236/",
-      alt: "古埃及王卡片",
-    },
-  ];
+  useEffect(() => {
+    const fetchAuctions = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const res = await fetch("http://localhost:8080/auctions", {
+          method: "GET",
+          credentials: "include",
+        });
+
+        if (!res.ok) {
+          throw new Error("failed to fetch auctions");
+        }
+
+        const data = await res.json();
+        setListings(data.data || []);
+      } catch (err) {
+        console.error("fetch auctions error:", err);
+        setError("Failed to load auctions");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAuctions();
+  }, []);
+
+  const items = listings.map((listing, index) => ({
+    id: listing.id,
+    position: index + 1,
+    src: listing.item_image_url,
+    alt: listing.item_name,
+    currentPrice: listing.current_price,
+  }));
+
+  console.log('items:', items);
+
+  const quantity = items.length || 1;
+
+  if (loading) {
+    return <div className="text-center pt-20">Loading auctions...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center pt-20 text-red-500">{error}</div>;
+  }
+
+  if (items.length === 0) {
+    return <div className="text-center pt-20">No auctions available.</div>;
+  }
 
   return (
-    // w-screen = 100vw
-    //
     <div className="-mt-20 w-screen h-screen text-center overflow-hidden relative">
-      {/* 最底層背景 */}
       <div
-        className="absolute inset-0 z-0
-                  bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{
-          // backgroundImage: "url('https://png.pngtree.com/background/20230412/original/pngtree-colorful-and-beautiful-background-of-starry-sky-picture-image_2395079.jpg')",
-          //
-          // backgroundImage: "url('https://truth.bahamut.com.tw/s01/201811/25fbe557a8a3eed9210087f92900fbac.JPG')",
           backgroundImage:
             "url('https://en.pimg.jp/120/301/641/1/120301641.jpg')",
         }}
       />
-      {/* 中間人物 */}
-      <div
-        className="absolute left-1/2 top-[5%]
-                  -translate-x-1/2
-                  w-[420px]
-                  pointer-events-none z-0
-                 "
-      >
+
+      <div className="absolute left-1/2 top-[5%] -translate-x-1/2 w-[420px] pointer-events-none z-0">
         <img
           src={assets.model}
           alt="center"
           className="w-full object-contain"
         />
       </div>
-      {/* 旋轉卡牌 */}
+
       <div
-        className="banner-slider absolute w-[150px] h-[200px] top-[15%] left-[calc(50%-100px)]
-                    [transform-style:preserve-3d] [transform:perspective(1000px)]  z-10"
-        style={{ ["--quantity"]: quantity }}
+        className="banner-slider absolute w-[150px] h-[200px] top-[15%] left-[calc(50%-100px)] [transform-style:preserve-3d] [transform:perspective(1000px)] z-10"
+        style={{ "--quantity": quantity }}
       >
-        {/* 原本的旋轉卡片 */}
         {items.map((it) => (
           <div
-            key={it.position}
-            className="absolute inset-0
-                        [transform:rotateY(calc((var(--position)-1)*(360deg/var(--quantity))))_translateZ(550px)]"
-            style={{ ["--position"]: it.position }}
+            key={it.id}
+            className="absolute inset-0 [transform:rotateY(calc((var(--position)-1)*(360deg/var(--quantity))))_translateZ(550px)]"
+            style={{ "--position": it.position }}
           >
-            <img
-              className="w-full h-full object-cover"
-              src={it.src}
-              alt={it.alt}
-            />
+            <Link
+              to="/auctions/$id"
+              params={{ id: it.id }}
+              className="block w-full h-full"
+            >
+              <img
+                className="w-full h-full object-cover cursor-pointer"
+                src={it.src}
+                alt={it.alt}
+              />
+            </Link>
           </div>
         ))}
       </div>
@@ -116,6 +108,5 @@ const Aution = () => {
 export default Aution;
 
 export const Route = createFileRoute("/Aution")({
-  path: "/Aution",
   component: Aution,
 });

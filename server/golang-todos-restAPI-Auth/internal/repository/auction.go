@@ -1,0 +1,363 @@
+package repository
+
+import (
+	"context"
+	"errors"
+	"time"
+	"todo_api/internal/models"
+	"todo_api/internal/utils"
+
+	"github.com/jackc/pgx/v5/pgxpool"
+)
+
+// CreateAuctionListing 建立一筆新的拍賣商品
+func CreateAuctionListing(pool *pgxpool.Pool, sellerID string, req models.CreateAuctionListingRequest) (*models.AuctionListing, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	utils.PerformOperation(ctx)
+
+	// 如果 min_increment 沒有傳或小於等於 0，就給預設值 1
+	minIncrement := req.MinIncrement
+	if minIncrement <= 0 {
+		minIncrement = 1
+	}
+
+	// current_price 在建立時，初始值直接等於起標價
+	query := `
+		INSERT INTO auction_listings (
+			seller_id,
+			item_name,
+			item_image_url,
+			item_description,
+			starting_price,
+			current_price,
+			min_increment,
+			status,
+			start_time,
+			end_time
+		)
+		VALUES ($1, $2, $3, $4, $5, $5, $6, 'active', CURRENT_TIMESTAMP, $7)
+		RETURNING
+			id,
+			seller_id,
+			item_name,
+			item_image_url,
+			item_description,
+			starting_price,
+			current_price,
+			min_increment,
+			highest_bidder_id,
+			status,
+			start_time,
+			end_time,
+			created_at,
+			updated_at
+	`
+
+	var listing models.AuctionListing
+
+	err := pool.QueryRow(
+		ctx,
+		query,
+		sellerID,
+		req.ItemName,
+		req.ItemImageURL,
+		req.ItemDescription,
+		req.StartingPrice,
+		minIncrement,
+		req.EndTime,
+	).Scan(
+		&listing.ID,
+		&listing.SellerID,
+		&listing.ItemName,
+		&listing.ItemImageURL,
+		&listing.ItemDescription,
+		&listing.StartingPrice,
+		&listing.CurrentPrice,
+		&listing.MinIncrement,
+		&listing.HighestBidderID,
+		&listing.Status,
+		&listing.StartTime,
+		&listing.EndTime,
+		&listing.CreatedAt,
+		&listing.UpdatedAt,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &listing, nil
+}
+
+// GetAuctionListings 取得所有拍賣商品
+// 目前先只抓 active，並依建立時間新到舊排序
+func GetAuctionListings(pool *pgxpool.Pool) ([]models.AuctionListing, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	utils.PerformOperation(ctx)
+
+	query := `
+		SELECT
+			id,
+			seller_id,
+			item_name,
+			item_image_url,
+			item_description,
+			starting_price,
+			current_price,
+			min_increment,
+			highest_bidder_id,
+			status,
+			start_time,
+			end_time,
+			created_at,
+			updated_at
+		FROM auction_listings
+		WHERE status = 'active'
+		ORDER BY created_at DESC
+	`
+
+	rows, err := pool.Query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var listings []models.AuctionListing
+
+	for rows.Next() {
+		var listing models.AuctionListing
+
+		err := rows.Scan(
+			&listing.ID,
+			&listing.SellerID,
+			&listing.ItemName,
+			&listing.ItemImageURL,
+			&listing.ItemDescription,
+			&listing.StartingPrice,
+			&listing.CurrentPrice,
+			&listing.MinIncrement,
+			&listing.HighestBidderID,
+			&listing.Status,
+			&listing.StartTime,
+			&listing.EndTime,
+			&listing.CreatedAt,
+			&listing.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		listings = append(listings, listing)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return listings, nil
+}
+
+// GetAuctionListingByID 根據 id 取得單一拍賣商品
+func GetAuctionListingByID(pool *pgxpool.Pool, listingID string) (*models.AuctionListing, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	utils.PerformOperation(ctx)
+
+	query := `
+		SELECT
+			id,
+			seller_id,
+			item_name,
+			item_image_url,
+			item_description,
+			starting_price,
+			current_price,
+			min_increment,
+			highest_bidder_id,
+			status,
+			start_time,
+			end_time,
+			created_at,
+			updated_at
+		FROM auction_listings
+		WHERE id = $1
+	`
+
+	var listing models.AuctionListing
+
+	err := pool.QueryRow(ctx, query, listingID).Scan(
+		&listing.ID,
+		&listing.SellerID,
+		&listing.ItemName,
+		&listing.ItemImageURL,
+		&listing.ItemDescription,
+		&listing.StartingPrice,
+		&listing.CurrentPrice,
+		&listing.MinIncrement,
+		&listing.HighestBidderID,
+		&listing.Status,
+		&listing.StartTime,
+		&listing.EndTime,
+		&listing.CreatedAt,
+		&listing.UpdatedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &listing, nil
+}
+
+// GetAuctionBidsByListingID 取得某一筆拍賣商品的所有出價紀錄
+func GetAuctionBidsByListingID(pool *pgxpool.Pool, listingID string) ([]models.AuctionBid, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	utils.PerformOperation(ctx)
+
+	query := `
+		SELECT
+			id,
+			listing_id,
+			bidder_id,
+			bid_amount,
+			created_at
+		FROM auction_bids
+		WHERE listing_id = $1
+		ORDER BY created_at DESC
+	`
+
+	rows, err := pool.Query(ctx, query, listingID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var bids []models.AuctionBid
+
+	for rows.Next() {
+		var bid models.AuctionBid
+
+		err := rows.Scan(
+			&bid.ID,
+			&bid.ListingID,
+			&bid.BidderID,
+			&bid.BidAmount,
+			&bid.CreatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		bids = append(bids, bid)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return bids, nil
+}
+
+// PlaceBid 建立一筆出價，並同步更新 auction_listings 的 current_price / highest_bidder_id
+// 這裡一定要用 transaction，避免多人同時出價造成資料不一致
+func PlaceBid(pool *pgxpool.Pool, listingID string, bidderID string, bidAmount int64) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	utils.PerformOperation(ctx)
+
+	tx, err := pool.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+
+	// 先把該 listing 鎖住，避免同時多人更新
+	query := `
+		SELECT
+			seller_id,
+			current_price,
+			min_increment,
+			status,
+			end_time
+		FROM auction_listings
+		WHERE id = $1
+		FOR UPDATE
+	`
+
+	var sellerID string
+	var currentPrice int64
+	var minIncrement int64
+	var status string
+	var endTime time.Time
+
+	err = tx.QueryRow(ctx, query, listingID).Scan(
+		&sellerID,
+		&currentPrice,
+		&minIncrement,
+		&status,
+		&endTime,
+	)
+	if err != nil {
+		return err
+	}
+
+	// 不允許自己競標自己的商品
+	if sellerID == bidderID {
+		return errors.New("seller cannot bid on own listing")
+	}
+
+	// 只有 active 狀態才可以出價
+	if status != "active" {
+		return errors.New("listing is not active")
+	}
+
+	// 超過結束時間就不能再出價
+	if time.Now().After(endTime) {
+		return errors.New("auction has already ended")
+	}
+
+	// 出價必須大於等於目前價格 + 最小加價幅度
+	minValidBid := currentPrice + minIncrement
+	if bidAmount < minValidBid {
+		return errors.New("bid amount is too low")
+	}
+
+	// 新增出價紀錄
+	insertBidQuery := `
+		INSERT INTO auction_bids (
+			listing_id,
+			bidder_id,
+			bid_amount
+		)
+		VALUES ($1, $2, $3)
+	`
+
+	_, err = tx.Exec(ctx, insertBidQuery, listingID, bidderID, bidAmount)
+	if err != nil {
+		return err
+	}
+
+	// 更新拍賣商品目前價格與最高出價者
+	updateListingQuery := `
+		UPDATE auction_listings
+		SET
+			current_price = $1,
+			highest_bidder_id = $2,
+			updated_at = CURRENT_TIMESTAMP
+		WHERE id = $3
+	`
+
+	_, err = tx.Exec(ctx, updateListingQuery, bidAmount, bidderID, listingID)
+	if err != nil {
+		return err
+	}
+
+	return tx.Commit(ctx)
+}

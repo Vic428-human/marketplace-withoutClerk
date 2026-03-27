@@ -19,6 +19,7 @@ import { Route as AutionRouteImport } from './pages/Aution'
 import { Route as MemberRegisterPageRouteRouteImport } from './pages/MemberRegisterPage/route'
 import { Route as IndexRouteImport } from './pages/index'
 import { Route as MemberRegisterPageIndexRouteImport } from './pages/MemberRegisterPage/index'
+import { Route as AuctionsIdRouteImport } from './pages/auctions.$id'
 import { Route as MemberRegisterPageRegisterRouteImport } from './pages/MemberRegisterPage/register'
 import { Route as MemberRegisterPageForgotPasswordRouteImport } from './pages/MemberRegisterPage/forgot-password'
 
@@ -72,6 +73,11 @@ const MemberRegisterPageIndexRoute = MemberRegisterPageIndexRouteImport.update({
   path: '/',
   getParentRoute: () => MemberRegisterPageRouteRoute,
 } as any)
+const AuctionsIdRoute = AuctionsIdRouteImport.update({
+  id: '/auctions/$id',
+  path: '/auctions/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MemberRegisterPageRegisterRoute =
   MemberRegisterPageRegisterRouteImport.update({
     id: '/register',
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/MyOrders': typeof MyOrdersRoute
   '/MemberRegisterPage/forgot-password': typeof MemberRegisterPageForgotPasswordRoute
   '/MemberRegisterPage/register': typeof MemberRegisterPageRegisterRoute
+  '/auctions/$id': typeof AuctionsIdRoute
   '/MemberRegisterPage/': typeof MemberRegisterPageIndexRoute
 }
 export interface FileRoutesByTo {
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/MyOrders': typeof MyOrdersRoute
   '/MemberRegisterPage/forgot-password': typeof MemberRegisterPageForgotPasswordRoute
   '/MemberRegisterPage/register': typeof MemberRegisterPageRegisterRoute
+  '/auctions/$id': typeof AuctionsIdRoute
   '/MemberRegisterPage': typeof MemberRegisterPageIndexRoute
 }
 export interface FileRoutesById {
@@ -125,6 +133,7 @@ export interface FileRoutesById {
   '/MyOrders': typeof MyOrdersRoute
   '/MemberRegisterPage/forgot-password': typeof MemberRegisterPageForgotPasswordRoute
   '/MemberRegisterPage/register': typeof MemberRegisterPageRegisterRoute
+  '/auctions/$id': typeof AuctionsIdRoute
   '/MemberRegisterPage/': typeof MemberRegisterPageIndexRoute
 }
 export interface FileRouteTypes {
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/MyOrders'
     | '/MemberRegisterPage/forgot-password'
     | '/MemberRegisterPage/register'
+    | '/auctions/$id'
     | '/MemberRegisterPage/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | '/MyOrders'
     | '/MemberRegisterPage/forgot-password'
     | '/MemberRegisterPage/register'
+    | '/auctions/$id'
     | '/MemberRegisterPage'
   id:
     | '__root__'
@@ -168,6 +179,7 @@ export interface FileRouteTypes {
     | '/MyOrders'
     | '/MemberRegisterPage/forgot-password'
     | '/MemberRegisterPage/register'
+    | '/auctions/$id'
     | '/MemberRegisterPage/'
   fileRoutesById: FileRoutesById
 }
@@ -181,6 +193,7 @@ export interface RootRouteChildren {
   MessagesRoute: typeof MessagesRoute
   MyListingsRoute: typeof MyListingsRoute
   MyOrdersRoute: typeof MyOrdersRoute
+  AuctionsIdRoute: typeof AuctionsIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -255,6 +268,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MemberRegisterPageIndexRouteImport
       parentRoute: typeof MemberRegisterPageRouteRoute
     }
+    '/auctions/$id': {
+      id: '/auctions/$id'
+      path: '/auctions/$id'
+      fullPath: '/auctions/$id'
+      preLoaderRoute: typeof AuctionsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/MemberRegisterPage/register': {
       id: '/MemberRegisterPage/register'
       path: '/register'
@@ -301,6 +321,7 @@ const rootRouteChildren: RootRouteChildren = {
   MessagesRoute: MessagesRoute,
   MyListingsRoute: MyListingsRoute,
   MyOrdersRoute: MyOrdersRoute,
+  AuctionsIdRoute: AuctionsIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

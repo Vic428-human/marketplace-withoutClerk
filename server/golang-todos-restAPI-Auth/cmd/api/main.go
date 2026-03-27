@@ -149,6 +149,13 @@ func main() {
 	router.GET("/events/:eventId/tasks", handlers.GetEventTasksHandler(pool, cfg))
 	router.PATCH("/events/:eventId/tasks/:taskId/progress", handlers.UpdateEventTaskProgressHandler(pool, cfg))
 
+	// 這一區先放 競拍交易所的相關功能
+	router.POST("/auctions", handlers.CreateAuctionListingHandler(pool, cfg))
+	router.GET("/auctions", handlers.GetAuctionListingsHandler(pool))
+	router.GET("/auctions/:id", handlers.GetAuctionListingByIDHandler(pool))
+	router.POST("/auctions/:id/bids", handlers.PlaceBidHandler(pool, cfg))
+	router.GET("/auctions/:id/bids", handlers.GetAuctionBidsHandler(pool))
+
 	fmt.Println(">>> registering POST /admin/events")
 	router.POST("/admin/events", handlers.CreateEventHandler(pool, cfg))
 	fmt.Println(">>> registered POST /admin/events")
