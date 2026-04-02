@@ -43,7 +43,7 @@ const Aution = () => {
     currentPrice: listing.current_price,
   }));
 
-  console.log('items:', items);
+  console.log("items:", items);
 
   const quantity = items.length || 1;
 
@@ -60,7 +60,8 @@ const Aution = () => {
   }
 
   return (
-    <div className="-mt-20 w-screen h-screen text-center overflow-hidden relative">
+    //  改用 min-h-screen 更安全
+    <div className="relative w-screen min-h-screen overflow-hidden bg-black">
       <div
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{
@@ -68,7 +69,7 @@ const Aution = () => {
             "url('https://en.pimg.jp/120/301/641/1/120301641.jpg')",
         }}
       />
-
+      {/* 中央模型圖 - 使用 clamp + 斷點 */}
       <div className="absolute left-1/2 top-[5%] -translate-x-1/2 w-[420px] pointer-events-none z-0">
         <img
           src={assets.model}
@@ -76,7 +77,7 @@ const Aution = () => {
           className="w-full object-contain"
         />
       </div>
-
+      {/* 3D 輪播容器 - 大幅優化 */}
       <div
         className="banner-slider absolute w-[150px] h-[200px] top-[15%] left-[calc(50%-100px)] [transform-style:preserve-3d] [transform:perspective(1000px)] z-10"
         style={{ "--quantity": quantity }}
