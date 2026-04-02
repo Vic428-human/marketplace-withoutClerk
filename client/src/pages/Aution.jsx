@@ -62,15 +62,8 @@ const Aution = () => {
   return (
     <div className="relative w-screen min-h-screen overflow-hidden bg-black">
       <div className="relative mx-auto w-[min(92vw,520px)] aspect-[3/4]">
-        {/* 魔法陣 */}
-        <img
-          // src="https://en.pimg.jp/120/301/641/1/120301641.jpg"
-          src={assets.MagicCircle}
-          alt="magic circle"
-          className="absolute bottom-0 left-1/2 w-full -translate-x-1/2 object-contain pointer-events-none select-none"
-        />
-
         {/* 人物 */}
+        {/* 而 bottom-[18%] 指定人物在容器底部往上 18% 的位置 */}
         <div className="absolute left-1/2 bottom-[18%] z-10 w-[100%] -translate-x-1/2 pointer-events-none">
           <img
             src={assets.model}
@@ -78,6 +71,13 @@ const Aution = () => {
             className="w-full object-contain select-none"
           />
         </div>
+        {/* 魔法陣 */}
+        <img
+          src={assets.MagicCircle}
+          alt="magic circle"
+          // left-1/2 搭配 -translate-x-1/2 讓人物水平居中
+          className="absolute bottom-0 left-1/2 w-full -translate-x-1/2 object-contain pointer-events-none select-none"
+        />
       </div>
       {/* 3D 輪播容器 - 大幅優化 */}
       <div
