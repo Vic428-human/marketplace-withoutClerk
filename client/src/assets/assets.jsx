@@ -15,6 +15,7 @@ import avatar01 from './avatar01.png';
 import avatar02 from './avatar02.png';
 import avatar03 from './avatar03.png';
 import model from './model.png';
+import MagicCircle from './MagicCircle.png';
 
 export const assets = {
     logo,
@@ -32,6 +33,7 @@ export const assets = {
     emblem07,
     emblem08,
     model,
+    MagicCircle
 };
 
 export const socialMediaLinks = {

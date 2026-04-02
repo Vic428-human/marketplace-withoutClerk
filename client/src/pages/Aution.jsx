@@ -60,22 +60,24 @@ const Aution = () => {
   }
 
   return (
-    //  改用 min-h-screen 更安全
     <div className="relative w-screen min-h-screen overflow-hidden bg-black">
-      <div
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage:
-            "url('https://en.pimg.jp/120/301/641/1/120301641.jpg')",
-        }}
-      />
-      {/* 中央模型圖 - 使用 clamp + 斷點 */}
-      <div className="absolute left-1/2 top-[5%] -translate-x-1/2 w-[420px] pointer-events-none z-0">
+      <div className="relative mx-auto w-[min(92vw,520px)] aspect-[3/4]">
+        {/* 魔法陣 */}
         <img
-          src={assets.model}
-          alt="center"
-          className="w-full object-contain"
+          // src="https://en.pimg.jp/120/301/641/1/120301641.jpg"
+          src={assets.MagicCircle}
+          alt="magic circle"
+          className="absolute bottom-0 left-1/2 w-full -translate-x-1/2 object-contain pointer-events-none select-none"
         />
+
+        {/* 人物 */}
+        <div className="absolute left-1/2 bottom-[18%] z-10 w-[100%] -translate-x-1/2 pointer-events-none">
+          <img
+            src={assets.model}
+            alt="center"
+            className="w-full object-contain select-none"
+          />
+        </div>
       </div>
       {/* 3D 輪播容器 - 大幅優化 */}
       <div
