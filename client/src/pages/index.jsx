@@ -89,7 +89,8 @@ const Home = () => {
     queryFn: async () => {
       const response = await fetch(
         // summer-login-campaign-test
-        "http://localhost:8080/events/summer-login-campaign-test/tasks",
+        // "http://localhost:8080/events/summer-login-campaign-test/tasks",
+        "http://localhost:8080/events/points-reward-demo/tasks",
         {
           method: "GET",
           credentials: "include",

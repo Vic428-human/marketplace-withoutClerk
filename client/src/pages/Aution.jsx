@@ -43,7 +43,7 @@ const Aution = () => {
     currentPrice: listing.current_price,
   }));
 
-  console.log('items:', items);
+  console.log("items:", items);
 
   const quantity = items.length || 1;
 
@@ -60,23 +60,26 @@ const Aution = () => {
   }
 
   return (
-    <div className="-mt-20 w-screen h-screen text-center overflow-hidden relative">
-      <div
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage:
-            "url('https://en.pimg.jp/120/301/641/1/120301641.jpg')",
-        }}
-      />
-
-      <div className="absolute left-1/2 top-[5%] -translate-x-1/2 w-[420px] pointer-events-none z-0">
+    <div className="relative w-screen min-h-screen overflow-hidden bg-black">
+      <div className="relative mx-auto w-[min(92vw,520px)] aspect-[3/4]">
+        {/* 人物 */}
+        {/* 而 bottom-[18%] 指定人物在容器底部往上 18% 的位置 */}
+        <div className="absolute left-1/2 bottom-[18%] z-10 w-[100%] -translate-x-1/2 pointer-events-none">
+          <img
+            src={assets.model}
+            alt="center"
+            className="w-full object-contain select-none"
+          />
+        </div>
+        {/* 魔法陣 */}
         <img
-          src={assets.model}
-          alt="center"
-          className="w-full object-contain"
+          src={assets.MagicCircle}
+          alt="magic circle"
+          // left-1/2 搭配 -translate-x-1/2 讓人物水平居中
+          className="absolute bottom-0 left-1/2 w-full -translate-x-1/2 object-contain pointer-events-none select-none"
         />
       </div>
-
+      {/* 3D 輪播容器 - 大幅優化 */}
       <div
         className="banner-slider absolute w-[150px] h-[200px] top-[15%] left-[calc(50%-100px)] [transform-style:preserve-3d] [transform:perspective(1000px)] z-10"
         style={{ "--quantity": quantity }}
