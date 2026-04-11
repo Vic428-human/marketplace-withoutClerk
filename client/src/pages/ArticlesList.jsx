@@ -10,11 +10,11 @@ async function fetchArticles(params) {
   searchParams.set("page", page.toString());
   searchParams.set("pageSize", pageSize.toString());
 
-  const tags = params.tags ?? [];
-  if (tags.length > 0) {
-    searchParams.set("tag", tags.join(","));
+  // 改這裡：改成直接吃單一 tag 字串
+  if (params.tag) {
+    searchParams.set("tag", params.tag);
   }
-  
+
   const url = `http://localhost:8081/articles?${searchParams.toString()}`;
   console.log("fetchArticles params:", params);
   console.log("fetchArticles url:", url);
@@ -32,7 +32,9 @@ const TAGS = [
 
 function ArticlesList() {
   const search = useSearch({ from: "/ArticlesList" });
-  const selectedTags = search.tags || [];
+
+  // 改這裡：從單一 tag 字串拆成陣列
+  const selectedTags = search.tag ? search.tag.split(",").filter(Boolean) : [];
 
   const articlesQuery = useSuspenseQuery({
     queryKey: ["articles", search],
@@ -44,9 +46,15 @@ function ArticlesList() {
       <div className="tags-filter p-4 border-b">
         <Link
           to="/ArticlesList"
-          search={(prev) => ({ ...prev, tags: [], page: 1 })}
+          search={(prev) => ({
+            ...prev,
+            tag: "",
+            page: 1,
+          })}
           className={`mr-2 px-3 py-1 rounded ${
-            selectedTags.length === 0 ? "bg-blue-500 text-white" : "bg-gray-200"
+            selectedTags.length === 0
+              ? "bg-blue-500 text-white"
+              : "bg-gray-200"
           }`}
         >
           全部
@@ -60,12 +68,21 @@ function ArticlesList() {
               key={tag.id}
               to="/ArticlesList"
               search={(prev) => {
-                const prevTags = prev.tags || [];
+                // 改這裡：從 prev.tag 拆陣列，不再使用 prev.tags
+                const prevTags = prev.tag
+                  ? prev.tag.split(",").filter(Boolean)
+                  : [];
+
                 const nextTags = prevTags.includes(tag.id)
                   ? prevTags.filter((t) => t !== tag.id)
                   : [...prevTags, tag.id];
 
-                return { ...prev, tags: nextTags, page: 1 };
+                return {
+                  ...prev,
+                  // 改這裡：把陣列再組回單一字串放進網址列
+                  tag: nextTags.join(","),
+                  page: 1,
+                };
               }}
               className={`mr-2 px-3 py-1 rounded ${
                 active ? "bg-blue-500 text-white" : "bg-gray-200"
@@ -84,10 +101,7 @@ function ArticlesList() {
         </p>
 
         {articlesQuery.data?.items?.map((article) => (
-          <div
-            key={article.id}
-            className="article-card border p-4 mb-4 rounded"
-          >
+          <div key={article.id} className="article-card border p-4 mb-4 rounded">
             <h3>{article.title}</h3>
             <p>{article.summary}</p>
           </div>
@@ -101,8 +115,11 @@ export default ArticlesList;
 
 export const Route = createFileRoute("/ArticlesList")({
   validateSearch: (search) => ({
+    // 保留 page
     page: Number(search.page || 1),
-    tags: Array.isArray(search.tags) ? search.tags : [],
+
+    // 改這裡：不再使用 tags，改成 tag
+    tag: typeof search.tag === "string" ? search.tag : "",
   }),
   component: ArticlesList,
 });
