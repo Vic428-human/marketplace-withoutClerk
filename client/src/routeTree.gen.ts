@@ -11,11 +11,11 @@
 import { Route as rootRouteImport } from './pages/__root'
 import { Route as MyOrdersRouteImport } from './pages/MyOrders'
 import { Route as MyListingsRouteImport } from './pages/MyListings'
-import { Route as MessagesRouteImport } from './pages/Messages'
 import { Route as MarketplaceRouteImport } from './pages/Marketplace'
 import { Route as ManageListingRouteImport } from './pages/ManageListing'
 import { Route as ListingDetailsRouteImport } from './pages/ListingDetails'
 import { Route as AutionRouteImport } from './pages/Aution'
+import { Route as ArticlesListRouteImport } from './pages/ArticlesList'
 import { Route as MemberRegisterPageRouteRouteImport } from './pages/MemberRegisterPage/route'
 import { Route as IndexRouteImport } from './pages/index'
 import { Route as MemberRegisterPageIndexRouteImport } from './pages/MemberRegisterPage/index'
@@ -31,11 +31,6 @@ const MyOrdersRoute = MyOrdersRouteImport.update({
 const MyListingsRoute = MyListingsRouteImport.update({
   id: '/MyListings',
   path: '/MyListings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MessagesRoute = MessagesRouteImport.update({
-  id: '/Messages',
-  path: '/Messages',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MarketplaceRoute = MarketplaceRouteImport.update({
@@ -56,6 +51,11 @@ const ListingDetailsRoute = ListingDetailsRouteImport.update({
 const AutionRoute = AutionRouteImport.update({
   id: '/Aution',
   path: '/Aution',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticlesListRoute = ArticlesListRouteImport.update({
+  id: '/ArticlesList',
+  path: '/ArticlesList',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MemberRegisterPageRouteRoute = MemberRegisterPageRouteRouteImport.update({
@@ -94,11 +94,11 @@ const MemberRegisterPageForgotPasswordRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/MemberRegisterPage': typeof MemberRegisterPageRouteRouteWithChildren
+  '/ArticlesList': typeof ArticlesListRoute
   '/Aution': typeof AutionRoute
   '/ListingDetails': typeof ListingDetailsRoute
   '/ManageListing': typeof ManageListingRoute
   '/Marketplace': typeof MarketplaceRoute
-  '/Messages': typeof MessagesRoute
   '/MyListings': typeof MyListingsRoute
   '/MyOrders': typeof MyOrdersRoute
   '/MemberRegisterPage/forgot-password': typeof MemberRegisterPageForgotPasswordRoute
@@ -108,11 +108,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ArticlesList': typeof ArticlesListRoute
   '/Aution': typeof AutionRoute
   '/ListingDetails': typeof ListingDetailsRoute
   '/ManageListing': typeof ManageListingRoute
   '/Marketplace': typeof MarketplaceRoute
-  '/Messages': typeof MessagesRoute
   '/MyListings': typeof MyListingsRoute
   '/MyOrders': typeof MyOrdersRoute
   '/MemberRegisterPage/forgot-password': typeof MemberRegisterPageForgotPasswordRoute
@@ -124,11 +124,11 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/MemberRegisterPage': typeof MemberRegisterPageRouteRouteWithChildren
+  '/ArticlesList': typeof ArticlesListRoute
   '/Aution': typeof AutionRoute
   '/ListingDetails': typeof ListingDetailsRoute
   '/ManageListing': typeof ManageListingRoute
   '/Marketplace': typeof MarketplaceRoute
-  '/Messages': typeof MessagesRoute
   '/MyListings': typeof MyListingsRoute
   '/MyOrders': typeof MyOrdersRoute
   '/MemberRegisterPage/forgot-password': typeof MemberRegisterPageForgotPasswordRoute
@@ -141,11 +141,11 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/MemberRegisterPage'
+    | '/ArticlesList'
     | '/Aution'
     | '/ListingDetails'
     | '/ManageListing'
     | '/Marketplace'
-    | '/Messages'
     | '/MyListings'
     | '/MyOrders'
     | '/MemberRegisterPage/forgot-password'
@@ -155,11 +155,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/ArticlesList'
     | '/Aution'
     | '/ListingDetails'
     | '/ManageListing'
     | '/Marketplace'
-    | '/Messages'
     | '/MyListings'
     | '/MyOrders'
     | '/MemberRegisterPage/forgot-password'
@@ -170,11 +170,11 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/MemberRegisterPage'
+    | '/ArticlesList'
     | '/Aution'
     | '/ListingDetails'
     | '/ManageListing'
     | '/Marketplace'
-    | '/Messages'
     | '/MyListings'
     | '/MyOrders'
     | '/MemberRegisterPage/forgot-password'
@@ -186,11 +186,11 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MemberRegisterPageRouteRoute: typeof MemberRegisterPageRouteRouteWithChildren
+  ArticlesListRoute: typeof ArticlesListRoute
   AutionRoute: typeof AutionRoute
   ListingDetailsRoute: typeof ListingDetailsRoute
   ManageListingRoute: typeof ManageListingRoute
   MarketplaceRoute: typeof MarketplaceRoute
-  MessagesRoute: typeof MessagesRoute
   MyListingsRoute: typeof MyListingsRoute
   MyOrdersRoute: typeof MyOrdersRoute
   AuctionsIdRoute: typeof AuctionsIdRoute
@@ -210,13 +210,6 @@ declare module '@tanstack/react-router' {
       path: '/MyListings'
       fullPath: '/MyListings'
       preLoaderRoute: typeof MyListingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/Messages': {
-      id: '/Messages'
-      path: '/Messages'
-      fullPath: '/Messages'
-      preLoaderRoute: typeof MessagesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/Marketplace': {
@@ -245,6 +238,13 @@ declare module '@tanstack/react-router' {
       path: '/Aution'
       fullPath: '/Aution'
       preLoaderRoute: typeof AutionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ArticlesList': {
+      id: '/ArticlesList'
+      path: '/ArticlesList'
+      fullPath: '/ArticlesList'
+      preLoaderRoute: typeof ArticlesListRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/MemberRegisterPage': {
@@ -314,11 +314,11 @@ const MemberRegisterPageRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MemberRegisterPageRouteRoute: MemberRegisterPageRouteRouteWithChildren,
+  ArticlesListRoute: ArticlesListRoute,
   AutionRoute: AutionRoute,
   ListingDetailsRoute: ListingDetailsRoute,
   ManageListingRoute: ManageListingRoute,
   MarketplaceRoute: MarketplaceRoute,
-  MessagesRoute: MessagesRoute,
   MyListingsRoute: MyListingsRoute,
   MyOrdersRoute: MyOrdersRoute,
   AuctionsIdRoute: AuctionsIdRoute,
