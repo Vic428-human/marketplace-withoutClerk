@@ -51,7 +51,7 @@ const Navabr = () => {
             交易市集
           </Link>
           <Link to={"/aution"}>競拍區</Link>
-          <Link to={"/messages"}>聊天室</Link>
+          <Link to={"/articlesList"}>文章列表</Link>
           <Link to={"/my-listings"}>我的賣場</Link>
           <Link to="/memberRegisterPage">會員專區</Link>
         </div>
@@ -90,7 +90,12 @@ const Navabr = () => {
           >
             交易市集
           </Link>
-          <Link to="/messages">聊天室</Link>
+          <Link
+            to="/articlesList"
+            onClick={() => setMenuOpen(false) && scrollTo(0, 0)}
+          >
+            文章列表
+          </Link>
           <Link to="/my-listings">我的賣場</Link>
 
           <button className=" cursor-pointer px-8 py-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full">
