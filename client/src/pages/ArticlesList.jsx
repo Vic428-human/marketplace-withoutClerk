@@ -10,10 +10,11 @@ async function fetchArticles(params) {
   searchParams.set("page", page.toString());
   searchParams.set("pageSize", pageSize.toString());
 
-  (params.tags ?? []).forEach((tag) => {
-    searchParams.append("tag", tag);
-  });
-
+  const tags = params.tags ?? [];
+  if (tags.length > 0) {
+    searchParams.set("tag", tags.join(","));
+  }
+  
   const url = `http://localhost:8081/articles?${searchParams.toString()}`;
   console.log("fetchArticles params:", params);
   console.log("fetchArticles url:", url);
@@ -45,9 +46,7 @@ function ArticlesList() {
           to="/ArticlesList"
           search={(prev) => ({ ...prev, tags: [], page: 1 })}
           className={`mr-2 px-3 py-1 rounded ${
-            selectedTags.length === 0
-              ? "bg-blue-500 text-white"
-              : "bg-gray-200"
+            selectedTags.length === 0 ? "bg-blue-500 text-white" : "bg-gray-200"
           }`}
         >
           全部
@@ -80,11 +79,15 @@ function ArticlesList() {
 
       <div className="articles-list p-4">
         <p className="mb-4">
-          篩選：{selectedTags.join(", ") || "all"} | 總數：{articlesQuery.data?.totalCount || 0}
+          篩選：{selectedTags.join(", ") || "all"} | 總數：
+          {articlesQuery.data?.totalCount || 0}
         </p>
 
         {articlesQuery.data?.items?.map((article) => (
-          <div key={article.id} className="article-card border p-4 mb-4 rounded">
+          <div
+            key={article.id}
+            className="article-card border p-4 mb-4 rounded"
+          >
             <h3>{article.title}</h3>
             <p>{article.summary}</p>
           </div>
