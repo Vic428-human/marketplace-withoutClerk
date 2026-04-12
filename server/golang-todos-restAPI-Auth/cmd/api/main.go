@@ -4,8 +4,8 @@ package main
 import (
 	"fmt"
 	"log"
-	"time"
 
+	"todo_api/internal/app"
 	"todo_api/internal/chat"
 	"todo_api/internal/config"
 	"todo_api/internal/database"
@@ -14,7 +14,6 @@ import (
 	"todo_api/internal/repository"
 	"todo_api/internal/stream"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/robfig/cron/v3"
@@ -35,22 +34,7 @@ func main() {
 	}
 	defer pool.Close()
 
-	// 2) Gin router + CORS
-	router := gin.Default()
-
-	corsConfig := cors.DefaultConfig()
-	// 5173 是交易所前台，3001 是交易所後台
-	corsConfig.AllowOrigins = []string{"http://localhost:5173", "http://localhost:3001"}
-	corsConfig.AllowMethods = []string{"GET", "POST", "PUT"}
-	corsConfig.AllowHeaders = []string{
-		"Access-Control-Allow-Headers",
-		"Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With",
-	}
-	// AllowCredentials = true , 不然 cookie 不會成功
-	corsConfig.AllowCredentials = true
-	corsConfig.ExposeHeaders = []string{"Content-Length"}
-	corsConfig.MaxAge = 12 * time.Hour
-	router.Use(cors.New(corsConfig))
+	router := app.NewRouter(cfg)
 
 	// 3) Chat Room（只建立一次）
 	chatRoom := chat.NewRoom()
