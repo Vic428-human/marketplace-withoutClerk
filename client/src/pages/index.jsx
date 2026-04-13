@@ -124,7 +124,7 @@ const Home = () => {
     gcTime: 10 * 60 * 1000,
     retry: 2,
   });
-  console.log(program);
+
   const baseProgress = program ? buildBaseProgressModel(program) : null;
 
   const desktopProgress = baseProgress
