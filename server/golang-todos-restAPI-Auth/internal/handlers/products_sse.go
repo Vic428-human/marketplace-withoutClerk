@@ -144,6 +144,9 @@ func ProductsSseHandler(cache *stream.ProductsCache) gin.HandlerFunc {
 					continue
 				}
 
+				// 印出 products[i] 的內容，順便看時間欄位是哪一个
+				log.Printf(" products[i].CreatedAt [SSE] products[%d] = %+v", i, products[i].CreatedAt)
+
 				/* =========================
 				   (8-3) 組 SSE payload（JSON）
 				   =========================
@@ -156,7 +159,7 @@ func ProductsSseHandler(cache *stream.ProductsCache) gin.HandlerFunc {
 					"index":   i,
 					"total":   len(products),
 					"data":    products[i], // ✅ models.Product（強型別）
-					"ts":      time.Now().UnixMilli(),
+					"ts":      products[i].CreatedAt.UnixMilli(),
 				}
 
 				b, err := json.Marshal(payload)
