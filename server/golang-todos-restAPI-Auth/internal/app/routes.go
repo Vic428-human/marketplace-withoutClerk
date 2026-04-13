@@ -28,6 +28,9 @@ func RegisterRoutes(
 	// WebSocket 模組
 	approutes.RegisterWebSocketRoutes(router, chatRoom)
 
+	// Auth 模組
+	approutes.RegisterAuthRoutes(router, pool, cfg)
+
 	// approutes.RegisterProductRoutes(router, pool, productsCache)
 	// approutes.RegisterAuthRoutes(router, pool, cfg)
 	// approutes.RegisterEventRoutes(router, pool, cfg)
