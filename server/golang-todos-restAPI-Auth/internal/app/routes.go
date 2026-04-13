@@ -36,8 +36,9 @@ func RegisterRoutes(
 
 	// User 模組
 	approutes.RegisterUserRoutes(router, pool)
-	// approutes.RegisterEventRoutes(router, pool, cfg)
-	// approutes.RegisterAuctionRoutes(router, pool, cfg)
+
+	// Auction 模組
+	approutes.RegisterAuctionRoutes(router, pool, cfg)
 	// approutes.RegisterAdminRoutes(router, pool, cfg)
 
 	// 暫時先避免未使用參數報錯

@@ -40,8 +40,7 @@ func UpdateEventTaskProgressHandler(pool *pgxpool.Pool, cfg *config.Config) gin.
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid user_id"})
 			return
 		}
-		// /events/:eventId/tasks/:taskId/progress
-		// /events/points-reward-demo/tasks/task_bind_phone/progress
+
 		eventID := c.Param("eventId")
 		taskID := c.Param("taskId")
 
