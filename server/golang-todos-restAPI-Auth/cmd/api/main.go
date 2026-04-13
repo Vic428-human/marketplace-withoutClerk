@@ -4,30 +4,29 @@ package main
 import (
 	"fmt"
 	"log"
-	"time"
 
+	"todo_api/internal/app"
 	"todo_api/internal/chat"
 	"todo_api/internal/config"
 	"todo_api/internal/database"
-	"todo_api/internal/handlers"
 	"todo_api/internal/models"
 	"todo_api/internal/repository"
 	"todo_api/internal/stream"
 
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/robfig/cron/v3"
 )
 
 func main() {
 	fmt.Println(">>> KADY TEST 0322")
-	// 1) config + DB pool（只建立一次）
+
+	// 1) 載入設定
 	cfg, err := config.Load()
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// 2) 建立資料庫連線池
 	var pool *pgxpool.Pool
 	pool, err = database.Connect(cfg.DatabaseURL)
 	if err != nil {
@@ -35,30 +34,16 @@ func main() {
 	}
 	defer pool.Close()
 
-	// 2) Gin router + CORS
-	router := gin.Default()
+	// 3) 建立已完成基礎設定的 router
+	router := app.NewRouter(cfg)
 
-	corsConfig := cors.DefaultConfig()
-	// 5173 是交易所前台，3001 是交易所後台
-	corsConfig.AllowOrigins = []string{"http://localhost:5173", "http://localhost:3001"}
-	corsConfig.AllowMethods = []string{"GET", "POST", "PUT"}
-	corsConfig.AllowHeaders = []string{
-		"Access-Control-Allow-Headers",
-		"Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With",
-	}
-	// AllowCredentials = true , 不然 cookie 不會成功
-	corsConfig.AllowCredentials = true
-	corsConfig.ExposeHeaders = []string{"Content-Length"}
-	corsConfig.MaxAge = 12 * time.Hour
-	router.Use(cors.New(corsConfig))
-
-	// 3) Chat Room（只建立一次）
+	// 4) Chat Room（只建立一次）
 	chatRoom := chat.NewRoom()
 	go chatRoom.Run()
 
 	const maxProductsForStream = 10
 
-	// 4) Products Cache（只建立一次：cron 寫、SSE 讀）
+	// 5) Products Cache（只建立一次：cron 寫、SSE 讀）
 	productsCache := stream.NewProductsCache(maxProductsForStream)
 
 	// 小工具：只留前 N 筆（假設 products 已依你 SQL 排好順序）
@@ -69,7 +54,7 @@ func main() {
 		return products[:n]
 	}
 
-	// 5) 啟動時先抓一次 products（避免等 1 分鐘/1 小時）
+	// 6) 啟動時先抓一次 products（避免等排程才更新）
 	refreshProducts := func(tag string) {
 		products, err := repository.GetAllProducts(pool)
 		if err != nil {
@@ -84,7 +69,7 @@ func main() {
 	}
 	refreshProducts("initial")
 
-	// 6) Cron（只負責更新 cache，不要在這裡動 router）
+	// 7) Cron（只負責更新 cache）
 	cr := cron.New()
 	_, err = cr.AddFunc("@every 12h", func() {
 		log.Println("cron job running: refresh products cache")
@@ -106,59 +91,10 @@ func main() {
 	cr.Start()
 	defer cr.Stop()
 
-	// 7) Routes（只註冊一次）
-	router.GET("/", func(c *gin.Context) {
-		router.SetTrustedProxies(nil)
-		c.JSON(200, gin.H{
-			"message":  "!todo api running successfully",
-			"status":   "success",
-			"database": "connected",
-		})
-	})
+	// 8) 統一註冊所有 routes
+	app.RegisterRoutes(router, pool, cfg, chatRoom, productsCache)
 
-	// Todos REST
-	router.POST("/todos", handlers.CreateTodoHandler(pool))
-	router.GET("/todos", handlers.GetAllTodosHandler(pool))
-	router.GET("/todos/:id", handlers.GetTodoByIDHandler(pool))
-	router.PUT("/todos/:id", handlers.UpdateToDoHandler(pool))
-
-	// WebSocket
-	router.GET("/ws", func(c *gin.Context) {
-		chatRoom.ServeHTTP(c.Writer, c.Request)
-	})
-
-	// 原本 SSE（mem）—不動
-	router.GET("/events", handlers.SseHandler)
-
-	// ✅ 新增：Products SSE（stream） 不會在瀏覽器 DevTools → Network 裡看到任何 /products 呼叫
-	router.GET("/products/stream", handlers.ProductsSseHandler(productsCache))
-
-	// Products REST（你原本的）
-	router.POST("/products", handlers.CreatteProductHandler(pool))
-	router.GET("/products", handlers.GetAllProductsHandler(pool))
-	router.PUT("/products/:id", handlers.UpdateProductHandler(pool)) // 你原本少了開頭 /，我順便修正
-	router.GET("/products/:id", handlers.GetProductByIDHandler(pool))
-	router.GET("/products/search", handlers.ListProductsHandler(pool))
-	// TODO: 0315 新增 查看所有已經註冊的名單 查 users / user CRUD
-	router.GET("/users", handlers.GetUsersHandler(pool))
-	// 權限相關 login / register
-	router.POST("/auth/login", handlers.LoginHandler(pool, cfg))
-	// 驗證自己是否已經登入
-	router.GET("/auth/me", handlers.MeHandler(cfg))
-	// 獎勵進度表
-	router.GET("/events/:eventId/tasks", handlers.GetEventTasksHandler(pool, cfg))
-	router.PATCH("/events/:eventId/tasks/:taskId/progress", handlers.UpdateEventTaskProgressHandler(pool, cfg))
-
-	// 這一區先放 競拍交易所的相關功能
-	router.POST("/auctions", handlers.CreateAuctionListingHandler(pool, cfg))
-	router.GET("/auctions", handlers.GetAuctionListingsHandler(pool))
-	router.GET("/auctions/:id", handlers.GetAuctionListingByIDHandler(pool))
-	router.POST("/auctions/:id/bids", handlers.PlaceBidHandler(pool, cfg))
-	router.GET("/auctions/:id/bids", handlers.GetAuctionBidsHandler(pool))
-
-	fmt.Println(">>> registering POST /admin/events")
-	router.POST("/admin/events", handlers.CreateEventHandler(pool, cfg))
-	fmt.Println(">>> registered POST /admin/events")
+	// 9) 啟動 server
 	fmt.Println(">>> server starting on port", cfg.Port)
 	if err := router.Run(":" + cfg.Port); err != nil {
 		log.Fatal(err)
