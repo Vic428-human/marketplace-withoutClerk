@@ -19,6 +19,15 @@ func InitChatRoom() *chat.Room {
 	return chatRoom
 }
 
+// InitProductsStreamServices 初始化 products stream 相關服務
+// 這裡把 products cache 初始化 + 定時 refresh job 一次包起來，
+// 讓 main.go 不需要知道太多底層細節。
+func InitProductsStreamServices(pool *pgxpool.Pool, maxProductsForStream int) (*stream.ProductsCache, *cron.Cron) {
+	productsCache := InitProductsCache(pool, maxProductsForStream)
+	cr := StartProductsRefreshJob(pool, productsCache, maxProductsForStream)
+	return productsCache, cr
+}
+
 // InitProductsCache 建立 products cache，並在啟動時先載入一次資料
 func InitProductsCache(pool *pgxpool.Pool, maxProductsForStream int) *stream.ProductsCache {
 	productsCache := stream.NewProductsCache(maxProductsForStream)
@@ -34,7 +43,7 @@ func InitProductsCache(pool *pgxpool.Pool, maxProductsForStream int) *stream.Pro
 	products = limitProducts(products, maxProductsForStream)
 	productsCache.Set(products)
 
-	log.Printf("檢驗: %d products", products)
+	log.Printf("initial products cache loaded: %d products", len(products))
 	return productsCache
 }
 
