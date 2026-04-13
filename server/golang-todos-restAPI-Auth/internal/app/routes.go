@@ -31,8 +31,11 @@ func RegisterRoutes(
 	// Auth 模組
 	approutes.RegisterAuthRoutes(router, pool, cfg)
 
-	// approutes.RegisterProductRoutes(router, pool, productsCache)
-	// approutes.RegisterAuthRoutes(router, pool, cfg)
+	// Product 模組
+	approutes.RegisterProductRoutes(router, pool, productsCache)
+
+	// User 模組
+	approutes.RegisterUserRoutes(router, pool)
 	// approutes.RegisterEventRoutes(router, pool, cfg)
 	// approutes.RegisterAuctionRoutes(router, pool, cfg)
 	// approutes.RegisterAdminRoutes(router, pool, cfg)
