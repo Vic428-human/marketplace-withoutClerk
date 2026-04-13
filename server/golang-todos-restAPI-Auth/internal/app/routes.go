@@ -39,11 +39,10 @@ func RegisterRoutes(
 
 	// Auction 模組
 	approutes.RegisterAuctionRoutes(router, pool, cfg)
-	// approutes.RegisterAdminRoutes(router, pool, cfg)
 
-	// 暫時先避免未使用參數報錯
-	_ = pool
-	_ = cfg
-	_ = chatRoom
-	_ = productsCache
+	// Admin 模組
+	approutes.RegisterAdminRoutes(router, pool, cfg)
+
+	// 積分獎勵模組
+	approutes.RegisterEventRoutes(router, pool, cfg)
 }

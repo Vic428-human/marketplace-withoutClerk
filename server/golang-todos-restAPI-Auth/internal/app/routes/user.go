@@ -7,8 +7,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-// RegisterUserRoutes 註冊 user 相關 routes
-//
 // 這個檔案只負責 user domain 的 route 註冊。
 // 目前先放查看所有使用者清單這一條。
 // 之後如果有更多後台 user 管理功能，

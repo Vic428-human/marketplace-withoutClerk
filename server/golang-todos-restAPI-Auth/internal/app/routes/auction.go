@@ -8,15 +8,13 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-// RegisterAuctionRoutes 註冊 auction 相關 routes
-//
 // 這個檔案只負責競拍交易所 domain 的 route 註冊，
 // 不處理：
 // 1. DB 連線建立
 // 2. config 載入
 // 3. handler 內部競拍邏輯
 //
-// 它只做一件事：把 auctions 相關 endpoint 掛到 router 上
+// 只做一件事：把 auctions 相關 endpoint 掛到 router 上
 func RegisterAuctionRoutes(router *gin.Engine, pool *pgxpool.Pool, cfg *config.Config) {
 	// 建立競拍商品
 	router.POST("/auctions", handlers.CreateAuctionListingHandler(pool, cfg))
