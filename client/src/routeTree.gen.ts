@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './pages/__root'
+import { Route as MeetingRegistrationRouteImport } from './pages/meeting-registration'
 import { Route as MyOrdersRouteImport } from './pages/MyOrders'
 import { Route as MyListingsRouteImport } from './pages/MyListings'
 import { Route as MarketplaceRouteImport } from './pages/Marketplace'
@@ -23,6 +24,11 @@ import { Route as AuctionsIdRouteImport } from './pages/auctions.$id'
 import { Route as MemberRegisterPageRegisterRouteImport } from './pages/MemberRegisterPage/register'
 import { Route as MemberRegisterPageForgotPasswordRouteImport } from './pages/MemberRegisterPage/forgot-password'
 
+const MeetingRegistrationRoute = MeetingRegistrationRouteImport.update({
+  id: '/meeting-registration',
+  path: '/meeting-registration',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MyOrdersRoute = MyOrdersRouteImport.update({
   id: '/MyOrders',
   path: '/MyOrders',
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/Marketplace': typeof MarketplaceRoute
   '/MyListings': typeof MyListingsRoute
   '/MyOrders': typeof MyOrdersRoute
+  '/meeting-registration': typeof MeetingRegistrationRoute
   '/MemberRegisterPage/forgot-password': typeof MemberRegisterPageForgotPasswordRoute
   '/MemberRegisterPage/register': typeof MemberRegisterPageRegisterRoute
   '/auctions/$id': typeof AuctionsIdRoute
@@ -115,6 +122,7 @@ export interface FileRoutesByTo {
   '/Marketplace': typeof MarketplaceRoute
   '/MyListings': typeof MyListingsRoute
   '/MyOrders': typeof MyOrdersRoute
+  '/meeting-registration': typeof MeetingRegistrationRoute
   '/MemberRegisterPage/forgot-password': typeof MemberRegisterPageForgotPasswordRoute
   '/MemberRegisterPage/register': typeof MemberRegisterPageRegisterRoute
   '/auctions/$id': typeof AuctionsIdRoute
@@ -131,6 +139,7 @@ export interface FileRoutesById {
   '/Marketplace': typeof MarketplaceRoute
   '/MyListings': typeof MyListingsRoute
   '/MyOrders': typeof MyOrdersRoute
+  '/meeting-registration': typeof MeetingRegistrationRoute
   '/MemberRegisterPage/forgot-password': typeof MemberRegisterPageForgotPasswordRoute
   '/MemberRegisterPage/register': typeof MemberRegisterPageRegisterRoute
   '/auctions/$id': typeof AuctionsIdRoute
@@ -148,6 +157,7 @@ export interface FileRouteTypes {
     | '/Marketplace'
     | '/MyListings'
     | '/MyOrders'
+    | '/meeting-registration'
     | '/MemberRegisterPage/forgot-password'
     | '/MemberRegisterPage/register'
     | '/auctions/$id'
@@ -162,6 +172,7 @@ export interface FileRouteTypes {
     | '/Marketplace'
     | '/MyListings'
     | '/MyOrders'
+    | '/meeting-registration'
     | '/MemberRegisterPage/forgot-password'
     | '/MemberRegisterPage/register'
     | '/auctions/$id'
@@ -177,6 +188,7 @@ export interface FileRouteTypes {
     | '/Marketplace'
     | '/MyListings'
     | '/MyOrders'
+    | '/meeting-registration'
     | '/MemberRegisterPage/forgot-password'
     | '/MemberRegisterPage/register'
     | '/auctions/$id'
@@ -193,11 +205,19 @@ export interface RootRouteChildren {
   MarketplaceRoute: typeof MarketplaceRoute
   MyListingsRoute: typeof MyListingsRoute
   MyOrdersRoute: typeof MyOrdersRoute
+  MeetingRegistrationRoute: typeof MeetingRegistrationRoute
   AuctionsIdRoute: typeof AuctionsIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/meeting-registration': {
+      id: '/meeting-registration'
+      path: '/meeting-registration'
+      fullPath: '/meeting-registration'
+      preLoaderRoute: typeof MeetingRegistrationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/MyOrders': {
       id: '/MyOrders'
       path: '/MyOrders'
@@ -321,6 +341,7 @@ const rootRouteChildren: RootRouteChildren = {
   MarketplaceRoute: MarketplaceRoute,
   MyListingsRoute: MyListingsRoute,
   MyOrdersRoute: MyOrdersRoute,
+  MeetingRegistrationRoute: MeetingRegistrationRoute,
   AuctionsIdRoute: AuctionsIdRoute,
 }
 export const routeTree = rootRouteImport
