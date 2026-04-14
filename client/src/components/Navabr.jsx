@@ -53,7 +53,7 @@ const Navabr = () => {
           <Link to="/aution">競拍區</Link>
           <Link to="/articlesList">文章列表</Link>
           <Link to="/memberRegisterPage">會員專區</Link>
-          <Link to="/meetingRegistration">會議報名表</Link>
+          <Link to="/meeting-registration">會議報名表</Link>
         </div>
         <div className="flex items-center gap-4">
           {isAuthenticated ? (
@@ -96,7 +96,7 @@ const Navabr = () => {
           >
             文章列表
           </Link>
-          <Link to="/meetingRegistration" onClick={() => setMenuOpen(false)}>
+          <Link to="/meeting-registration" onClick={() => setMenuOpen(false)}>
             會議報名表
           </Link>
           <button className=" cursor-pointer px-8 py-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full">
