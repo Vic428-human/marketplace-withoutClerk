@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './pages/__root'
 import { Route as MyOrdersRouteImport } from './pages/MyOrders'
 import { Route as MyListingsRouteImport } from './pages/MyListings'
+import { Route as MeetingRegistrationRouteImport } from './pages/MeetingRegistration'
 import { Route as MarketplaceRouteImport } from './pages/Marketplace'
 import { Route as ManageListingRouteImport } from './pages/ManageListing'
 import { Route as ListingDetailsRouteImport } from './pages/ListingDetails'
@@ -31,6 +32,11 @@ const MyOrdersRoute = MyOrdersRouteImport.update({
 const MyListingsRoute = MyListingsRouteImport.update({
   id: '/MyListings',
   path: '/MyListings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeetingRegistrationRoute = MeetingRegistrationRouteImport.update({
+  id: '/MeetingRegistration',
+  path: '/MeetingRegistration',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MarketplaceRoute = MarketplaceRouteImport.update({
@@ -99,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/ListingDetails': typeof ListingDetailsRoute
   '/ManageListing': typeof ManageListingRoute
   '/Marketplace': typeof MarketplaceRoute
+  '/MeetingRegistration': typeof MeetingRegistrationRoute
   '/MyListings': typeof MyListingsRoute
   '/MyOrders': typeof MyOrdersRoute
   '/MemberRegisterPage/forgot-password': typeof MemberRegisterPageForgotPasswordRoute
@@ -113,6 +120,7 @@ export interface FileRoutesByTo {
   '/ListingDetails': typeof ListingDetailsRoute
   '/ManageListing': typeof ManageListingRoute
   '/Marketplace': typeof MarketplaceRoute
+  '/MeetingRegistration': typeof MeetingRegistrationRoute
   '/MyListings': typeof MyListingsRoute
   '/MyOrders': typeof MyOrdersRoute
   '/MemberRegisterPage/forgot-password': typeof MemberRegisterPageForgotPasswordRoute
@@ -129,6 +137,7 @@ export interface FileRoutesById {
   '/ListingDetails': typeof ListingDetailsRoute
   '/ManageListing': typeof ManageListingRoute
   '/Marketplace': typeof MarketplaceRoute
+  '/MeetingRegistration': typeof MeetingRegistrationRoute
   '/MyListings': typeof MyListingsRoute
   '/MyOrders': typeof MyOrdersRoute
   '/MemberRegisterPage/forgot-password': typeof MemberRegisterPageForgotPasswordRoute
@@ -146,6 +155,7 @@ export interface FileRouteTypes {
     | '/ListingDetails'
     | '/ManageListing'
     | '/Marketplace'
+    | '/MeetingRegistration'
     | '/MyListings'
     | '/MyOrders'
     | '/MemberRegisterPage/forgot-password'
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
     | '/ListingDetails'
     | '/ManageListing'
     | '/Marketplace'
+    | '/MeetingRegistration'
     | '/MyListings'
     | '/MyOrders'
     | '/MemberRegisterPage/forgot-password'
@@ -175,6 +186,7 @@ export interface FileRouteTypes {
     | '/ListingDetails'
     | '/ManageListing'
     | '/Marketplace'
+    | '/MeetingRegistration'
     | '/MyListings'
     | '/MyOrders'
     | '/MemberRegisterPage/forgot-password'
@@ -191,6 +203,7 @@ export interface RootRouteChildren {
   ListingDetailsRoute: typeof ListingDetailsRoute
   ManageListingRoute: typeof ManageListingRoute
   MarketplaceRoute: typeof MarketplaceRoute
+  MeetingRegistrationRoute: typeof MeetingRegistrationRoute
   MyListingsRoute: typeof MyListingsRoute
   MyOrdersRoute: typeof MyOrdersRoute
   AuctionsIdRoute: typeof AuctionsIdRoute
@@ -210,6 +223,13 @@ declare module '@tanstack/react-router' {
       path: '/MyListings'
       fullPath: '/MyListings'
       preLoaderRoute: typeof MyListingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/MeetingRegistration': {
+      id: '/MeetingRegistration'
+      path: '/MeetingRegistration'
+      fullPath: '/MeetingRegistration'
+      preLoaderRoute: typeof MeetingRegistrationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/Marketplace': {
@@ -319,6 +339,7 @@ const rootRouteChildren: RootRouteChildren = {
   ListingDetailsRoute: ListingDetailsRoute,
   ManageListingRoute: ManageListingRoute,
   MarketplaceRoute: MarketplaceRoute,
+  MeetingRegistrationRoute: MeetingRegistrationRoute,
   MyListingsRoute: MyListingsRoute,
   MyOrdersRoute: MyOrdersRoute,
   AuctionsIdRoute: AuctionsIdRoute,

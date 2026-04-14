@@ -110,8 +110,6 @@ function MemberRegisterPageLayout() {
   );
 }
 
-// ✅ 重點：parent route 不要用尾巴 /
-// ✅ 檔名建議：client/src/pages/MemberRegisterPage/route.jsx
 export const Route = createFileRoute("/MemberRegisterPage")({
   component: MemberRegisterPageLayout,
 });
