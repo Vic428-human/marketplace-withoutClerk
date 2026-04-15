@@ -56,6 +56,17 @@ const sessionOptions = [
   { value: "session-d", label: "Session D" },
 ];
 
+const dinnerOptions = [
+  { value: "yes", label: "是" },
+  { value: "no", label: "否" },
+];
+
+const dietOptions = [
+  { value: "normal", label: "葷食" },
+  { value: "vegetarian", label: "素食" },
+  { value: "other", label: "其他（請填寫）" },
+];
+
 function MeetingRegistrationPage() {
   const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState(initialErrors);
@@ -107,6 +118,44 @@ function MeetingRegistrationPage() {
         sessions: "",
       }));
     }
+  };
+
+  const handleRadioChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+  };
+
+  const handleDietChange = (e) => {
+    const { value } = e.target;
+
+    setFormData((prev) => {
+      const next = {
+        ...prev,
+        diet: value,
+      };
+
+      // 如果不是其他，清空補充欄位
+      if (value !== "other") {
+        next.dietOther = "";
+      }
+
+      return next;
+    });
+
+    setErrors((prev) => ({
+      ...prev,
+      diet: "",
+      ...(value !== "other" ? { dietOther: "" } : {}),
+    }));
   };
 
   return (
@@ -181,6 +230,76 @@ function MeetingRegistrationPage() {
                 error={errors.sessions}
               />
             </div>
+          </div>
+
+          {/* 是否參與晚宴 */}
+          <div>
+            <p className="mb-2 block text-sm font-medium text-gray-800">
+              是否參與晚宴 <span className="text-red-500">*</span>
+            </p>
+
+            <div className="flex gap-6">
+              {dinnerOptions.map((option) => (
+                <label
+                  key={option.value}
+                  className="flex items-center gap-2 text-sm text-gray-700"
+                >
+                  <input
+                    type="radio"
+                    name="attendDinner"
+                    value={option.value}
+                    checked={formData.attendDinner === option.value}
+                    onChange={handleRadioChange}
+                    className="h-4 w-4"
+                  />
+                  <span>{option.label}</span>
+                </label>
+              ))}
+            </div>
+
+            {errors.attendDinner && (
+              <p className="mt-1 text-sm text-red-500">{errors.attendDinner}</p>
+            )}
+          </div>
+
+          {/* 飲食習慣 */}
+          <div>
+            <p className="mb-2 block text-sm font-medium text-gray-800">
+              飲食習慣 <span className="text-red-500">*</span>
+            </p>
+            {dietOptions.map((option) => (
+              <label
+                key={option.value}
+                className="flex items-center gap-3 text-[18px] font-semibold text-[#4a4a4a]"
+              >
+                <input
+                  type="radio"
+                  name="diet"
+                  value={option.value}
+                  checked={formData.diet === option.value}
+                  onChange={handleDietChange}
+                  className="sr-only"
+                />
+
+                <span
+                  className={`flex h-8 w-8 items-center justify-center rounded-full border transition ${
+                    formData.diet === option.value
+                      ? "border-[#b0005b]"
+                      : "border-[#d6d6d6]"
+                  }`}
+                >
+                  <span
+                    className={`h-5 w-5 rounded-full ${
+                      formData.diet === option.value
+                        ? "bg-[#b0005b]"
+                        : "bg-transparent"
+                    }`}
+                  />
+                </span>
+
+                <span>{option.label}</span>
+              </label>
+            ))}
           </div>
         </form>
 
