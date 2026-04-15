@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import InputField from "../components/form/InputField";
 import SelectField from "../components/form/SelectField";
+import CheckboxGroup from "../components/form/CheckboxGroup";
 
 // 避免每次 render 都重新建立一次
 const initialFormData = {
@@ -88,20 +89,24 @@ function MeetingRegistrationPage() {
     }));
   };
 
-  const handleSessionChange = (e) => {
-    const { value, checked } = e.target;
-
+  const handleSessionChange = (values) => {
+    // values =>  ["session-a", "session-b"]
     setFormData((prev) => ({
       ...prev,
-      sessions: checked
-        ? [...prev.sessions, value]
-        : prev.sessions.filter((session) => session !== value),
+      sessions: values,
     }));
 
-    setErrors((prev) => ({
-      ...prev,
-      sessions: "",
-    }));
+    if (values.length === 0) {
+      setErrors((prev) => ({
+        ...prev,
+        sessions: "請至少選擇一個會議場次",
+      }));
+    } else {
+      setErrors((prev) => ({
+        ...prev,
+        sessions: "",
+      }));
+    }
   };
 
   return (
@@ -166,32 +171,16 @@ function MeetingRegistrationPage() {
 
           {/* 欲參與的會議場次 */}
           <div>
-            <p className="mb-2 block text-sm font-medium text-gray-800">
-              欲參與的會議場次 <span className="text-red-500">*</span>
-            </p>
-
             <div className="space-y-3">
-              {sessionOptions.map((session) => (
-                <label
-                  key={session.value}
-                  className="flex items-center gap-3 text-sm text-gray-700"
-                >
-                  <input
-                    type="checkbox"
-                    name="sessions"
-                    value={session.value}
-                    checked={formData.sessions.includes(session.value)}
-                    onChange={handleSessionChange}
-                    className="h-4 w-4"
-                  />
-                  <span>{session.label}</span>
-                </label>
-              ))}
+              <CheckboxGroup
+                label="欲參與的會議場次"
+                name="sessions"
+                options={sessionOptions}
+                value={formData.sessions}
+                onChange={handleSessionChange}
+                error={errors.sessions}
+              />
             </div>
-
-            {errors.sessions && (
-              <p className="mt-1 text-sm text-red-500">{errors.sessions}</p>
-            )}
           </div>
         </form>
 
