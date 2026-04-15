@@ -3,6 +3,7 @@ import { useState } from "react";
 import InputField from "../components/form/InputField";
 import SelectField from "../components/form/SelectField";
 import CheckboxGroup from "../components/form/CheckboxGroup";
+import RadioGroup from "../components/form/RadioGroup";
 
 // 避免每次 render 都重新建立一次
 const initialFormData = {
@@ -262,44 +263,34 @@ function MeetingRegistrationPage() {
             )}
           </div>
 
-          {/* 飲食習慣 */}
+          {/* 飲食習慣 - 只有選擇「是」才顯示 */}
           <div>
-            <p className="mb-2 block text-sm font-medium text-gray-800">
-              飲食習慣 <span className="text-red-500">*</span>
-            </p>
-            {dietOptions.map((option) => (
-              <label
-                key={option.value}
-                className="flex items-center gap-3 text-[18px] font-semibold text-[#4a4a4a]"
-              >
-                <input
-                  type="radio"
+            {formData.attendDinner === "yes" && (
+              <>
+                <RadioGroup
+                  label="飲食習慣"
                   name="diet"
-                  value={option.value}
-                  checked={formData.diet === option.value}
+                  options={dietOptions}
+                  value={formData.diet}
                   onChange={handleDietChange}
-                  className="sr-only"
+                  error={errors.diet}
+                  required
+                  variant="circle"
                 />
 
-                <span
-                  className={`flex h-8 w-8 items-center justify-center rounded-full border transition ${
-                    formData.diet === option.value
-                      ? "border-[#b0005b]"
-                      : "border-[#d6d6d6]"
-                  }`}
-                >
-                  <span
-                    className={`h-5 w-5 rounded-full ${
-                      formData.diet === option.value
-                        ? "bg-[#b0005b]"
-                        : "bg-transparent"
-                    }`}
+                {/* 只有飲食習慣選擇「其他」時才顯示補充欄位 */}
+                {formData.diet === "other" && (
+                  <InputField
+                    id="dietOther"
+                    label="請補充您的飲食習慣"
+                    value={formData.dietOther}
+                    onChange={handleInputChange}
+                    error={errors.dietOther}
+                    placeholder="請詳細說明您的飲食需求（例如：無蛋奶素、海鮮過敏等）"
                   />
-                </span>
-
-                <span>{option.label}</span>
-              </label>
-            ))}
+                )}
+              </>
+            )}
           </div>
         </form>
 
