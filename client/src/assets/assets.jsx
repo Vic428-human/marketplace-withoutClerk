@@ -16,6 +16,9 @@ import avatar02 from './avatar02.png';
 import avatar03 from './avatar03.png';
 import model from './model.png';
 import MagicCircle from './MagicCircle.png';
+import pinkBg from './pink-bg.png';
+import footerBg from './pink-footer.png';
+import registerBtn from './pink-btn.png';
 
 export const assets = {
     logo,
@@ -33,7 +36,10 @@ export const assets = {
     emblem07,
     emblem08,
     model,
-    MagicCircle
+    MagicCircle,
+    pinkBg,
+    footerBg,
+    registerBtn
 };
 
 export const socialMediaLinks = {
