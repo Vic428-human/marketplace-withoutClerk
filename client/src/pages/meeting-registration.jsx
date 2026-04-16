@@ -166,8 +166,9 @@ function MeetingRegistrationPage() {
         <div className="overflow-hidden bg-white/90 shadow-sm">
           <header
             className="relative bg-cover bg-center bg-no-repeat"
-             style={{ backgroundImage: `url(${assets.pinkBg})` }}
+            style={{ backgroundImage: `url(${assets.pinkBg})` }}
           >
+            {/* 這個 header 裡面有內容把它撐開高度，所以背景圖有地方可以顯示 */}
             <div className="px-6 pb-8 pt-10 md:px-8 md:pb-10 md:pt-12">
               <h1 className="text-center text-[28px] font-bold tracking-[0.08em] text-[#b0005b] md:text-[44px]">
                 線上會議報名表
@@ -308,11 +309,33 @@ function MeetingRegistrationPage() {
             </form>
           </main>
 
-          <footer>{/* 按鈕 + 底部背景裝飾 */}</footer>
+          <footer className="relative overflow-hidden">
+            {/* 先給 footer 一個明確高度，讓整個區塊有穩定基準 */}
+            <div className="relative h-[180px] md:h-[230px]">
+              {/* 背景圖獨立一層，貼在底部，不再跟按鈕綁死 */}-+
+              <div
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-[120px] bg-[length:100%_auto] bg-bottom bg-no-repeat md:h-[170px]"
+                style={{ backgroundImage: `url(${assets.footerBg})` }}
+              />
+              {/* 按鈕獨立一層，用 absolute 定位，不靠 padding 猜位置 */}
+              <div className="absolute inset-x-0 top-0 z-10 flex justify-center">
+                <button
+                  type="button"
+                  className="inline-block translate-y-2 transition hover:opacity-90 md:translate-y-4"
+                >
+                  <img
+                    src={assets.registerBtn}
+                    alt="馬上報名"
+                    className="h-auto w-[220px] md:w-[260px]"
+                  />
+                </button>
+              </div>
+            </div>
+          </footer>
 
-          <pre className="overflow-x-auto rounded-lg bg-gray-100 p-4 text-xs text-gray-700">
+          {/* <pre className="overflow-x-auto rounded-lg bg-gray-100 p-4 text-xs text-gray-700">
             {JSON.stringify(formData, null, 2)}
-          </pre>
+          </pre> */}
         </div>
       </div>
     </div>
