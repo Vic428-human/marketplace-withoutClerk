@@ -4,6 +4,7 @@ import InputField from "../components/form/InputField";
 import SelectField from "../components/form/SelectField";
 import CheckboxGroup from "../components/form/CheckboxGroup";
 import RadioGroup from "../components/form/RadioGroup";
+import { assets } from "../assets/assets";
 
 // 避免每次 render 都重新建立一次
 const initialFormData = {
@@ -160,143 +161,159 @@ function MeetingRegistrationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fdf7fb] px-4 py-10">
-      <div className="mx-auto w-full max-w-[576px] rounded-2xl bg-white/80 p-6 shadow-sm">
-        <h1 className="mb-6 text-center text-2xl font-bold text-pink-700">
-          線上會議報名表
-        </h1>
-        <form className="space-y-5">
-          {/* 姓名 */}
-          <div>
-            <InputField
-              id="name"
-              label="姓名"
-              value={formData.name}
-              onChange={handleInputChange}
-              error={errors.name}
-              required
-              placeholder="請輸入姓名"
-            />
-          </div>
-          <InputField
-            id="email"
-            label="常用信箱"
-            type="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            error={errors.email}
-            required
-            placeholder="請輸入 Email"
-          />
-          <InputField
-            id="phone"
-            label="手機號碼"
-            type="tel"
-            value={formData.phone}
-            onChange={handleInputChange}
-            error={errors.phone}
-            required
-            placeholder="請輸入手機號碼"
-          />
-          <InputField
-            id="organisation"
-            label="服務單位"
-            value={formData.organisation}
-            onChange={handleInputChange}
-            error={errors.organisation}
-            required
-            placeholder="請輸入服務單位"
-          />
-
-          {/* 工作產業類別 */}
-          <SelectField
-            id="industry"
-            label="工作產業類別"
-            value={formData.industry}
-            onChange={handleSelectChange}
-            options={industryOptions}
-            error={errors.industry}
-            required
-          />
-
-          {/* 欲參與的會議場次 */}
-          <div>
-            <div className="space-y-3">
-              <CheckboxGroup
-                label="欲參與的會議場次"
-                name="sessions"
-                options={sessionOptions}
-                value={formData.sessions}
-                onChange={handleSessionChange}
-                error={errors.sessions}
-              />
+    <div className="min-h-screen bg-[#f6eaf2] px-4 py-0 md:px-6">
+      <div className="mx-auto w-full max-w-[576px]">
+        <div className="overflow-hidden bg-white/90 shadow-sm">
+          <header
+            className="relative bg-cover bg-center bg-no-repeat"
+             style={{ backgroundImage: `url(${assets.pinkBg})` }}
+          >
+            <div className="px-6 pb-8 pt-10 md:px-8 md:pb-10 md:pt-12">
+              <h1 className="text-center text-[28px] font-bold tracking-[0.08em] text-[#b0005b] md:text-[44px]">
+                線上會議報名表
+              </h1>
             </div>
-          </div>
+          </header>
 
-          {/* 是否參與晚宴 */}
-          <div>
-            <p className="mb-2 block text-sm font-medium text-gray-800">
-              是否參與晚宴 <span className="text-red-500">*</span>
-            </p>
-
-            <div className="flex gap-6">
-              {dinnerOptions.map((option) => (
-                <label
-                  key={option.value}
-                  className="flex items-center gap-2 text-sm text-gray-700"
-                >
-                  <input
-                    type="radio"
-                    name="attendDinner"
-                    value={option.value}
-                    checked={formData.attendDinner === option.value}
-                    onChange={handleRadioChange}
-                    className="h-4 w-4"
-                  />
-                  <span>{option.label}</span>
-                </label>
-              ))}
-            </div>
-
-            {errors.attendDinner && (
-              <p className="mt-1 text-sm text-red-500">{errors.attendDinner}</p>
-            )}
-          </div>
-
-          {/* 飲食習慣 - 只有選擇「是」才顯示 */}
-          <div>
-            {formData.attendDinner === "yes" && (
-              <>
-                <RadioGroup
-                  label="飲食習慣"
-                  name="diet"
-                  options={dietOptions}
-                  value={formData.diet}
-                  onChange={handleDietChange}
-                  error={errors.diet}
+          <main className="px-6 pb-8 pt-4 md:px-8 md:pb-10">
+            <form className="space-y-5">
+              {/* 姓名 */}
+              <div>
+                <InputField
+                  id="name"
+                  label="姓名"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  error={errors.name}
                   required
-                  variant="circle"
+                  placeholder="請輸入姓名"
                 />
+              </div>
+              <InputField
+                id="email"
+                label="常用信箱"
+                type="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                error={errors.email}
+                required
+                placeholder="請輸入 Email"
+              />
+              <InputField
+                id="phone"
+                label="手機號碼"
+                type="tel"
+                value={formData.phone}
+                onChange={handleInputChange}
+                error={errors.phone}
+                required
+                placeholder="請輸入手機號碼"
+              />
+              <InputField
+                id="organisation"
+                label="服務單位"
+                value={formData.organisation}
+                onChange={handleInputChange}
+                error={errors.organisation}
+                required
+                placeholder="請輸入服務單位"
+              />
 
-                {/* 只有飲食習慣選擇「其他」時才顯示補充欄位 */}
-                {formData.diet === "other" && (
-                  <InputField
-                    id="dietOther"
-                    label="請補充您的飲食習慣"
-                    value={formData.dietOther}
-                    onChange={handleInputChange}
-                    error={errors.dietOther}
-                    placeholder="請詳細說明您的飲食需求（例如：無蛋奶素、海鮮過敏等）"
+              {/* 工作產業類別 */}
+              <SelectField
+                id="industry"
+                label="工作產業類別"
+                value={formData.industry}
+                onChange={handleSelectChange}
+                options={industryOptions}
+                error={errors.industry}
+                required
+              />
+
+              {/* 欲參與的會議場次 */}
+              <div>
+                <div className="space-y-3">
+                  <CheckboxGroup
+                    label="欲參與的會議場次"
+                    name="sessions"
+                    options={sessionOptions}
+                    value={formData.sessions}
+                    onChange={handleSessionChange}
+                    error={errors.sessions}
                   />
-                )}
-              </>
-            )}
-          </div>
-        </form>
+                </div>
+              </div>
 
-        <pre className="overflow-x-auto rounded-lg bg-gray-100 p-4 text-xs text-gray-700">
-          {JSON.stringify(formData, null, 2)}
-        </pre>
+              {/* 是否參與晚宴 */}
+              <div>
+                <p className="mb-2 block text-sm font-medium text-gray-800">
+                  是否參與晚宴 <span className="text-red-500">*</span>
+                </p>
+
+                <div className="flex gap-6">
+                  {dinnerOptions.map((option) => (
+                    <label
+                      key={option.value}
+                      className="flex items-center gap-2 text-sm text-gray-700"
+                    >
+                      <input
+                        type="radio"
+                        name="attendDinner"
+                        value={option.value}
+                        checked={formData.attendDinner === option.value}
+                        onChange={handleRadioChange}
+                        className="h-4 w-4"
+                      />
+                      <span>{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+
+                {errors.attendDinner && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.attendDinner}
+                  </p>
+                )}
+              </div>
+
+              {/* 飲食習慣 - 只有選擇「是」才顯示 */}
+              <div>
+                {formData.attendDinner === "yes" && (
+                  <>
+                    <RadioGroup
+                      label="飲食習慣"
+                      name="diet"
+                      options={dietOptions}
+                      value={formData.diet}
+                      onChange={handleDietChange}
+                      error={errors.diet}
+                      required
+                      variant="circle"
+                    />
+
+                    {/* 只有飲食習慣選擇「其他」時才顯示補充欄位 */}
+                    {formData.diet === "other" && (
+                      <InputField
+                        id="dietOther"
+                        label="請補充您的飲食習慣"
+                        value={formData.dietOther}
+                        onChange={handleInputChange}
+                        error={errors.dietOther}
+                        placeholder="請詳細說明您的飲食需求（例如：無蛋奶素、海鮮過敏等）"
+                      />
+                    )}
+                  </>
+                )}
+              </div>
+            </form>
+          </main>
+
+          <footer>{/* 按鈕 + 底部背景裝飾 */}</footer>
+
+          <pre className="overflow-x-auto rounded-lg bg-gray-100 p-4 text-xs text-gray-700">
+            {JSON.stringify(formData, null, 2)}
+          </pre>
+        </div>
       </div>
     </div>
   );

@@ -22,7 +22,9 @@ const RadioGroup = ({
       )}
 
       {/* Radio 選項區域 */}
-      <div className={variant === "circle" ? "space-y-4" : "flex flex-wrap gap-6"}>
+      <div
+        className={variant === "circle" ? "space-y-4" : "flex flex-wrap gap-6"}
+      >
         {options.map((option) => {
           const isChecked = value === option.value;
 
