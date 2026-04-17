@@ -9,7 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './pages/__root'
-import { Route as MeetingRegistrationRouteImport } from './pages/meeting-registration'
+import { Route as CreateAuctionRouteImport } from './pages/create-auction'
 import { Route as MyOrdersRouteImport } from './pages/MyOrders'
 import { Route as MyListingsRouteImport } from './pages/MyListings'
 import { Route as MarketplaceRouteImport } from './pages/Marketplace'
@@ -24,9 +24,9 @@ import { Route as AuctionsIdRouteImport } from './pages/auctions.$id'
 import { Route as MemberRegisterPageRegisterRouteImport } from './pages/MemberRegisterPage/register'
 import { Route as MemberRegisterPageForgotPasswordRouteImport } from './pages/MemberRegisterPage/forgot-password'
 
-const MeetingRegistrationRoute = MeetingRegistrationRouteImport.update({
-  id: '/meeting-registration',
-  path: '/meeting-registration',
+const CreateAuctionRoute = CreateAuctionRouteImport.update({
+  id: '/create-auction',
+  path: '/create-auction',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MyOrdersRoute = MyOrdersRouteImport.update({
@@ -107,7 +107,7 @@ export interface FileRoutesByFullPath {
   '/Marketplace': typeof MarketplaceRoute
   '/MyListings': typeof MyListingsRoute
   '/MyOrders': typeof MyOrdersRoute
-  '/meeting-registration': typeof MeetingRegistrationRoute
+  '/create-auction': typeof CreateAuctionRoute
   '/MemberRegisterPage/forgot-password': typeof MemberRegisterPageForgotPasswordRoute
   '/MemberRegisterPage/register': typeof MemberRegisterPageRegisterRoute
   '/auctions/$id': typeof AuctionsIdRoute
@@ -122,7 +122,7 @@ export interface FileRoutesByTo {
   '/Marketplace': typeof MarketplaceRoute
   '/MyListings': typeof MyListingsRoute
   '/MyOrders': typeof MyOrdersRoute
-  '/meeting-registration': typeof MeetingRegistrationRoute
+  '/create-auction': typeof CreateAuctionRoute
   '/MemberRegisterPage/forgot-password': typeof MemberRegisterPageForgotPasswordRoute
   '/MemberRegisterPage/register': typeof MemberRegisterPageRegisterRoute
   '/auctions/$id': typeof AuctionsIdRoute
@@ -139,7 +139,7 @@ export interface FileRoutesById {
   '/Marketplace': typeof MarketplaceRoute
   '/MyListings': typeof MyListingsRoute
   '/MyOrders': typeof MyOrdersRoute
-  '/meeting-registration': typeof MeetingRegistrationRoute
+  '/create-auction': typeof CreateAuctionRoute
   '/MemberRegisterPage/forgot-password': typeof MemberRegisterPageForgotPasswordRoute
   '/MemberRegisterPage/register': typeof MemberRegisterPageRegisterRoute
   '/auctions/$id': typeof AuctionsIdRoute
@@ -157,7 +157,7 @@ export interface FileRouteTypes {
     | '/Marketplace'
     | '/MyListings'
     | '/MyOrders'
-    | '/meeting-registration'
+    | '/create-auction'
     | '/MemberRegisterPage/forgot-password'
     | '/MemberRegisterPage/register'
     | '/auctions/$id'
@@ -172,7 +172,7 @@ export interface FileRouteTypes {
     | '/Marketplace'
     | '/MyListings'
     | '/MyOrders'
-    | '/meeting-registration'
+    | '/create-auction'
     | '/MemberRegisterPage/forgot-password'
     | '/MemberRegisterPage/register'
     | '/auctions/$id'
@@ -188,7 +188,7 @@ export interface FileRouteTypes {
     | '/Marketplace'
     | '/MyListings'
     | '/MyOrders'
-    | '/meeting-registration'
+    | '/create-auction'
     | '/MemberRegisterPage/forgot-password'
     | '/MemberRegisterPage/register'
     | '/auctions/$id'
@@ -205,17 +205,17 @@ export interface RootRouteChildren {
   MarketplaceRoute: typeof MarketplaceRoute
   MyListingsRoute: typeof MyListingsRoute
   MyOrdersRoute: typeof MyOrdersRoute
-  MeetingRegistrationRoute: typeof MeetingRegistrationRoute
+  CreateAuctionRoute: typeof CreateAuctionRoute
   AuctionsIdRoute: typeof AuctionsIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/meeting-registration': {
-      id: '/meeting-registration'
-      path: '/meeting-registration'
-      fullPath: '/meeting-registration'
-      preLoaderRoute: typeof MeetingRegistrationRouteImport
+    '/create-auction': {
+      id: '/create-auction'
+      path: '/create-auction'
+      fullPath: '/create-auction'
+      preLoaderRoute: typeof CreateAuctionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/MyOrders': {
@@ -341,7 +341,7 @@ const rootRouteChildren: RootRouteChildren = {
   MarketplaceRoute: MarketplaceRoute,
   MyListingsRoute: MyListingsRoute,
   MyOrdersRoute: MyOrdersRoute,
-  MeetingRegistrationRoute: MeetingRegistrationRoute,
+  CreateAuctionRoute: CreateAuctionRoute,
   AuctionsIdRoute: AuctionsIdRoute,
 }
 export const routeTree = rootRouteImport
