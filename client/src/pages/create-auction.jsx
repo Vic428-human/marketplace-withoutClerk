@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import InputField from "../components/form/InputField";
-import SelectField from "../components/form/SelectField";
-import CheckboxGroup from "../components/form/CheckboxGroup";
-import RadioGroup from "../components/form/RadioGroup";
+// import SelectField from "../components/form/SelectField";
+// import CheckboxGroup from "../components/form/CheckboxGroup";
+// import RadioGroup from "../components/form/RadioGroup";
 import { assets } from "../assets/assets";
 
 // 避免每次 render 都重新建立一次
@@ -13,7 +13,10 @@ const initialFormData = {
   itemImageUrl: "", // 商品圖片網址
   startingPrice: "", // 起標價
   itemDescription: "", // 商品描述
+  minIncrement: "", // 最小加價幅度
+  endTime: "", // 結標時間
 
+  /*
   // 商品分類
   category: "",
   categoryOther: "",
@@ -27,6 +30,7 @@ const initialFormData = {
   // 交付方式
   deliveryMethod: "",
   deliveryMethodOther: "",
+  */
 };
 
 const initialErrors = {
@@ -34,14 +38,20 @@ const initialErrors = {
   itemImageUrl: "",
   startingPrice: "",
   itemDescription: "",
+  minIncrement: "",
+  endTime: "",
+
+  /*
   category: "",
   categoryOther: "",
   tags: "",
   allowNegotiation: "",
   deliveryMethod: "",
   deliveryMethodOther: "",
+  */
 };
 
+/*
 const categoryOptions = [
   { value: "collectibles", label: "收藏品" },
   { value: "electronics", label: "電子產品" },
@@ -68,6 +78,7 @@ const deliveryMethodOptions = [
   { value: "pickup", label: "面交" },
   { value: "other", label: "其他（請填寫）" },
 ];
+*/
 
 function CreateAuctionListingPage() {
   const [formData, setFormData] = useState(initialFormData);
@@ -88,6 +99,7 @@ function CreateAuctionListingPage() {
     }));
   };
 
+  /*
   const handleSelectChange = (e) => {
     const { name, value } = e.target;
 
@@ -157,6 +169,7 @@ function CreateAuctionListingPage() {
       ...(value !== "other" ? { deliveryMethodOther: "" } : {}),
     }));
   };
+  */
 
   return (
     <div className="min-h-screen bg-[#f6eaf2] px-4 py-0 md:px-6">
@@ -166,7 +179,6 @@ function CreateAuctionListingPage() {
             className="relative bg-cover bg-center bg-no-repeat"
             style={{ backgroundImage: `url(${assets.pinkBg})` }}
           >
-            {/* 這個 header 裡面有內容把它撐開高度，所以背景圖有地方可以顯示 */}
             <div className="px-6 pb-8 pt-10 md:px-8 md:pb-10 md:pt-12">
               <h1 className="text-center text-[28px] font-bold tracking-[0.08em] text-[#b0005b] md:text-[44px]">
                 建立拍賣商品
@@ -208,16 +220,35 @@ function CreateAuctionListingPage() {
               />
 
               <InputField
+                id="minIncrement"
+                label="最小加價幅度"
+                type="number"
+                value={formData.minIncrement}
+                onChange={handleInputChange}
+                error={errors.minIncrement}
+                placeholder="請輸入最小加價幅度"
+              />
+
+              <InputField
+                id="endTime"
+                label="結標時間"
+                type="datetime-local"
+                value={formData.endTime}
+                onChange={handleInputChange}
+                error={errors.endTime}
+                required
+              />
+
+              <InputField
                 id="itemDescription"
                 label="商品描述"
                 value={formData.itemDescription}
                 onChange={handleInputChange}
                 error={errors.itemDescription}
-                required
                 placeholder="請輸入商品描述"
               />
 
-              {/* 工作產業類別 */}
+              {/*
               <SelectField
                 id="category"
                 label="商品分類"
@@ -227,8 +258,9 @@ function CreateAuctionListingPage() {
                 error={errors.category}
                 required
               />
+              */}
 
-              {/* 欲參與的會議場次 */}
+              {/*
               <div>
                 <div className="space-y-3">
                   <CheckboxGroup
@@ -241,8 +273,9 @@ function CreateAuctionListingPage() {
                   />
                 </div>
               </div>
+              */}
 
-              {/* 是否參與晚宴 */}
+              {/*
               <div>
                 <p className="mb-2 block text-sm font-medium text-gray-800">
                   是否接受議價 <span className="text-red-500">*</span>
@@ -273,8 +306,9 @@ function CreateAuctionListingPage() {
                   </p>
                 )}
               </div>
+              */}
 
-              {/* 飲食習慣 - 只有選擇「是」才顯示 */}
+              {/*
               <div>
                 {formData.allowNegotiation === "yes" && (
                   <>
@@ -302,18 +336,16 @@ function CreateAuctionListingPage() {
                   </>
                 )}
               </div>
+              */}
             </form>
           </main>
 
           <footer className="relative overflow-hidden">
-            {/* 先給 footer 一個明確高度，讓整個區塊有穩定基準 */}
             <div className="relative h-[180px] md:h-[230px]">
-              {/* 背景圖獨立一層，貼在底部，不再跟按鈕綁死 */}
               <div
                 className="pointer-events-none absolute inset-x-0 bottom-0 h-[120px] bg-[length:100%_auto] bg-bottom bg-no-repeat md:h-[170px]"
                 style={{ backgroundImage: `url(${assets.footerBg})` }}
               />
-              {/* 按鈕獨立一層，用 absolute 定位，不靠 padding 猜位置 */}
               <div className="absolute inset-x-0 top-0 z-10 flex justify-center">
                 <button
                   type="button"
