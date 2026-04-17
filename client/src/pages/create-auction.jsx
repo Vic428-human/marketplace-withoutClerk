@@ -1,20 +1,22 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import InputField from "../components/form/InputField";
 // import SelectField from "../components/form/SelectField";
 // import CheckboxGroup from "../components/form/CheckboxGroup";
 // import RadioGroup from "../components/form/RadioGroup";
 import { assets } from "../assets/assets";
+import { createAuctionListing } from "../api/auction";
 
 // 避免每次 render 都重新建立一次
 const initialFormData = {
   // 商品基本資訊
-  itemName: "", // 商品名稱
-  itemImageUrl: "", // 商品圖片網址
-  startingPrice: "", // 起標價
-  itemDescription: "", // 商品描述
-  minIncrement: "", // 最小加價幅度
-  endTime: "", // 結標時間
+  itemName: "",
+  itemImageUrl: "",
+  startingPrice: "",
+  itemDescription: "",
+  minIncrement: "",
+  endTime: "",
 
   /*
   // 商品分類
@@ -25,7 +27,7 @@ const initialFormData = {
   tags: [],
 
   // 是否接受議價
-  allowNegotiation: "", // yes / no
+  allowNegotiation: "",
 
   // 交付方式
   deliveryMethod: "",
@@ -81,8 +83,32 @@ const deliveryMethodOptions = [
 */
 
 function CreateAuctionListingPage() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState(initialErrors);
+
+  const createAuctionMutation = useMutation({
+    mutationFn: createAuctionListing,
+    onSuccess: async (result) => {
+      setFormData(initialFormData);
+      setErrors(initialErrors);
+
+      // 如果你的拍賣列表有用 query 抓，這裡順手失效它
+      await queryClient.invalidateQueries({
+        queryKey: ["auctions"],
+      });
+
+      // 你可以先保留不跳轉，或改成跳去列表頁
+      // navigate({ to: "/auction" });
+
+      console.log("create auction success:", result);
+    },
+    onError: (error) => {
+      console.error("create auction error:", error);
+    },
+  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -92,7 +118,6 @@ function CreateAuctionListingPage() {
       [name]: value,
     }));
 
-    // 使用者重新輸入時先把該欄位錯誤清掉
     setErrors((prev) => ({
       ...prev,
       [name]: "",
@@ -171,6 +196,54 @@ function CreateAuctionListingPage() {
   };
   */
 
+  const validateForm = () => {
+    const nextErrors = {
+      ...initialErrors,
+    };
+
+    if (!formData.itemName.trim()) {
+      nextErrors.itemName = "請輸入商品名稱";
+    }
+
+    if (!formData.itemImageUrl.trim()) {
+      nextErrors.itemImageUrl = "請輸入商品圖片網址";
+    }
+
+    if (!formData.startingPrice || Number(formData.startingPrice) <= 0) {
+      nextErrors.startingPrice = "請輸入有效的起標價";
+    }
+
+    if (formData.minIncrement && Number(formData.minIncrement) < 0) {
+      nextErrors.minIncrement = "最小加價幅度不可小於 0";
+    }
+
+    if (!formData.endTime) {
+      nextErrors.endTime = "請選擇結標時間";
+    }
+
+    setErrors(nextErrors);
+    return !Object.values(nextErrors).some(Boolean);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
+    const payload = {
+      item_name: formData.itemName.trim(),
+      item_image_url: formData.itemImageUrl.trim(),
+      item_description: formData.itemDescription.trim(),
+      starting_price: Number(formData.startingPrice),
+      min_increment: formData.minIncrement
+        ? Number(formData.minIncrement)
+        : 0,
+      end_time: new Date(formData.endTime).toISOString(),
+    };
+
+    createAuctionMutation.mutate(payload);
+  };
+
   return (
     <div className="min-h-screen bg-[#f6eaf2] px-4 py-0 md:px-6">
       <div className="mx-auto w-full max-w-[576px]">
@@ -187,7 +260,7 @@ function CreateAuctionListingPage() {
           </header>
 
           <main className="px-6 pb-8 pt-4 md:px-8 md:pb-10">
-            <form className="space-y-5">
+            <form className="space-y-5" onSubmit={handleSubmit}>
               <InputField
                 id="itemName"
                 label="商品名稱"
@@ -337,6 +410,28 @@ function CreateAuctionListingPage() {
                 )}
               </div>
               */}
+
+              {createAuctionMutation.isError && (
+                <p className="text-sm font-medium text-red-500">
+                  {createAuctionMutation.error?.message || "建立拍賣商品失敗"}
+                </p>
+              )}
+
+              {createAuctionMutation.isSuccess && (
+                <p className="text-sm font-medium text-green-600">
+                  拍賣商品建立成功
+                </p>
+              )}
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={createAuctionMutation.isPending}
+                  className="w-full rounded-md bg-[#b0005b] px-4 py-3 text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {createAuctionMutation.isPending ? "送出中..." : "建立拍賣商品"}
+                </button>
+              </div>
             </form>
           </main>
 
