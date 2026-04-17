@@ -8,68 +8,68 @@ import { assets } from "../assets/assets";
 
 // 避免每次 render 都重新建立一次
 const initialFormData = {
-  // 基本資訊
-  name: "", // 姓名
-  email: "", // 常用信箱
-  phone: "", // 手機號碼
-  organisation: "", // 服務單位
+  // 商品基本資訊
+  itemName: "", // 商品名稱
+  itemImageUrl: "", // 商品圖片網址
+  startingPrice: "", // 起標價
+  itemDescription: "", // 商品描述
 
-  // 工作產業類別
-  industry: "", // 下拉選單的選中值
-  industryOther: "", // 選擇 Other 時需填寫的產業名稱
+  // 商品分類
+  category: "",
+  categoryOther: "",
 
-  // 欲參與的會議場次
-  sessions: [], // checkbox group，多選值陣列
+  // 商品標籤
+  tags: [],
 
-  // 是否參與晚宴
-  attendDinner: "", // radio 值：yes / no
+  // 是否接受議價
+  allowNegotiation: "", // yes / no
 
-  // 飲食習慣
-  diet: "", // 晚宴選 yes 後顯示的 radio 值
-  dietOther: "", // 飲食習慣選 Other 時的補充輸入
+  // 交付方式
+  deliveryMethod: "",
+  deliveryMethodOther: "",
 };
 
 const initialErrors = {
-  name: "",
-  email: "",
-  phone: "",
-  organisation: "",
-  industry: "",
-  industryOther: "",
-  sessions: "",
-  attendDinner: "",
-  diet: "",
-  dietOther: "",
+  itemName: "",
+  itemImageUrl: "",
+  startingPrice: "",
+  itemDescription: "",
+  category: "",
+  categoryOther: "",
+  tags: "",
+  allowNegotiation: "",
+  deliveryMethod: "",
+  deliveryMethodOther: "",
 };
 
-const industryOptions = [
-  { value: "technology", label: "科技業" },
-  { value: "finance", label: "金融業" },
-  { value: "education", label: "教育業" },
-  { value: "healthcare", label: "醫療業" },
-  { value: "media", label: "媒體／出版" },
+const categoryOptions = [
+  { value: "collectibles", label: "收藏品" },
+  { value: "electronics", label: "電子產品" },
+  { value: "books", label: "書籍" },
+  { value: "fashion", label: "服飾配件" },
+  { value: "home", label: "居家用品" },
   { value: "other", label: "其他" },
 ];
 
-const sessionOptions = [
-  { value: "session-a", label: "Session A" },
-  { value: "session-b", label: "Session B" },
-  { value: "session-c", label: "Session C" },
-  { value: "session-d", label: "Session D" },
+const tagOptions = [
+  { value: "brand-new", label: "全新" },
+  { value: "used", label: "二手" },
+  { value: "limited", label: "限量" },
+  { value: "pickup-available", label: "可面交" },
 ];
 
-const dinnerOptions = [
+const negotiationOptions = [
   { value: "yes", label: "是" },
   { value: "no", label: "否" },
 ];
 
-const dietOptions = [
-  { value: "normal", label: "葷食" },
-  { value: "vegetarian", label: "素食" },
+const deliveryMethodOptions = [
+  { value: "shipping", label: "宅配寄送" },
+  { value: "pickup", label: "面交" },
   { value: "other", label: "其他（請填寫）" },
 ];
 
-function MeetingRegistrationPage() {
+function CreateAuctionListingPage() {
   const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState(initialErrors);
 
@@ -102,22 +102,21 @@ function MeetingRegistrationPage() {
     }));
   };
 
-  const handleSessionChange = (values) => {
-    // values =>  ["session-a", "session-b"]
+  const handleTagChange = (values) => {
     setFormData((prev) => ({
       ...prev,
-      sessions: values,
+      tags: values,
     }));
 
     if (values.length === 0) {
       setErrors((prev) => ({
         ...prev,
-        sessions: "請至少選擇一個會議場次",
+        tags: "請至少選擇一個商品標籤",
       }));
     } else {
       setErrors((prev) => ({
         ...prev,
-        sessions: "",
+        tags: "",
       }));
     }
   };
@@ -136,18 +135,17 @@ function MeetingRegistrationPage() {
     }));
   };
 
-  const handleDietChange = (e) => {
+  const handleDeliveryMethodChange = (e) => {
     const { value } = e.target;
 
     setFormData((prev) => {
       const next = {
         ...prev,
-        diet: value,
+        deliveryMethod: value,
       };
 
-      // 如果不是其他，清空補充欄位
       if (value !== "other") {
-        next.dietOther = "";
+        next.deliveryMethodOther = "";
       }
 
       return next;
@@ -155,8 +153,8 @@ function MeetingRegistrationPage() {
 
     setErrors((prev) => ({
       ...prev,
-      diet: "",
-      ...(value !== "other" ? { dietOther: "" } : {}),
+      deliveryMethod: "",
+      ...(value !== "other" ? { deliveryMethodOther: "" } : {}),
     }));
   };
 
@@ -171,63 +169,62 @@ function MeetingRegistrationPage() {
             {/* 這個 header 裡面有內容把它撐開高度，所以背景圖有地方可以顯示 */}
             <div className="px-6 pb-8 pt-10 md:px-8 md:pb-10 md:pt-12">
               <h1 className="text-center text-[28px] font-bold tracking-[0.08em] text-[#b0005b] md:text-[44px]">
-                線上會議報名表
+                建立拍賣商品
               </h1>
             </div>
           </header>
 
           <main className="px-6 pb-8 pt-4 md:px-8 md:pb-10">
             <form className="space-y-5">
-              {/* 姓名 */}
-              <div>
-                <InputField
-                  id="name"
-                  label="姓名"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  error={errors.name}
-                  required
-                  placeholder="請輸入姓名"
-                />
-              </div>
               <InputField
-                id="email"
-                label="常用信箱"
-                type="email"
-                value={formData.email}
+                id="itemName"
+                label="商品名稱"
+                value={formData.itemName}
                 onChange={handleInputChange}
-                error={errors.email}
+                error={errors.itemName}
                 required
-                placeholder="請輸入 Email"
+                placeholder="請輸入商品名稱"
               />
+
               <InputField
-                id="phone"
-                label="手機號碼"
-                type="tel"
-                value={formData.phone}
+                id="itemImageUrl"
+                label="商品圖片網址"
+                value={formData.itemImageUrl}
                 onChange={handleInputChange}
-                error={errors.phone}
+                error={errors.itemImageUrl}
                 required
-                placeholder="請輸入手機號碼"
+                placeholder="請輸入商品圖片網址"
               />
+
               <InputField
-                id="organisation"
-                label="服務單位"
-                value={formData.organisation}
+                id="startingPrice"
+                label="起標價"
+                type="number"
+                value={formData.startingPrice}
                 onChange={handleInputChange}
-                error={errors.organisation}
+                error={errors.startingPrice}
                 required
-                placeholder="請輸入服務單位"
+                placeholder="請輸入起標價"
+              />
+
+              <InputField
+                id="itemDescription"
+                label="商品描述"
+                value={formData.itemDescription}
+                onChange={handleInputChange}
+                error={errors.itemDescription}
+                required
+                placeholder="請輸入商品描述"
               />
 
               {/* 工作產業類別 */}
               <SelectField
-                id="industry"
-                label="工作產業類別"
-                value={formData.industry}
+                id="category"
+                label="商品分類"
+                value={formData.category}
                 onChange={handleSelectChange}
-                options={industryOptions}
-                error={errors.industry}
+                options={categoryOptions}
+                error={errors.category}
                 required
               />
 
@@ -235,12 +232,12 @@ function MeetingRegistrationPage() {
               <div>
                 <div className="space-y-3">
                   <CheckboxGroup
-                    label="欲參與的會議場次"
-                    name="sessions"
-                    options={sessionOptions}
-                    value={formData.sessions}
-                    onChange={handleSessionChange}
-                    error={errors.sessions}
+                    label="商品標籤"
+                    name="tags"
+                    options={tagOptions}
+                    value={formData.tags}
+                    onChange={handleTagChange}
+                    error={errors.tags}
                   />
                 </div>
               </div>
@@ -248,20 +245,20 @@ function MeetingRegistrationPage() {
               {/* 是否參與晚宴 */}
               <div>
                 <p className="mb-2 block text-sm font-medium text-gray-800">
-                  是否參與晚宴 <span className="text-red-500">*</span>
+                  是否接受議價 <span className="text-red-500">*</span>
                 </p>
 
                 <div className="flex gap-6">
-                  {dinnerOptions.map((option) => (
+                  {negotiationOptions.map((option) => (
                     <label
                       key={option.value}
                       className="flex items-center gap-2 text-sm text-gray-700"
                     >
                       <input
                         type="radio"
-                        name="attendDinner"
+                        name="allowNegotiation"
                         value={option.value}
-                        checked={formData.attendDinner === option.value}
+                        checked={formData.allowNegotiation === option.value}
                         onChange={handleRadioChange}
                         className="h-4 w-4"
                       />
@@ -270,37 +267,36 @@ function MeetingRegistrationPage() {
                   ))}
                 </div>
 
-                {errors.attendDinner && (
+                {errors.allowNegotiation && (
                   <p className="mt-1 text-sm text-red-500">
-                    {errors.attendDinner}
+                    {errors.allowNegotiation}
                   </p>
                 )}
               </div>
 
               {/* 飲食習慣 - 只有選擇「是」才顯示 */}
               <div>
-                {formData.attendDinner === "yes" && (
+                {formData.allowNegotiation === "yes" && (
                   <>
                     <RadioGroup
-                      label="飲食習慣"
-                      name="diet"
-                      options={dietOptions}
-                      value={formData.diet}
-                      onChange={handleDietChange}
-                      error={errors.diet}
+                      label="交付方式"
+                      name="deliveryMethod"
+                      options={deliveryMethodOptions}
+                      value={formData.deliveryMethod}
+                      onChange={handleDeliveryMethodChange}
+                      error={errors.deliveryMethod}
                       required
                       variant="circle"
                     />
 
-                    {/* 只有飲食習慣選擇「其他」時才顯示補充欄位 */}
-                    {formData.diet === "other" && (
+                    {formData.deliveryMethod === "other" && (
                       <InputField
-                        id="dietOther"
-                        label="請補充您的飲食習慣"
-                        value={formData.dietOther}
+                        id="deliveryMethodOther"
+                        label="請補充交付方式"
+                        value={formData.deliveryMethodOther}
                         onChange={handleInputChange}
-                        error={errors.dietOther}
-                        placeholder="請詳細說明您的飲食需求（例如：無蛋奶素、海鮮過敏等）"
+                        error={errors.deliveryMethodOther}
+                        placeholder="請輸入其他交付方式"
                       />
                     )}
                   </>
@@ -312,7 +308,7 @@ function MeetingRegistrationPage() {
           <footer className="relative overflow-hidden">
             {/* 先給 footer 一個明確高度，讓整個區塊有穩定基準 */}
             <div className="relative h-[180px] md:h-[230px]">
-              {/* 背景圖獨立一層，貼在底部，不再跟按鈕綁死 */}-+
+              {/* 背景圖獨立一層，貼在底部，不再跟按鈕綁死 */}
               <div
                 className="pointer-events-none absolute inset-x-0 bottom-0 h-[120px] bg-[length:100%_auto] bg-bottom bg-no-repeat md:h-[170px]"
                 style={{ backgroundImage: `url(${assets.footerBg})` }}
@@ -333,15 +329,15 @@ function MeetingRegistrationPage() {
             </div>
           </footer>
 
-          {/* <pre className="overflow-x-auto rounded-lg bg-gray-100 p-4 text-xs text-gray-700">
+          <pre className="overflow-x-auto rounded-lg bg-gray-100 p-4 text-xs text-gray-700">
             {JSON.stringify(formData, null, 2)}
-          </pre> */}
+          </pre>
         </div>
       </div>
     </div>
   );
 }
 
-export const Route = createFileRoute("/meeting-registration")({
-  component: MeetingRegistrationPage,
+export const Route = createFileRoute("/create-auction")({
+  component: CreateAuctionListingPage,
 });
