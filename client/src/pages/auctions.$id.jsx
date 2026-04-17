@@ -8,7 +8,7 @@ const AuctionDetailPage = () => {
   const [bids, setBids] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  console.log('listing', listing);
   useEffect(() => {
     const fetchAuctionDetail = async () => {
       try {
@@ -79,6 +79,12 @@ const AuctionDetailPage = () => {
           <div>
             <span className="font-semibold">Current Price: </span>
             {listing.current_price}
+          </div>
+
+          {/* 加上 category */}
+          <div>
+            <span className="font-semibold">Category: </span>
+            {listing.category}
           </div>
 
           <div>
