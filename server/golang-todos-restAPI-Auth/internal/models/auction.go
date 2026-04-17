@@ -9,6 +9,7 @@ type AuctionListing struct {
 	SellerID        string    `json:"seller_id"`
 	ItemName        string    `json:"item_name"`
 	ItemImageURL    string    `json:"item_image_url"`
+	Category        string    `json:"category"`
 	ItemDescription string    `json:"item_description"`
 	StartingPrice   int64     `json:"starting_price"`
 	CurrentPrice    int64     `json:"current_price"`
@@ -31,10 +32,11 @@ type AuctionBid struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-// CreateAuctionListingRequest 是建立拍賣商品時前端送來的資料 => 這是 handler 收前端 request body 用的，也就是使用者建立拍賣時，前端應該送來哪些欄位。
+// 建立拍賣商品時前端送來的資料
 type CreateAuctionListingRequest struct {
 	ItemName        string    `json:"item_name" binding:"required"`
 	ItemImageURL    string    `json:"item_image_url" binding:"required"`
+	Category        string    `json:"category" binding:"required"`
 	ItemDescription string    `json:"item_description"`
 	StartingPrice   int64     `json:"starting_price" binding:"required"`
 	MinIncrement    int64     `json:"min_increment"`

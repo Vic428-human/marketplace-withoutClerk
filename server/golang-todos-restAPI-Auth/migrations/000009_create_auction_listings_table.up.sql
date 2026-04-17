@@ -80,4 +80,3 @@ ON auction_listings(end_time);
 -- 建立索引：讓你之後查「某個人目前領先哪些拍賣」更快
 CREATE INDEX IF NOT EXISTS idx_auction_listings_highest_bidder_id
 ON auction_listings(highest_bidder_id);
-

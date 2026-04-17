@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-// CreateAuctionListing 建立一筆新的拍賣商品
+// 建立一筆新的拍賣商品
 func CreateAuctionListing(pool *pgxpool.Pool, sellerID string, req models.CreateAuctionListingRequest) (*models.AuctionListing, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -29,6 +29,7 @@ func CreateAuctionListing(pool *pgxpool.Pool, sellerID string, req models.Create
 			seller_id,
 			item_name,
 			item_image_url,
+			category,
 			item_description,
 			starting_price,
 			current_price,
@@ -37,12 +38,13 @@ func CreateAuctionListing(pool *pgxpool.Pool, sellerID string, req models.Create
 			start_time,
 			end_time
 		)
-		VALUES ($1, $2, $3, $4, $5, $5, $6, 'active', CURRENT_TIMESTAMP, $7)
+		VALUES ($1, $2, $3, $4, $5, $6, $6, $7, 'active', CURRENT_TIMESTAMP, $8)
 		RETURNING
 			id,
 			seller_id,
 			item_name,
 			item_image_url,
+			category,
 			item_description,
 			starting_price,
 			current_price,
@@ -63,6 +65,7 @@ func CreateAuctionListing(pool *pgxpool.Pool, sellerID string, req models.Create
 		sellerID,
 		req.ItemName,
 		req.ItemImageURL,
+		req.Category,
 		req.ItemDescription,
 		req.StartingPrice,
 		minIncrement,
@@ -72,6 +75,7 @@ func CreateAuctionListing(pool *pgxpool.Pool, sellerID string, req models.Create
 		&listing.SellerID,
 		&listing.ItemName,
 		&listing.ItemImageURL,
+		&listing.Category,
 		&listing.ItemDescription,
 		&listing.StartingPrice,
 		&listing.CurrentPrice,
@@ -161,7 +165,7 @@ func GetAuctionListings(pool *pgxpool.Pool) ([]models.AuctionListing, error) {
 	return listings, nil
 }
 
-// GetAuctionListingByID 根據 id 取得單一拍賣商品
+// 根據 id 取得單一拍賣商品
 func GetAuctionListingByID(pool *pgxpool.Pool, listingID string) (*models.AuctionListing, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -174,6 +178,7 @@ func GetAuctionListingByID(pool *pgxpool.Pool, listingID string) (*models.Auctio
 			seller_id,
 			item_name,
 			item_image_url,
+			category,
 			item_description,
 			starting_price,
 			current_price,
@@ -195,6 +200,7 @@ func GetAuctionListingByID(pool *pgxpool.Pool, listingID string) (*models.Auctio
 		&listing.SellerID,
 		&listing.ItemName,
 		&listing.ItemImageURL,
+		&listing.Category,
 		&listing.ItemDescription,
 		&listing.StartingPrice,
 		&listing.CurrentPrice,

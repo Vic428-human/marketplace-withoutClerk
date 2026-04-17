@@ -134,8 +134,8 @@ function CreateAuctionListingPage() {
         ? Number(formData.minIncrement)
         : 0,
       end_time: new Date(formData.endTime).toISOString(),
-      // category: formData.category,
-      // 目前先不送，避免和現有後端 API contract 不一致
+      // TODO: 測試中 0418
+      category: formData.category,
     };
 
     createAuctionMutation.mutate(payload);

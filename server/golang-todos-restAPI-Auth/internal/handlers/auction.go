@@ -12,6 +12,14 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+var allowedAuctionCategories = map[string]bool{
+	"currency":   true,
+	"equipment":  true,
+	"consumable": true,
+	"material":   true,
+	"other":      true,
+}
+
 // 從 cookie 裡解析 JWT，拿出目前登入者的 user_id
 func getUserIDFromCookie(c *gin.Context, cfg *config.Config) (string, error) {
 	tokenString, err := c.Cookie("token")
@@ -56,6 +64,11 @@ func CreateAuctionListingHandler(pool *pgxpool.Pool, cfg *config.Config) gin.Han
 		var req models.CreateAuctionListingRequest
 		if err := c.BindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		if !allowedAuctionCategories[req.Category] {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid category"})
 			return
 		}
 
