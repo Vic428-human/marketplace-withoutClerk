@@ -1,10 +1,8 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import InputField from "../components/form/InputField";
-// import SelectField from "../components/form/SelectField";
-// import CheckboxGroup from "../components/form/CheckboxGroup";
-// import RadioGroup from "../components/form/RadioGroup";
+import SelectField from "../components/form/SelectField";
 import { assets } from "../assets/assets";
 import { createAuctionListing } from "../api/auction";
 
@@ -13,77 +11,32 @@ const initialFormData = {
   // 商品基本資訊
   itemName: "",
   itemImageUrl: "",
+  category: "",
   startingPrice: "",
   itemDescription: "",
   minIncrement: "",
   endTime: "",
-
-  /*
-  // 商品分類
-  category: "",
-  categoryOther: "",
-
-  // 商品標籤
-  tags: [],
-
-  // 是否接受議價
-  allowNegotiation: "",
-
-  // 交付方式
-  deliveryMethod: "",
-  deliveryMethodOther: "",
-  */
 };
 
 const initialErrors = {
   itemName: "",
   itemImageUrl: "",
+  category: "",
   startingPrice: "",
   itemDescription: "",
   minIncrement: "",
   endTime: "",
-
-  /*
-  category: "",
-  categoryOther: "",
-  tags: "",
-  allowNegotiation: "",
-  deliveryMethod: "",
-  deliveryMethodOther: "",
-  */
 };
 
-/*
 const categoryOptions = [
-  { value: "collectibles", label: "收藏品" },
-  { value: "electronics", label: "電子產品" },
-  { value: "books", label: "書籍" },
-  { value: "fashion", label: "服飾配件" },
-  { value: "home", label: "居家用品" },
+  { value: "currency", label: "遊戲幣" },
+  { value: "equipment", label: "裝備" },
+  { value: "consumable", label: "消耗品" },
+  { value: "material", label: "材料" },
   { value: "other", label: "其他" },
 ];
 
-const tagOptions = [
-  { value: "brand-new", label: "全新" },
-  { value: "used", label: "二手" },
-  { value: "limited", label: "限量" },
-  { value: "pickup-available", label: "可面交" },
-];
-
-const negotiationOptions = [
-  { value: "yes", label: "是" },
-  { value: "no", label: "否" },
-];
-
-const deliveryMethodOptions = [
-  { value: "shipping", label: "宅配寄送" },
-  { value: "pickup", label: "面交" },
-  { value: "other", label: "其他（請填寫）" },
-];
-*/
-
 function CreateAuctionListingPage() {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState(initialFormData);
@@ -95,13 +48,9 @@ function CreateAuctionListingPage() {
       setFormData(initialFormData);
       setErrors(initialErrors);
 
-      // 如果你的拍賣列表有用 query 抓，這裡順手失效它
       await queryClient.invalidateQueries({
         queryKey: ["auctions"],
       });
-
-      // 你可以先保留不跳轉，或改成跳去列表頁
-      // navigate({ to: "/auction" });
 
       console.log("create auction success:", result);
     },
@@ -124,7 +73,6 @@ function CreateAuctionListingPage() {
     }));
   };
 
-  /*
   const handleSelectChange = (e) => {
     const { name, value } = e.target;
 
@@ -139,63 +87,6 @@ function CreateAuctionListingPage() {
     }));
   };
 
-  const handleTagChange = (values) => {
-    setFormData((prev) => ({
-      ...prev,
-      tags: values,
-    }));
-
-    if (values.length === 0) {
-      setErrors((prev) => ({
-        ...prev,
-        tags: "請至少選擇一個商品標籤",
-      }));
-    } else {
-      setErrors((prev) => ({
-        ...prev,
-        tags: "",
-      }));
-    }
-  };
-
-  const handleRadioChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    setErrors((prev) => ({
-      ...prev,
-      [name]: "",
-    }));
-  };
-
-  const handleDeliveryMethodChange = (e) => {
-    const { value } = e.target;
-
-    setFormData((prev) => {
-      const next = {
-        ...prev,
-        deliveryMethod: value,
-      };
-
-      if (value !== "other") {
-        next.deliveryMethodOther = "";
-      }
-
-      return next;
-    });
-
-    setErrors((prev) => ({
-      ...prev,
-      deliveryMethod: "",
-      ...(value !== "other" ? { deliveryMethodOther: "" } : {}),
-    }));
-  };
-  */
-
   const validateForm = () => {
     const nextErrors = {
       ...initialErrors,
@@ -207,6 +98,10 @@ function CreateAuctionListingPage() {
 
     if (!formData.itemImageUrl.trim()) {
       nextErrors.itemImageUrl = "請輸入商品圖片網址";
+    }
+
+    if (!formData.category) {
+      nextErrors.category = "請選擇商品分類";
     }
 
     if (!formData.startingPrice || Number(formData.startingPrice) <= 0) {
@@ -225,7 +120,7 @@ function CreateAuctionListingPage() {
     return !Object.values(nextErrors).some(Boolean);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!validateForm()) return;
@@ -239,6 +134,8 @@ function CreateAuctionListingPage() {
         ? Number(formData.minIncrement)
         : 0,
       end_time: new Date(formData.endTime).toISOString(),
+      // category: formData.category,
+      // 目前先不送，避免和現有後端 API contract 不一致
     };
 
     createAuctionMutation.mutate(payload);
@@ -281,6 +178,16 @@ function CreateAuctionListingPage() {
                 placeholder="請輸入商品圖片網址"
               />
 
+              <SelectField
+                id="category"
+                label="商品分類"
+                value={formData.category}
+                onChange={handleSelectChange}
+                options={categoryOptions}
+                error={errors.category}
+                required
+              />
+
               <InputField
                 id="startingPrice"
                 label="起標價"
@@ -320,96 +227,6 @@ function CreateAuctionListingPage() {
                 error={errors.itemDescription}
                 placeholder="請輸入商品描述"
               />
-
-              {/*
-              <SelectField
-                id="category"
-                label="商品分類"
-                value={formData.category}
-                onChange={handleSelectChange}
-                options={categoryOptions}
-                error={errors.category}
-                required
-              />
-              */}
-
-              {/*
-              <div>
-                <div className="space-y-3">
-                  <CheckboxGroup
-                    label="商品標籤"
-                    name="tags"
-                    options={tagOptions}
-                    value={formData.tags}
-                    onChange={handleTagChange}
-                    error={errors.tags}
-                  />
-                </div>
-              </div>
-              */}
-
-              {/*
-              <div>
-                <p className="mb-2 block text-sm font-medium text-gray-800">
-                  是否接受議價 <span className="text-red-500">*</span>
-                </p>
-
-                <div className="flex gap-6">
-                  {negotiationOptions.map((option) => (
-                    <label
-                      key={option.value}
-                      className="flex items-center gap-2 text-sm text-gray-700"
-                    >
-                      <input
-                        type="radio"
-                        name="allowNegotiation"
-                        value={option.value}
-                        checked={formData.allowNegotiation === option.value}
-                        onChange={handleRadioChange}
-                        className="h-4 w-4"
-                      />
-                      <span>{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-
-                {errors.allowNegotiation && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.allowNegotiation}
-                  </p>
-                )}
-              </div>
-              */}
-
-              {/*
-              <div>
-                {formData.allowNegotiation === "yes" && (
-                  <>
-                    <RadioGroup
-                      label="交付方式"
-                      name="deliveryMethod"
-                      options={deliveryMethodOptions}
-                      value={formData.deliveryMethod}
-                      onChange={handleDeliveryMethodChange}
-                      error={errors.deliveryMethod}
-                      required
-                      variant="circle"
-                    />
-
-                    {formData.deliveryMethod === "other" && (
-                      <InputField
-                        id="deliveryMethodOther"
-                        label="請補充交付方式"
-                        value={formData.deliveryMethodOther}
-                        onChange={handleInputChange}
-                        error={errors.deliveryMethodOther}
-                        placeholder="請輸入其他交付方式"
-                      />
-                    )}
-                  </>
-                )}
-              </div>
-              */}
 
               {createAuctionMutation.isError && (
                 <p className="text-sm font-medium text-red-500">
