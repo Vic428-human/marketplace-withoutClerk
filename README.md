@@ -2,6 +2,10 @@
 > React、Tanstack Query、Postgres、Golang、Websocket、SSE、CRON
 
 ### 近期已完成
+- [x] [26/0418] 新增刊登商品表單(有RWD)、優化DB(目前對競拍品多增加了類別這個要素)
+- [x] [26/0412] 優化main.go裡的路由、CORS、Websocket、模組等架構，避免全部都擠在同一份檔案，造成閱讀成本增加，讓職責單一。
+- [x] [26/0411] 預先規劃刊登文章多標籤篩選功能 [核心邏輯寫在這](https://github.com/Vic428-human/todoapp-jwt/blob/a77472f5b5b212622445fa7ba3b8d678d7bff54f/internal/repository/article_repository.go#L4)，之後完善後會搬遷過來這個專案。
+- [x] [26/0402] 將角色與魔法陣改為共用定位容器並優化透明素材對位顯示
 - [x] [26/0328] 競拍商品系統引入，可以看到當前最高價，有能看到歷史競拍紀錄
 - [x] [26/0319] 顯示登入/登出狀態、使用者頭像
 - [x] [26/0316] 製作一個 API，可依登入使用者 token 直接更新指定活動下指定任務的完成、可領取與可接取進度狀態。
